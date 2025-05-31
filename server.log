@@ -1,0 +1,1447 @@
+
+> asteria-mvp@1.0.0-mvp dev
+> next dev --turbopack
+
+   ▲ Next.js 15.3.3 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.219:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 901ms
+ ⚠ Webpack is configured while Turbopack is not, which may cause problems.
+ ⚠ See instructions if you need to configure Turbopack:
+  https://nextjs.org/docs/app/api-reference/next-config-js/turbo
+
+ ○ Compiling / ...
+ ✓ Compiled / in 1446ms
+ GET / 200 in 1619ms
+ GET / 200 in 81ms
+ ✓ Compiled /favicon.ico in 344ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 598ms
+ ✓ Compiled /api/chat in 341ms
+[rj31x] === PHASE 1 CHAT API ===
+[rj31x] Making tool-enabled OpenAI request...
+[rj31x] Tool calls detected: 0
+[rj31x] Response generated, length: 75
+ POST /api/chat 200 in 2367ms
+ ✓ Compiled /api/diagnose in 267ms
+ ✓ Compiled /api/voice/elevenlabs in 200ms
+[6bkhi] === ELEVENLABS VOICE SYNTHESIS START ===
+[6bkhi] Synthesizing text: Good day! How may I assist you in crafting an exceptional experience today?...
+ GET /api/diagnose 200 in 792ms
+[y8oe0m] === PHASE 1 CHAT API ===
+[y8oe0m] Making tool-enabled OpenAI request...
+[6bkhi] ✅ Voice synthesis successful, audio size: 69008 bytes
+ POST /api/voice/elevenlabs 200 in 1396ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 239ms
+[y8oe0m] Tool calls detected: 0
+[y8oe0m] Response generated, length: 54
+ POST /api/chat 200 in 1657ms
+ POST /api/diagnose 200 in 1257ms
+ ✓ Compiled /_not-found/page in 479ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 513ms
+[7qo7z] === PHASE 1 CHAT API ===
+[7qo7z] Making tool-enabled OpenAI request...
+[7qo7z] Tool calls detected: 1
+[7qo7z] Executing tool: fetch_active_services
+[7qo7z] Services found: 0
+[7qo7z] Response generated, length: 654
+ POST /api/chat 200 in 7168ms
+[sj0tfj] === ASTERIA AGENT LOOP API ===
+[sj0tfj] Processing through Agent Loop: I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: brandDev (confidence: 5.3%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: brandDev
+[EXECUTOR] Executing step: notify_concierge
+[EXECUTOR] Step completed in 270ms
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'success',
+  responseTime: 272,
+  toolsUsed: [ 'notify_concierge' ],
+  intentAccuracy: 0.05263157894736842,
+  executionEfficiency: 1
+}
+[REFLECTOR] Interaction logged with outcome: success
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for brandDev request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 56.3%)
+[AGENT_LOOP] Complete in 276ms - Goals NOT ACHIEVED
+[sj0tfj] Agent Loop completed in 276ms:
+[sj0tfj] - Success: false
+[sj0tfj] - Goals Achieved: false
+[sj0tfj] - Intent: brandDev (5.3%)
+[sj0tfj] - Tools Used: notify_concierge
+ POST /api/chat 200 in 536ms
+[ecuppn] === ASTERIA AGENT LOOP API ===
+[ecuppn] Processing through Agent Loop: I need a car service for tonight...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I need a car service for tonight...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: transportation (confidence: 5.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: transportation
+[EXECUTOR] Executing step: notify_concierge
+[EXECUTOR] Step completed in 232ms
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'success',
+  responseTime: 233,
+  toolsUsed: [ 'notify_concierge' ],
+  intentAccuracy: 0.05,
+  executionEfficiency: 1
+}
+[REFLECTOR] Interaction logged with outcome: success
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for transportation request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 10.0%)
+[AGENT_LOOP] Complete in 236ms - Goals NOT ACHIEVED
+[ecuppn] Agent Loop completed in 236ms:
+[ecuppn] - Success: false
+[ecuppn] - Goals Achieved: false
+[ecuppn] - Intent: transportation (5.0%)
+[ecuppn] - Tools Used: notify_concierge
+ POST /api/chat 200 in 257ms
+[u0jc1y] === ASTERIA AGENT LOOP API ===
+[u0jc1y] Processing through Agent Loop: I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: brandDev (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: brandDev
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, time
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 292,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for brandDev request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 56.3%)
+[AGENT_LOOP] Complete in 299ms - Goals NOT ACHIEVED
+[u0jc1y] Agent Loop completed in 300ms:
+[u0jc1y] - Success: false
+[u0jc1y] - Goals Achieved: false
+[u0jc1y] - Intent: brandDev (100.0%)
+[u0jc1y] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 409ms
+[jm543] === ASTERIA AGENT LOOP API ===
+[jm543] Processing through Agent Loop: I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: transportation (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: transportation
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 1ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, time
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 301,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for transportation request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 26.7%)
+[AGENT_LOOP] Complete in 305ms - Goals NOT ACHIEVED
+[jm543] Agent Loop completed in 305ms:
+[jm543] - Success: false
+[jm543] - Goals Achieved: false
+[jm543] - Intent: transportation (100.0%)
+[jm543] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 397ms
+[r9r9hk] === ASTERIA AGENT LOOP API ===
+[r9r9hk] Processing through Agent Loop: I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: transportation (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: transportation
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, time
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 264,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for transportation request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 26.7%)
+[AGENT_LOOP] Complete in 266ms - Goals NOT ACHIEVED
+[r9r9hk] Agent Loop completed in 266ms:
+[r9r9hk] - Success: false
+[r9r9hk] - Goals Achieved: false
+[r9r9hk] - Intent: transportation (100.0%)
+[r9r9hk] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 284ms
+[vp6v89] === ASTERIA AGENT LOOP API ===
+[vp6v89] Processing through Agent Loop: Book me a luxury car service for tonight...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: Book me a luxury car service for tonight...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: lifestyle (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: lifestyle
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 279,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for lifestyle request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 0.0%)
+[AGENT_LOOP] Complete in 283ms - Goals NOT ACHIEVED
+[vp6v89] Agent Loop completed in 283ms:
+[vp6v89] - Success: false
+[vp6v89] - Goals Achieved: false
+[vp6v89] - Intent: lifestyle (100.0%)
+[vp6v89] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 300ms
+[9d96f9] === ASTERIA AGENT LOOP API ===
+[9d96f9] Processing through Agent Loop: I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: transportation (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: transportation
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, time
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 453,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for transportation request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 39.7%)
+[AGENT_LOOP] Complete in 456ms - Goals NOT ACHIEVED
+[9d96f9] Agent Loop completed in 456ms:
+[9d96f9] - Success: false
+[9d96f9] - Goals Achieved: false
+[9d96f9] - Intent: transportation (100.0%)
+[9d96f9] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 550ms
+[qw6m1h] === ASTERIA AGENT LOOP API ===
+[qw6m1h] Processing through Agent Loop: Book me a luxury car service for tonight's gala at Lincoln Center...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: Book me a luxury car service for tonight's gala at Lincoln Center...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: events (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: events
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 177,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for events request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 7.8%)
+[AGENT_LOOP] Complete in 180ms - Goals NOT ACHIEVED
+[qw6m1h] Agent Loop completed in 180ms:
+[qw6m1h] - Success: false
+[qw6m1h] - Goals Achieved: false
+[qw6m1h] - Intent: events (100.0%)
+[qw6m1h] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 197ms
+[5fx0xe] === ASTERIA AGENT LOOP API ===
+[5fx0xe] Processing through Agent Loop: I want to charter a yacht for next weekend in the Hamptons...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I want to charter a yacht for next weekend in the Hamptons...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: transportation (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: transportation
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'success',
+  responseTime: 0,
+  toolsUsed: [ 'fetch_active_services' ],
+  intentAccuracy: 1,
+  executionEfficiency: 1
+}
+[REFLECTOR] Interaction logged with outcome: success
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for transportation request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 39.7%)
+[AGENT_LOOP] Complete in 2ms - Goals NOT ACHIEVED
+[5fx0xe] Agent Loop completed in 2ms:
+[5fx0xe] - Success: false
+[5fx0xe] - Goals Achieved: false
+[5fx0xe] - Intent: transportation (100.0%)
+[5fx0xe] - Tools Used: fetch_active_services
+ POST /api/chat 200 in 37ms
+[phgp5] === ASTERIA AGENT LOOP API ===
+[phgp5] Processing through Agent Loop: Get me VIP access to the Met Gala after-party this year...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: Get me VIP access to the Met Gala after-party this year...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: events (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: events
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 170,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for events request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 7.8%)
+[AGENT_LOOP] Complete in 172ms - Goals NOT ACHIEVED
+[phgp5] Agent Loop completed in 172ms:
+[phgp5] - Success: false
+[phgp5] - Goals Achieved: false
+[phgp5] - Intent: events (100.0%)
+[phgp5] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 200ms
+[p9yp9] === ASTERIA AGENT LOOP API ===
+[p9yp9] Processing through Agent Loop: I need a private venue for my company's 50-person board dinner next month...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I need a private venue for my company's 50-person board dinner next month...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: taglades (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: taglades
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 167,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for taglades request
+[GOAL_CHECKER] Goals ACHIEVED (score: 69.4%)
+[AGENT_LOOP] Complete in 169ms - Goals ACHIEVED
+[p9yp9] Agent Loop completed in 169ms:
+[p9yp9] - Success: true
+[p9yp9] - Goals Achieved: true
+[p9yp9] - Intent: taglades (100.0%)
+[p9yp9] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 190ms
+[7zz1ma] === ASTERIA AGENT LOOP API ===
+[7zz1ma] Processing through Agent Loop: Arrange backstage access for tonight's Broadway premiere...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: Arrange backstage access for tonight's Broadway premiere...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: events (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: events
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 1ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 164,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for events request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 7.8%)
+[AGENT_LOOP] Complete in 166ms - Goals NOT ACHIEVED
+[7zz1ma] Agent Loop completed in 166ms:
+[7zz1ma] - Success: false
+[7zz1ma] - Goals Achieved: false
+[7zz1ma] - Intent: events (100.0%)
+[7zz1ma] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 191ms
+[fvlqds] === ASTERIA AGENT LOOP API ===
+[fvlqds] Processing through Agent Loop: I need personal brand consulting to position myself as a thought leader...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I need personal brand consulting to position myself as a thought leader...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: brandDev (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: brandDev
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, date, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 171,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for brandDev request
+[GOAL_CHECKER] Goals ACHIEVED (score: 100.0%)
+[AGENT_LOOP] Complete in 173ms - Goals ACHIEVED
+[fvlqds] Agent Loop completed in 173ms:
+[fvlqds] - Success: true
+[fvlqds] - Goals Achieved: true
+[fvlqds] - Intent: brandDev (100.0%)
+[fvlqds] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 215ms
+[xub3jk] === ASTERIA AGENT LOOP API ===
+[xub3jk] Processing through Agent Loop: Help me with media relations for my upcoming product launch...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: Help me with media relations for my upcoming product launch...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: brandDev (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: brandDev
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, date, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 190,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for brandDev request
+[GOAL_CHECKER] Goals ACHIEVED (score: 69.4%)
+[AGENT_LOOP] Complete in 192ms - Goals ACHIEVED
+[xub3jk] Agent Loop completed in 192ms:
+[xub3jk] - Success: true
+[xub3jk] - Goals Achieved: true
+[xub3jk] - Intent: brandDev (100.0%)
+[xub3jk] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 211ms
+[vbnys] === ASTERIA AGENT LOOP API ===
+[vbnys] Agent Loop API error: SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at POST (src/app/api/chat/route.ts:22:34)
+  20 |     console.log(`[${requestId}] === ASTERIA AGENT LOOP API ===`);
+  21 |     
+> 22 |     const requestData = await req.json();
+     |                                  ^
+  23 |     message = requestData.message;
+  24 |     conversationHistory = requestData.conversationHistory || [];
+  25 |
+[vbnys] Falling back to basic OpenAI response...
+[lld77h] === ASTERIA AGENT LOOP API ===
+[lld77h] Processing through Agent Loop: I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: transportation (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: transportation
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, time
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 257,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for transportation request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 39.7%)
+[AGENT_LOOP] Complete in 259ms - Goals NOT ACHIEVED
+[lld77h] Agent Loop completed in 259ms:
+[lld77h] - Success: false
+[lld77h] - Goals Achieved: false
+[lld77h] - Intent: transportation (100.0%)
+[lld77h] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 277ms
+[kxlg2h] === ASTERIA AGENT LOOP API ===
+[kxlg2h] Processing through Agent Loop: Book me a luxury car service for tonight's gala at Lincoln Center...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: Book me a luxury car service for tonight's gala at Lincoln Center...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: events (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: events
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 177,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for events request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 7.8%)
+[AGENT_LOOP] Complete in 179ms - Goals NOT ACHIEVED
+[kxlg2h] Agent Loop completed in 179ms:
+[kxlg2h] - Success: false
+[kxlg2h] - Goals Achieved: false
+[kxlg2h] - Intent: events (100.0%)
+[kxlg2h] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 202ms
+[8vzkxx] === ASTERIA AGENT LOOP API ===
+[8vzkxx] Processing through Agent Loop: I want to charter a yacht for next weekend in the Hamptons...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I want to charter a yacht for next weekend in the Hamptons...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: transportation (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: transportation
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'success',
+  responseTime: 0,
+  toolsUsed: [ 'fetch_active_services' ],
+  intentAccuracy: 1,
+  executionEfficiency: 1
+}
+[REFLECTOR] Interaction logged with outcome: success
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for transportation request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 39.7%)
+[AGENT_LOOP] Complete in 2ms - Goals NOT ACHIEVED
+[8vzkxx] Agent Loop completed in 2ms:
+[8vzkxx] - Success: false
+[8vzkxx] - Goals Achieved: false
+[8vzkxx] - Intent: transportation (100.0%)
+[8vzkxx] - Tools Used: fetch_active_services
+ POST /api/chat 200 in 27ms
+[s1ga7n] === ASTERIA AGENT LOOP API ===
+[s1ga7n] Processing through Agent Loop: Get me VIP access to the Met Gala after-party this year...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: Get me VIP access to the Met Gala after-party this year...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: events (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: events
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 166,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for events request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 7.8%)
+[AGENT_LOOP] Complete in 168ms - Goals NOT ACHIEVED
+[s1ga7n] Agent Loop completed in 168ms:
+[s1ga7n] - Success: false
+[s1ga7n] - Goals Achieved: false
+[s1ga7n] - Intent: events (100.0%)
+[s1ga7n] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 198ms
+[q47r5i] === ASTERIA AGENT LOOP API ===
+[q47r5i] Processing through Agent Loop: I need a private venue for my company's 50-person board dinner next month...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I need a private venue for my company's 50-person board dinner next month...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: taglades (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: taglades
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 173,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for taglades request
+[GOAL_CHECKER] Goals ACHIEVED (score: 69.4%)
+[AGENT_LOOP] Complete in 175ms - Goals ACHIEVED
+[q47r5i] Agent Loop completed in 175ms:
+[q47r5i] - Success: true
+[q47r5i] - Goals Achieved: true
+[q47r5i] - Intent: taglades (100.0%)
+[q47r5i] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 198ms
+[3kw7tp] === ASTERIA AGENT LOOP API ===
+[3kw7tp] Processing through Agent Loop: Arrange backstage access for tonight's Broadway premiere...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: Arrange backstage access for tonight's Broadway premiere...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: events (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: events
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 170,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for events request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 7.8%)
+[AGENT_LOOP] Complete in 180ms - Goals NOT ACHIEVED
+[3kw7tp] Agent Loop completed in 180ms:
+[3kw7tp] - Success: false
+[3kw7tp] - Goals Achieved: false
+[3kw7tp] - Intent: events (100.0%)
+[3kw7tp] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 280ms
+[zrzmo] === ASTERIA AGENT LOOP API ===
+[zrzmo] Processing through Agent Loop: I need personal brand consulting to position myself as a thought leader...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I need personal brand consulting to position myself as a thought leader...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: brandDev (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: brandDev
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, date, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 163,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for brandDev request
+[GOAL_CHECKER] Goals ACHIEVED (score: 100.0%)
+[AGENT_LOOP] Complete in 165ms - Goals ACHIEVED
+[zrzmo] Agent Loop completed in 165ms:
+[zrzmo] - Success: true
+[zrzmo] - Goals Achieved: true
+[zrzmo] - Intent: brandDev (100.0%)
+[zrzmo] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 183ms
+[wd2zgi] === ASTERIA AGENT LOOP API ===
+[wd2zgi] Processing through Agent Loop: Help me with media relations for my upcoming product launch...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: Help me with media relations for my upcoming product launch...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: brandDev (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: brandDev
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, date, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 161,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for brandDev request
+[GOAL_CHECKER] Goals ACHIEVED (score: 69.4%)
+[AGENT_LOOP] Complete in 162ms - Goals ACHIEVED
+[wd2zgi] Agent Loop completed in 162ms:
+[wd2zgi] - Success: true
+[wd2zgi] - Goals Achieved: true
+[wd2zgi] - Intent: brandDev (100.0%)
+[wd2zgi] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 181ms
+[z07ufs] === ASTERIA AGENT LOOP API ===
+[z07ufs] Processing through Agent Loop: I want to improve my digital presence and LinkedIn strategy...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I want to improve my digital presence and LinkedIn strategy...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: brandDev (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: brandDev
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, date, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 165,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for brandDev request
+[GOAL_CHECKER] Goals ACHIEVED (score: 69.4%)
+[AGENT_LOOP] Complete in 168ms - Goals ACHIEVED
+[z07ufs] Agent Loop completed in 168ms:
+[z07ufs] - Success: true
+[z07ufs] - Goals Achieved: true
+[z07ufs] - Intent: brandDev (100.0%)
+[z07ufs] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 195ms
+[1k1ar9] === ASTERIA AGENT LOOP API ===
+[1k1ar9] Processing through Agent Loop: Connect me with a wealth management advisor for my portfolio...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: Connect me with a wealth management advisor for my portfolio...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: investments (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: investments
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, date, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 171,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for investments request
+[GOAL_CHECKER] Goals ACHIEVED (score: 100.0%)
+[AGENT_LOOP] Complete in 173ms - Goals ACHIEVED
+[1k1ar9] Agent Loop completed in 173ms:
+[1k1ar9] - Success: true
+[1k1ar9] - Goals Achieved: true
+[1k1ar9] - Intent: investments (100.0%)
+[1k1ar9] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 204ms
+[hcqn1j] === ASTERIA AGENT LOOP API ===
+[hcqn1j] Processing through Agent Loop: I want access to alternative investment opportunities in private equity...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I want access to alternative investment opportunities in private equity...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: investments (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: investments
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, date, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 165,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for investments request
+[GOAL_CHECKER] Goals ACHIEVED (score: 73.8%)
+[AGENT_LOOP] Complete in 167ms - Goals ACHIEVED
+[hcqn1j] Agent Loop completed in 167ms:
+[hcqn1j] - Success: true
+[hcqn1j] - Goals Achieved: true
+[hcqn1j] - Intent: investments (100.0%)
+[hcqn1j] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 182ms
+[rr9v7ou] === ASTERIA AGENT LOOP API ===
+[rr9v7ou] Processing through Agent Loop: Need financial planning advice for my real estate investments...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: Need financial planning advice for my real estate investments...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: investments (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: investments
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, date, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 165,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for investments request
+[GOAL_CHECKER] Goals ACHIEVED (score: 100.0%)
+[AGENT_LOOP] Complete in 166ms - Goals ACHIEVED
+[rr9v7ou] Agent Loop completed in 166ms:
+[rr9v7ou] - Success: true
+[rr9v7ou] - Goals Achieved: true
+[rr9v7ou] - Intent: investments (100.0%)
+[rr9v7ou] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 183ms
+[svm06p] === ASTERIA AGENT LOOP API ===
+[svm06p] Processing through Agent Loop: I want access to the exclusive founders circle networking events...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I want access to the exclusive founders circle networking events...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: taglades (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: taglades
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, date, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 167,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for taglades request
+[GOAL_CHECKER] Goals ACHIEVED (score: 100.0%)
+[AGENT_LOOP] Complete in 168ms - Goals ACHIEVED
+[svm06p] Agent Loop completed in 168ms:
+[svm06p] - Success: true
+[svm06p] - Goals Achieved: true
+[svm06p] - Intent: taglades (100.0%)
+[svm06p] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 191ms
+[lnfuge] === ASTERIA AGENT LOOP API ===
+[lnfuge] Processing through Agent Loop: Connect me with the innovation labs for startup collaboration...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: Connect me with the innovation labs for startup collaboration...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: taglades (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: taglades
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, date, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 170,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for taglades request
+[GOAL_CHECKER] Goals ACHIEVED (score: 69.4%)
+[AGENT_LOOP] Complete in 172ms - Goals ACHIEVED
+[lnfuge] Agent Loop completed in 172ms:
+[lnfuge] - Success: true
+[lnfuge] - Goals Achieved: true
+[lnfuge] - Intent: taglades (100.0%)
+[lnfuge] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 199ms
+[p2g6t] === ASTERIA AGENT LOOP API ===
+[p2g6t] Processing through Agent Loop: I'm interested in the elite philanthropy and legacy programs...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I'm interested in the elite philanthropy and legacy programs...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: taglades (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: taglades
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, date, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 164,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for taglades request
+[GOAL_CHECKER] Goals ACHIEVED (score: 69.4%)
+[AGENT_LOOP] Complete in 166ms - Goals ACHIEVED
+[p2g6t] Agent Loop completed in 166ms:
+[p2g6t] - Success: true
+[p2g6t] - Goals Achieved: true
+[p2g6t] - Intent: taglades (100.0%)
+[p2g6t] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 187ms
+[4iy7e] === ASTERIA AGENT LOOP API ===
+[4iy7e] Processing through Agent Loop: I need personal shopping and styling services for my wardrobe refresh...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I need personal shopping and styling services for my wardrobe refresh...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: lifestyle (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: lifestyle
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, date, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 165,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for lifestyle request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 8.2%)
+[AGENT_LOOP] Complete in 167ms - Goals NOT ACHIEVED
+[4iy7e] Agent Loop completed in 167ms:
+[4iy7e] - Success: false
+[4iy7e] - Goals Achieved: false
+[4iy7e] - Intent: lifestyle (100.0%)
+[4iy7e] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 192ms
+[5pgd4e] === ASTERIA AGENT LOOP API ===
+[5pgd4e] Processing through Agent Loop: Help me with interior design for my new penthouse...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: Help me with interior design for my new penthouse...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: lifestyle (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: lifestyle
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, date, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 164,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for lifestyle request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 44.5%)
+[AGENT_LOOP] Complete in 166ms - Goals NOT ACHIEVED
+[5pgd4e] Agent Loop completed in 166ms:
+[5pgd4e] - Success: false
+[5pgd4e] - Goals Achieved: false
+[5pgd4e] - Intent: lifestyle (100.0%)
+[5pgd4e] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 185ms
+[1vxzpt] === ASTERIA AGENT LOOP API ===
+[1vxzpt] Processing through Agent Loop: I want 24/7 concierge services for my lifestyle optimization...
+[AGENT_LOOP] Starting request processing for member: Valued Member
+[AGENT_LOOP] Message: I want 24/7 concierge services for my lifestyle optimization...
+[AGENT_LOOP] Phase 1: Intent Planning
+[AGENT_LOOP] Intent: lifestyle (confidence: 100.0%)
+[AGENT_LOOP] Phase 2: Service Execution
+[EXECUTOR] Starting execution for bucket: lifestyle
+[EXECUTOR] Executing step: fetch_active_services
+[EXECUTOR] Step completed in 0ms
+[EXECUTOR] Executing step: create_ticket
+[EXECUTOR] Step failed: Error: Missing required information: pickup, destination, date, time, passengers
+    at create_ticket (src/lib/tools/tickets.ts:79:10)
+    at async ServiceExecutor.executeTool (src/lib/agent/executor.ts:245:15)
+    at async ServiceExecutor.executeService (src/lib/agent/executor.ts:75:23)
+    at async AsteriaAgentLoop.processRequest (src/lib/agent/agent_loop.ts:84:30)
+    at async POST (src/app/api/chat/route.ts:47:24)
+  77 |   
+  78 |   if (missingRequirements.length > 0) {
+> 79 |     throw new Error(`Missing required information: ${missingRequirements.join(', ')}`);
+     |          ^
+  80 |   }
+  81 |
+  82 |   // Generate ticket ID
+[AGENT_LOOP] Execution: SUCCESS
+[AGENT_LOOP] Phase 3: Interaction Reflection
+[REFLECTOR] Analyzing interaction for member: demo-member-001
+[REFLECTOR] Performance Update: {
+  outcome: 'escalation',
+  responseTime: 168,
+  toolsUsed: [ 'fetch_active_services', 'create_ticket' ],
+  intentAccuracy: 1,
+  executionEfficiency: 0.5
+}
+[REFLECTOR] Interaction logged with outcome: escalation
+[AGENT_LOOP] Phase 4: Goal Validation
+[GOAL_CHECKER] Validating goals for lifestyle request
+[GOAL_CHECKER] Goals NOT ACHIEVED (score: 8.2%)
+[AGENT_LOOP] Complete in 169ms - Goals NOT ACHIEVED
+[1vxzpt] Agent Loop completed in 169ms:
+[1vxzpt] - Success: false
+[1vxzpt] - Goals Achieved: false
+[1vxzpt] - Intent: lifestyle (100.0%)
+[1vxzpt] - Tools Used: fetch_active_services, create_ticket
+ POST /api/chat 200 in 191ms
+[?25h

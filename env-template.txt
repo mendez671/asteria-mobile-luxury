@@ -1,0 +1,26 @@
+# ===== ASTERIA MVP ENVIRONMENT =====
+
+# OpenAI API Key (Required)
+OPENAI_API_KEY=your-openai-api-key-here
+
+# Slack Webhook (Re-enabled with throttling protection)
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/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
+
+# Development Settings
+NODE_ENV=development
+
+# Optional: Twilio SMS (uncomment if needed)
+# TWILIO_ACCOUNT_SID=your-twilio-account-sid
+# TWILIO_AUTH_TOKEN=your-twilio-auth-token
+# TWILIO_PHONE_NUMBER=+1234567890
+
+# Optional: Concierge Contact Info
+# CONCIERGE_EMAIL=concierge@tag.com
+# CONCIERGE_PHONE=+1234567890
+
+# ===== THROTTLING SYSTEM NOTES =====
+# The notification throttling system is now active and will:
+# - Limit to max 5 notifications per minute
+# - Batch similar requests in 10-second windows
+# - Allow critical alerts to bypass all throttling
+# - Prevent test suites from flooding Slack channels 

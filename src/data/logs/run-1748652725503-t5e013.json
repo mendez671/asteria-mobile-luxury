@@ -1,0 +1,161 @@
+{
+  "id": "run-1748652725503-t5e013",
+  "timestamp": "2025-05-31T00:52:05.503Z",
+  "memberId": "demo-member-001",
+  "originalMessage": "Get me VIP access to the Met Gala after-party this year",
+  "intentAnalysis": {
+    "primaryBucket": "events",
+    "secondaryBuckets": [],
+    "serviceType": "exclusive access",
+    "urgency": "standard",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [
+        "this year"
+      ],
+      "locations": [],
+      "people": [],
+      "preferences": []
+    },
+    "suggestedTier": "extraordinary"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "events",
+            "tier": "extraordinary",
+            "searchTerm": "exclusive access"
+          },
+          "status": "completed",
+          "timestamp": "2025-05-31T00:52:05.337Z",
+          "result": {
+            "services": [],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 0,
+            "searchSummary": "Found 0 services in events at extraordinary tier matching \"exclusive access\""
+          },
+          "executionTime": 0
+        },
+        {
+          "toolName": "create_ticket",
+          "parameters": {
+            "serviceId": "to_be_determined",
+            "requirements": {
+              "date": "this year"
+            },
+            "priority": "standard"
+          },
+          "status": "failed",
+          "timestamp": "2025-05-31T00:52:05.337Z",
+          "result": {
+            "error": "Missing required information: pickup, destination, time, passengers"
+          }
+        }
+      ],
+      "strategy": "direct_fulfillment",
+      "expectedOutcome": "Complete events service booking with confirmation",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "events",
+          "tier": "extraordinary",
+          "searchTerm": "exclusive access"
+        },
+        "status": "completed",
+        "timestamp": "2025-05-31T00:52:05.337Z",
+        "result": {
+          "services": [],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 0,
+          "searchSummary": "Found 0 services in events at extraordinary tier matching \"exclusive access\""
+        },
+        "executionTime": 0
+      },
+      {
+        "toolName": "create_ticket",
+        "parameters": {
+          "serviceId": "to_be_determined",
+          "requirements": {
+            "date": "this year"
+          },
+          "priority": "standard"
+        },
+        "status": "failed",
+        "timestamp": "2025-05-31T00:52:05.337Z",
+        "result": {
+          "error": "Missing required information: pickup, destination, time, passengers"
+        }
+      }
+    ],
+    "finalResult": {
+      "services": [],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 0,
+      "searchSummary": "Found 0 services in events at extraordinary tier matching \"exclusive access\""
+    },
+    "recommendations": [
+      "Some services may require additional information - our concierge team will follow up"
+    ],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": true
+  },
+  "outcome": "escalation",
+  "metrics": {
+    "responseTime": 166,
+    "toolsUsed": [
+      "fetch_active_services",
+      "create_ticket"
+    ],
+    "escalationTriggered": true
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 0.5,
+    "areas_for_improvement": [
+      "Tool execution reliability"
+    ],
+    "successful_patterns": [
+      "High confidence events intent recognition"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}
