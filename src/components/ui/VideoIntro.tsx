@@ -785,7 +785,7 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
             <div>🖼️ CURRENT FRAME: {frameIndexRef.current}</div>
             <div>📊 PROGRESS: {Math.round(loadingProgress)}%</div>
             <div>⏱️ FRAME TIME: {(videoSpecs.duration/videoSpecs.totalFrames).toFixed(1)}ms</div>
-            <div>🔄 REFRESH RATE: {typeof screen !== 'undefined' && screen.refreshRate ? `${screen.refreshRate}Hz` : 'Unknown'}</div>
+            <div>🔄 REFRESH RATE: {typeof window !== 'undefined' ? `${window.screen?.colorDepth || 24}bit` : 'Unknown'}</div>
             <div>📈 SUCCESS RATE: {loadingProgress > 0 ? ((loadingProgress / 100) * 100).toFixed(1) : 0}%</div>
           </div>
 
