@@ -89,11 +89,10 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   
   // ENHANCED: Auto-detect available frame sets and video specifications
   const videoSpecs = useMemo(() => {
-    // ADD function to check for 60fps frames (framework for future upgrade)
+    // ENABLED: Check for 60fps frames - NOW AVAILABLE!
     const checkFor60fpsFrames = () => {
-      // This could be enhanced to actually check if 60fps folders exist
-      // For now, we'll prepare the framework for when 60fps frames are available
-      return false; // Set to true when 60fps frames are available
+      // 60fps folders have been created with 480 frames each
+      return true; // ✅ ENABLED - 60fps frames are now available!
     };
 
     // Check if we have the full 240-frame videos restored
@@ -101,18 +100,18 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
     const has60fpsFrames = checkFor60fpsFrames();
     
     if (hasFullFrames && has60fpsFrames) {
-      // Premium 60fps experience (FUTURE ENHANCEMENT)
+      // 🎉 PREMIUM 60FPS EXPERIENCE - ULTRA-SMOOTH LUXURY AT 2X SPEED!
       return {
-        totalFrames: 480,        // 8 seconds × 60fps
-        duration: 8000,          // 8 seconds
-        fps: 60,                 // 60fps for ultra-smoothness
+        totalFrames: 480,        // 8 seconds × 60fps = 480 frames
+        duration: 4000,          // 🚀 4 SECONDS - 2X SPEED for dynamic luxury!
+        fps: 60,                 // 🚀 60fps for ULTRA-SMOOTHNESS
         canvasWidth: isMobile ? 1080 : 1920,
         canvasHeight: isMobile ? 1920 : 1080,
         aspectRatio: isMobile ? '9/16' : '16/9',
-        performance: 'premium'   // Premium 60fps experience
+        performance: 'premium'   // 🥂 Premium 60fps ultra-smooth 2x speed experience
       };
     } else if (hasFullFrames) {
-      // Full 8-second luxury experience (CURRENT - RESTORED FROM BACKUP)
+      // Full 8-second luxury experience (FALLBACK - RESTORED FROM BACKUP)
       return {
         totalFrames: 240,
         duration: 8000,        // 8 seconds of luxury timing
@@ -327,11 +326,12 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
     let loadedCount = 0;
     let failedCount = 0;
 
-    // MOBILE: More aggressive early start, smaller batches
-    // DESKTOP: Larger batches, more preloading
-    const minFramesToStart = performanceMode === 'standard' 
-      ? (isMobile ? 20 : 45)    // Mobile starts earlier for perceived performance
-      : (isMobile ? 15 : 30);   // Lite: Even earlier start
+    // ENHANCED: Optimized loading for different performance modes
+    const minFramesToStart = performanceMode === 'premium' 
+      ? (isMobile ? 30 : 60)       // 60fps: More frames needed for smooth start
+      : performanceMode === 'standard' 
+      ? (isMobile ? 20 : 45)       // 30fps: Standard loading
+      : (isMobile ? 15 : 30);      // Lite: Even earlier start
     
     const maxFailures = Math.floor(totalFrames * (isMobile ? 0.15 : 0.10)); // Mobile more tolerant
 
@@ -401,11 +401,34 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
       }, delay);
     };
 
-    // DEVICE-SPECIFIC: Optimized loading strategies for both lite and standard modes
-    if (performanceMode === 'standard') {
+    // ENHANCED: Device-specific optimized loading strategies for all performance modes
+    if (performanceMode === 'premium') {
+      // 🚀 PREMIUM 60FPS MODE: Optimized for 480 frames ultra-smooth experience
+      if (isMobile) {
+        // MOBILE 60fps: Balanced batches for 480 frames
+        loadFrameBatch(1, 30, 0, true);      // Priority: First 30 frames immediately
+        loadFrameBatch(31, 60, 100, true);   // Priority: Next 30 frames quickly  
+        loadFrameBatch(61, 120, 250);        // Standard: Next 60 frames
+        loadFrameBatch(121, 180, 400);       // Standard: Next 60 frames
+        loadFrameBatch(181, 240, 600);       // Background: Next 60 frames
+        loadFrameBatch(241, 300, 800);       // Background: Next 60 frames
+        loadFrameBatch(301, 360, 1000);      // Background: Next 60 frames
+        loadFrameBatch(361, 420, 1200);      // Background: Next 60 frames
+        loadFrameBatch(421, 480, 1400);      // Background: Final 60 frames
+      } else {
+        // DESKTOP 60fps: Aggressive loading for 480 frames
+        loadFrameBatch(1, 60, 0, true);      // Priority: First 60 frames immediately
+        loadFrameBatch(61, 120, 100, true);  // Priority: Next 60 frames quickly
+        loadFrameBatch(121, 200, 200);       // Standard: Next 80 frames
+        loadFrameBatch(201, 280, 300);       // Standard: Next 80 frames  
+        loadFrameBatch(281, 360, 400);       // Background: Next 80 frames
+        loadFrameBatch(361, 440, 500);       // Background: Next 80 frames
+        loadFrameBatch(441, 480, 600);       // Background: Final 40 frames
+      }
+    } else if (performanceMode === 'standard') {
       // Standard mode: Optimized for 240 frames
       if (isMobile) {
-        // MOBILE: Small batches, longer delays, priority on first frames
+        // MOBILE 30fps: Small batches, longer delays, priority on first frames
         loadFrameBatch(1, 20, 0, true);      // Priority: First 20 frames immediately
         loadFrameBatch(21, 40, 150, true);   // Priority: Next 20 frames quickly  
         loadFrameBatch(41, 80, 400);         // Standard: Next 40 frames
@@ -414,7 +437,7 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
         loadFrameBatch(161, 200, 1300);      // Background: Next 40 frames
         loadFrameBatch(201, 240, 1600);      // Background: Final 40 frames
       } else {
-        // DESKTOP: Larger batches, shorter delays, more aggressive preloading
+        // DESKTOP 30fps: Larger batches, shorter delays, more aggressive preloading
         loadFrameBatch(1, 45, 0, true);      // Priority: First 45 frames immediately
         loadFrameBatch(46, 90, 100, true);   // Priority: Next 45 frames quickly
         loadFrameBatch(91, 150, 200);        // Standard: Next 60 frames
@@ -424,13 +447,13 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
     } else {
       // Lite mode: Enhanced strategy for 60 frames
       if (isMobile) {
-        // MOBILE: Priority-based loading for lite mode
+        // MOBILE Lite: Priority-based loading for lite mode
         loadFrameBatch(1, 15, 0, true);      // Priority: First 15 frames
         loadFrameBatch(16, 30, 150, true);   // Priority: Next 15 frames
         loadFrameBatch(31, 45, 350);         // Standard: Next 15 frames
         loadFrameBatch(46, 60, 600);         // Background: Final 15 frames
       } else {
-        // DESKTOP: Aggressive loading for lite mode
+        // DESKTOP Lite: Aggressive loading for lite mode
         loadFrameBatch(1, 30, 0, true);      // Priority: First 30 frames
         loadFrameBatch(31, 45, 100, true);   // Priority: Next 15 frames
         loadFrameBatch(46, 60, 200);         // Background: Final 15 frames
@@ -439,9 +462,11 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
     
     imagesRef.current = images;
     
-    // ENHANCED: Performance-specific emergency timeouts with better error handling
-    const timeoutDuration = performanceMode === 'standard' 
-      ? (isMobile ? 25000 : 30000)   // Longer timeout for 240 frames
+    // ENHANCED: Performance-specific emergency timeouts with 60fps considerations
+    const timeoutDuration = performanceMode === 'premium' 
+      ? (isMobile ? 35000 : 40000)   // Longer timeout for 480 frames @ 60fps
+      : performanceMode === 'standard' 
+      ? (isMobile ? 25000 : 30000)   // Standard timeout for 240 frames @ 30fps
       : (isMobile ? 15000 : 20000);  // Original timeout for lite mode
     
     setTimeout(() => {
@@ -774,7 +799,9 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
           <div>🎬 CANVAS: {videoSpecs.canvasWidth}x{videoSpecs.canvasHeight}</div>
           <div>📁 FRAMES: {videoSpecs.totalFrames} ({videoSpecs.duration/1000}s)</div>
           <div>🎯 FPS: {videoSpecs.fps} ({videoSpecs.performance})</div>
-          <div>📂 FOLDER: {videoSpecs.performance === 'standard' 
+          <div>📂 FOLDER: {videoSpecs.performance === 'premium' 
+            ? (isMobile ? 'mobile_60fps' : 'desktop_60fps')
+            : videoSpecs.performance === 'standard' 
             ? (isMobile ? 'mobile' : 'desktop') 
             : (isMobile ? 'mobile_lite' : 'desktop_lite')}</div>
           
@@ -819,17 +846,31 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
           <div style={{ marginTop: '8px', padding: '8px', background: 'rgba(0, 255, 0, 0.1)' }}>
             <div style={{ fontWeight: 'bold' }}>📂 FRAME PATHS</div>
             <div>Performance: {videoSpecs.performance.toUpperCase()}</div>
-            <div>Folder: {videoSpecs.performance === 'standard' 
+            <div>Folder: {videoSpecs.performance === 'premium' 
+              ? (isMobile ? 'mobile_60fps' : 'desktop_60fps')
+              : videoSpecs.performance === 'standard' 
               ? (isMobile ? 'mobile' : 'desktop') 
               : (isMobile ? 'mobile_lite' : 'desktop_lite')}</div>
             <div>Sample: {getFramePath(1).replace('0001', 'XXXX')}</div>
             <div>Current: frame_{frameIndexRef.current.toString().padStart(4, '0')}.jpg</div>
           </div>
           
-          {/* NEW: Restoration Status */}
+          {/* ENHANCED: 60fps Status Display */}
+          {videoSpecs.performance === 'premium' && (
+            <div style={{ marginTop: '8px', padding: '8px', background: 'rgba(212, 175, 55, 0.15)', border: '1px solid #d4af37' }}>
+              <div style={{ fontWeight: 'bold', color: '#d4af37' }}>🚀 ULTRA-SMOOTH 60FPS ACTIVE - 2X SPEED</div>
+              <div>Frames: 480 (8.33ms per frame - 2x faster!)</div>
+              <div>Duration: 4 seconds (2x speed luxury)</div>
+              <div>Quality: Ultra-smooth buttery transitions</div>
+              <div>Experience: Premium luxury concierge</div>
+              <div>Technology: Canvas-optimized 60fps at 2x speed</div>
+            </div>
+          )}
+
+          {/* LEGACY: Restoration Status for 30fps fallback */}
           {videoSpecs.performance === 'standard' && (
             <div style={{ marginTop: '8px', padding: '8px', background: 'rgba(0, 255, 0, 0.15)', border: '1px solid #44ff44' }}>
-              <div style={{ fontWeight: 'bold', color: '#44ff44' }}>🎉 FULL VIDEO RESTORED</div>
+              <div style={{ fontWeight: 'bold', color: '#44ff44' }}>🎉 STANDARD 30FPS EXPERIENCE</div>
               <div>Source: Git backup commit 6f6536c^</div>
               <div>Quality: 4K-sourced ({isMobile ? '1080x1920' : '1920x1080'})</div>
               <div>Experience: 8-second luxury intro</div>
