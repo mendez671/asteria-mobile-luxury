@@ -695,8 +695,6 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
         }
       }
 
-      frameIndexRef.current++;
-
       // Animation completion check - unified frames
       if (frameIndexRef.current >= videoSpecs.totalFrames) {
         console.log(`🎬 OPTIMIZED ANIMATION COMPLETE after ${videoSpecs.totalFrames} frames`);
@@ -722,17 +720,28 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
       animationIdRef.current = null;
     }
     
-    // SAFE: Clear canvas reference before transition
-    if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        try {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        } catch (error) {
-          // Silent - canvas may be unmounting
+    // ENHANCED: Defensive canvas cleanup with multiple safety checks
+    try {
+      if (canvasRef.current) {
+        const canvas = canvasRef.current;
+        
+        // Check if canvas is still in DOM
+        if (canvas.isConnected && document.contains(canvas)) {
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            try {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              console.log('🎬 Canvas cleared successfully');
+            } catch (clearError) {
+              console.warn('🎬 Canvas clear failed (element may be unmounting):', clearError.message);
+            }
+          }
+        } else {
+          console.log('🎬 Canvas no longer in DOM - skipping cleanup');
         }
       }
+    } catch (canvasError) {
+      console.warn('🎬 Canvas cleanup error (continuing with transition):', canvasError.message);
     }
     
     // Store completion preference (but don't block future shows)
@@ -742,8 +751,14 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
       console.warn('Could not save completion status');
     }
     
-    // Complete transition
-    onComplete();
+    // ENHANCED: Add small delay to ensure cleanup completes before transition
+    setTimeout(() => {
+      try {
+        onComplete();
+      } catch (completeError) {
+        console.error('🎬 Error in onComplete callback:', completeError);
+      }
+    }, 100);
   }, [onComplete]);
 
   const handleSkip = useCallback(() => {
