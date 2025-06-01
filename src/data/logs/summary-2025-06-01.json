@@ -12,6 +12,12 @@
       "timestamp": "2025-06-01T01:54:15.826Z",
       "outcome": "escalation",
       "responseTime": 293
+    },
+    {
+      "id": "run-1748747725044-b0qick",
+      "timestamp": "2025-06-01T03:15:25.044Z",
+      "outcome": "success",
+      "responseTime": 2
     }
   ]
 }

@@ -129,11 +129,11 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const isPlayingRef = useRef(false);
 
-  // UNIFIED: Video specifications - both devices use full 8-second experience
+  // UNIFIED: Video specifications - DEPLOYMENT OPTIMIZED (2 seconds for faster deployment)
   const getVideoSpecs = () => {
       return {
-      totalFrames: 240,        // Same for both devices
-      duration: 8000,          // 8 seconds for both
+      totalFrames: 60,         // Reduced for deployment (2 seconds)
+      duration: 2000,          // 2 seconds for fast deployment
       fps: 30,                 // Standard 30fps
       canvasWidth: isMobile ? 1080 : 1920,   // Device-specific canvas
       canvasHeight: isMobile ? 1920 : 1080,  // Device-specific canvas
@@ -145,18 +145,18 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   const fps = 30;
   const frameDuration = 1000 / fps;
 
-  // Device-specific frame loading with device-specific folders
+  // Device-specific frame loading with device-specific folders - DEPLOYMENT OPTIMIZED
   const getFramePath = (frameNumber: number) => {
     const frameStr = frameNumber.toString().padStart(4, '0');
     
     if (isMobile) {
-      return `/frames/mobile/frame_${frameStr}.jpg`;
+      return `/frames/mobile_lite/frame_${frameStr}.jpg`;
     } else {
-      return `/frames/desktop/frame_${frameStr}.jpg`;
+      return `/frames/desktop_lite/frame_${frameStr}.jpg`;
     }
   };
 
-  // Enhanced fallback frame loading mechanism
+  // Enhanced fallback frame loading mechanism - DEPLOYMENT OPTIMIZED
   const getFramePathWithFallback = (frameNumber: number) => {
     const frameStr = frameNumber.toString().padStart(4, '0');
     
@@ -168,8 +168,8 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
       primaryPath,
       `/frames/frame_${frameStr}.jpg`, // Original location
       isMobile 
-        ? `/frames/desktop/frame_${frameStr}.jpg` // Cross-device fallback
-        : `/frames/mobile/frame_${frameStr}.jpg`
+        ? `/frames/desktop_lite/frame_${frameStr}.jpg` // Cross-device fallback
+        : `/frames/mobile_lite/frame_${frameStr}.jpg`
     ];
     
     return fallbackPaths;
@@ -782,7 +782,7 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      console.log('�� VideoIntro cleanup starting');
+      console.log('🎬 VideoIntro cleanup starting');
       isPlayingRef.current = false;
       
       // SAFE: Cancel animation frame
