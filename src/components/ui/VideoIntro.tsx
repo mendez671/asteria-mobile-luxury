@@ -163,10 +163,9 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
     // Primary path
     const primaryPath = getFramePath(frameNumber);
     
-    // Fallback paths in order of preference
+    // Fallback paths in order of preference - LITE FOLDERS ONLY
     const fallbackPaths = [
       primaryPath,
-      `/frames/frame_${frameStr}.jpg`, // Original location
       isMobile 
         ? `/frames/desktop_lite/frame_${frameStr}.jpg` // Cross-device fallback
         : `/frames/mobile_lite/frame_${frameStr}.jpg`
@@ -213,9 +212,9 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   const validateFrameContent = useCallback(async () => {
     console.log('🔍 Starting frame content validation...');
     
-    // Test first frame from each device type
-    const desktopFrameUrl = '/frames/desktop/frame_0001.jpg';
-    const mobileFrameUrl = '/frames/mobile/frame_0001.jpg';
+    // Test first frame from each device type - LITE FOLDERS
+    const desktopFrameUrl = '/frames/desktop_lite/frame_0001.jpg';
+    const mobileFrameUrl = '/frames/mobile_lite/frame_0001.jpg';
     
     try {
       // Load both images and compare dimensions
@@ -330,9 +329,9 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
       }
     }, 1000);
     
-    // Test comprehensive frame availability across full range
+    // Test comprehensive frame availability across full range - DEPLOYMENT OPTIMIZED
     const testFrameExistence = () => {
-      const testFrames = [1, 60, 120, 180, 240]; // Key frames across full 8-second range
+      const testFrames = [1, 15, 30, 45, 60]; // Key frames within our 60-frame range
       let passedTests = 0;
       let failedTests = 0;
       
