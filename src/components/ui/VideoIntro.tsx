@@ -310,8 +310,8 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   
   const startFrameLoading = useCallback(() => {
     const totalFrames = videoSpecs.totalFrames;
-    const performance = videoSpecs.performance;
-    console.log(`🎬 ${isMobile ? 'MOBILE' : 'DESKTOP'} OPTIMIZED LOADING: ${totalFrames} frames (${performance} performance)`);
+    const performanceMode = videoSpecs.performance;
+    console.log(`🎬 ${isMobile ? 'MOBILE' : 'DESKTOP'} OPTIMIZED LOADING: ${totalFrames} frames (${performanceMode} performance)`);
     
     // ENHANCED: Track loading start time
     const loadStartTime = performance.now();
@@ -329,7 +329,7 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
 
     // MOBILE: More aggressive early start, smaller batches
     // DESKTOP: Larger batches, more preloading
-    const minFramesToStart = performance === 'standard' 
+    const minFramesToStart = performanceMode === 'standard' 
       ? (isMobile ? 20 : 45)    // Mobile starts earlier for perceived performance
       : (isMobile ? 15 : 30);   // Lite: Even earlier start
     
@@ -402,7 +402,7 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
     };
 
     // DEVICE-SPECIFIC: Optimized loading strategies for both lite and standard modes
-    if (performance === 'standard') {
+    if (performanceMode === 'standard') {
       // Standard mode: Optimized for 240 frames
       if (isMobile) {
         // MOBILE: Small batches, longer delays, priority on first frames
@@ -440,13 +440,13 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
     imagesRef.current = images;
     
     // ENHANCED: Performance-specific emergency timeouts with better error handling
-    const timeoutDuration = performance === 'standard' 
+    const timeoutDuration = performanceMode === 'standard' 
       ? (isMobile ? 25000 : 30000)   // Longer timeout for 240 frames
       : (isMobile ? 15000 : 20000);  // Original timeout for lite mode
     
     setTimeout(() => {
       if (!isPlayingRef.current && loadedCount < minFramesToStart) {
-        console.error(`🎬 Emergency timeout (${performance}): Only ${loadedCount}/${totalFrames} frames loaded, failed: ${failedCount}`);
+        console.error(`🎬 Emergency timeout (${performanceMode}): Only ${loadedCount}/${totalFrames} frames loaded, failed: ${failedCount}`);
         if (onError) {
           onError();
         } else {
