@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     const isUrgent = /\b(urgent|emergency|asap|immediately)\b/i.test(message);
     
     // Send Slack notification if it's a service request
-    if (isServiceRequest) {
+    if (isServiceRequest && response) {
       await sendSlackNotification(message, response, isUrgent ? 'high' : 'medium');
     }
 
