@@ -1,46 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server';
-
 export async function GET() {
-  try {
-    const timestamp = new Date().toISOString();
-    const environment = process.env.NODE_ENV;
-    
-    // Check critical environment variables
-    const envCheck = {
-      NODE_ENV: process.env.NODE_ENV,
-      hasOpenAI: !!process.env.OPENAI_API_KEY,
-      openAIKeyLength: process.env.OPENAI_API_KEY?.length || 0,
-      openAIKeyValid: process.env.OPENAI_API_KEY?.startsWith('sk-') || false,
-      hasSlack: !!process.env.SLACK_WEBHOOK_URL,
-      hasTwilio: !!process.env.TWILIO_ACCOUNT_SID,
-      platform: process.env.VERCEL ? 'Vercel' : 'Other'
-    };
-
-    console.log('Health check requested:', timestamp);
-    console.log('Environment check:', envCheck);
-
-    return NextResponse.json({
-      status: 'healthy',
-      timestamp,
-      environment,
-      checks: envCheck,
-      message: 'Asteria API is running'
-    });
-
-  } catch (error) {
-    console.error('Health check failed:', error);
-    return NextResponse.json(
-      { 
-        status: 'unhealthy', 
-        error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 }
-    );
-  }
+  return Response.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    version: process.env.npm_package_version || '1.0.0',
+    features: {
+      videoIntro: true,
+      chatInterface: true,
+      mobileOptimized: true,
+      performanceOptimized: true,
+      productionReady: true
+    },
+    deployment: {
+      environment: process.env.NODE_ENV || 'development',
+      region: process.env.VERCEL_REGION || 'unknown',
+      commit: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) || 'unknown'
+    }
+  });
 }
 
-export async function POST(_request: NextRequest) {
+export async function POST() {
   // Also allow POST for easier testing
   return GET();
 } 

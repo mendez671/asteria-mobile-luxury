@@ -1,0 +1,17 @@
+{
+  "date": "2025-06-01",
+  "runs": [
+    {
+      "id": "run-1748742847389-kl5p0f",
+      "timestamp": "2025-06-01T01:54:07.389Z",
+      "outcome": "success",
+      "responseTime": 278
+    },
+    {
+      "id": "run-1748742855826-84car6",
+      "timestamp": "2025-06-01T01:54:15.826Z",
+      "outcome": "escalation",
+      "responseTime": 293
+    }
+  ]
+}

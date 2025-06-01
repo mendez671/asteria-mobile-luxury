@@ -2,649 +2,1216 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import dynamic from 'next/dynamic';
-
-// Dynamically import the mobile component to avoid SSR issues
-const MobileVideoIntro = dynamic(
-  () => import('./MobileVideoIntro'),
-  { ssr: false }
-);
 
 interface VideoIntroProps {
   onComplete: () => void;
+  onError?: () => void;
   isMobile?: boolean;
 }
 
-// Enhanced mobile detection for the Apple filmstrip approach
+// TAG Brand Tokens for consistent styling
+const tagBrandTokens = {
+  colors: {
+    primary: '#d4af37', // TAG Gold
+    primaryLight: '#f7dc6f',
+    dark: '#0f172a', // TAG Dark Purple
+    purple: '#581c87', // TAG Purple
+    white: '#ffffff'
+  },
+  animations: {
+    duration: {
+      fast: '0.2s',
+      normal: '0.3s',
+      slow: '0.5s'
+    }
+  }
+};
+
+// Enhanced device detection that's more defensive
 const useDeviceDetection = () => {
   const [deviceInfo, setDeviceInfo] = useState({
     isMobile: false,
     isTablet: false,
-    isDesktop: false,
-    screenWidth: 0,
-    screenHeight: 0,
+    isDesktop: true,
+    screenWidth: 1920,
+    screenHeight: 1080,
+    touchSupported: false,
     userAgent: '',
-    touchSupported: false
+    isSSR: true
   });
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    // DEFENSIVE: Check if window exists
+    if (typeof window === 'undefined') {
+      console.warn('🖥️ Window undefined - staying in SSR mode');
+      return;
+    }
 
-    const userAgent = navigator.userAgent;
-    const screenWidth = window.screen.width;
-    const screenHeight = window.screen.height;
-    const touchSupported = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    
-    // Enhanced mobile detection
+    try {
+      const userAgent = navigator?.userAgent || '';
+      const windowWidth = window?.innerWidth || 1920;
+      const windowHeight = window?.innerHeight || 1080;
+      const touchSupported = 'ontouchstart' in window || (navigator?.maxTouchPoints && navigator.maxTouchPoints > 0);
+      
     const isMobileUserAgent = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-    const isMobileScreen = screenWidth <= 768 || (screenWidth <= 1024 && touchSupported);
-    const isTabletScreen = screenWidth > 768 && screenWidth <= 1024 && touchSupported;
+      const isMobileScreen = windowWidth <= 768;
+      const isTabletScreen = windowWidth > 768 && windowWidth <= 1024 && touchSupported;
     
-    // Final mobile determination - prioritize user agent for accuracy
-    const isMobile = isMobileUserAgent || (isMobileScreen && !isTabletScreen);
+      const isMobile = isMobileUserAgent || isMobileScreen;
     const isTablet = isTabletScreen && !isMobile;
     const isDesktop = !isMobile && !isTablet;
 
-    setDeviceInfo({
+      console.log('🖥️ DEVICE DETECTION SUCCESS:', {
+        userAgent: userAgent.substring(0, 50),
+        windowSize: `${windowWidth}x${windowHeight}`,
+        touchSupported,
       isMobile,
       isTablet,
       isDesktop,
-      screenWidth,
-      screenHeight,
-      userAgent,
-      touchSupported
-    });
+        final: isDesktop ? 'DESKTOP' : isMobile ? 'MOBILE' : 'TABLET'
+      });
 
-    // Debug logging
-    console.log('🎬 DEVICE DETECTION:', {
-      isMobile,
-      isTablet,
-      isDesktop,
-      screenWidth,
-      screenHeight,
-      userAgent: userAgent.substring(0, 50) + '...',
-      touchSupported
-    });
+      setDeviceInfo({
+        isMobile: Boolean(isMobile),
+        isTablet: Boolean(isTablet),
+        isDesktop: Boolean(isDesktop),
+        screenWidth: windowWidth,
+        screenHeight: windowHeight,
+        touchSupported: Boolean(touchSupported),
+        userAgent,
+        isSSR: false
+      });
 
+    } catch (error) {
+      console.error('🖥️ Device detection error:', error);
+      // Keep defaults - will work as desktop
+    }
   }, []);
 
   return deviceInfo;
 };
 
-interface NetworkInfo {
-  isSlowConnection: boolean;
-  connectionType: string;
-  estimatedSpeed: 'slow' | 'medium' | 'fast';
-}
-
-interface DeviceCapabilities {
-  canAutoplay: boolean;
-  supportsVideo: boolean;
-  isIOS: boolean;
-  isSafari: boolean;
-  isAndroid: boolean;
-  touchSupported: boolean;
-}
-
-type VideoState = 'initializing' | 'loading' | 'ready' | 'playing' | 'error' | 'completed';
-type FallbackReason = 'timeout' | 'network' | 'autoplay' | 'format' | 'user_skip' | 'error';
-
-export default function VideoIntro({ onComplete, isMobile: propIsMobile = false }: VideoIntroProps) {
-  // Device detection for smart component selection
+export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile = false }: VideoIntroProps) {
   const deviceInfo = useDeviceDetection();
+  const isMobile = propIsMobile || deviceInfo.isMobile;
   
-  // Determine if we should use mobile component
-  const shouldUseMobileComponent = propIsMobile || deviceInfo.isMobile;
-
-  // Early return for mobile devices - use Apple filmstrip approach
-  if (shouldUseMobileComponent) {
-    return <MobileVideoIntro onComplete={onComplete} />;
-  }
-
-  // Core state management for desktop
-  const [videoState, setVideoState] = useState<VideoState>('initializing');
-  const [deviceCapabilities, setDeviceCapabilities] = useState<DeviceCapabilities>({
-    canAutoplay: false,
-    supportsVideo: false,
-    isIOS: false,
-    isSafari: false,
-    isAndroid: false,
-    touchSupported: false
-  });
-  const [networkInfo, setNetworkInfo] = useState<NetworkInfo>({
-    isSlowConnection: false,
-    connectionType: 'unknown',
-    estimatedSpeed: 'medium'
-  });
-  
-  // UI state
-  const [showSkip, setShowSkip] = useState(false);
-  const [showPlayButton, setShowPlayButton] = useState(false);
-  const [progress, setProgress] = useState(0);
+  // State management
   const [loadingProgress, setLoadingProgress] = useState(0);
-  const [errorMessage, setErrorMessage] = useState<string>('');
-  const [debugInfo, setDebugInfo] = useState<string[]>([]);
+  const [showSkip, setShowSkip] = useState(false);
+  const [canvasError, setCanvasError] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [frameTestPassed, setFrameTestPassed] = useState(false);
   
-  // Refs
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const retryCountRef = useRef(0);
-  const startTimeRef = useRef<number>(Date.now());
-  const hasUserInteractedRef = useRef(false);
+  // Enhanced error tracking state
+  const [loadingStats, setLoadingStats] = useState({
+    loadedCount: 0,
+    failedCount: 0,
+    startTime: 0,
+    isLoading: false
+  });
+  
+  // Frame content validation state
+  const [frameValidation, setFrameValidation] = useState({
+    desktopDimensions: '',
+    mobileDimensions: '',
+    contentVerified: false
+  });
+  
+  // Enhanced skip functionality state
+  const [skipCountdownText, setSkipCountdownText] = useState('Skip in 3s');
+  const [touchStartY, setTouchStartY] = useState(0);
+  const [showContinueOption, setShowContinueOption] = useState(true);
+  
+  // Refs for canvas animation
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const frameIndexRef = useRef(0);
+  const animationIdRef = useRef<number | null>(null);
+  const imagesRef = useRef<HTMLImageElement[]>([]);
+  const isPlayingRef = useRef(false);
 
-  // Debug logging
-  const addDebugInfo = useCallback((message: string) => {
-    const timestamp = new Date().toLocaleTimeString();
-    const logMessage = `[${timestamp}] ${message}`;
-    console.log(`🎬 DESKTOP ${logMessage}`);
-    setDebugInfo(prev => [...prev.slice(-4), logMessage]);
-  }, []);
-
-  // Device and network detection
-  const detectDeviceCapabilities = useCallback((): DeviceCapabilities => {
-    if (typeof window === 'undefined') {
+  // UNIFIED: Video specifications - both devices use full 8-second experience
+  const getVideoSpecs = () => {
       return {
-        canAutoplay: false,
-        supportsVideo: false,
-        isIOS: false,
-        isSafari: false,
-        isAndroid: false,
-        touchSupported: false
-      };
-    }
-
-    const userAgent = navigator.userAgent;
-    const isIOS = /iPad|iPhone|iPod/.test(userAgent);
-    const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
-    const isAndroid = /Android/.test(userAgent);
-    const isChrome = /Chrome/.test(userAgent) && !/Edge/.test(userAgent);
-    const isFirefox = /Firefox/.test(userAgent);
-    const touchSupported = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    
-    // Check video support
-    const video = document.createElement('video');
-    const supportsVideo = !!(video.canPlayType && video.canPlayType('video/mp4'));
-    
-    // Improved autoplay detection based on browser policies
-    let canAutoplay = false;
-    if (isIOS) {
-      // iOS requires user interaction for autoplay
-      canAutoplay = false;
-    } else if (isSafari) {
-      // Safari has strict autoplay policies
-      canAutoplay = false;
-    } else if (isChrome || isFirefox) {
-      // Chrome and Firefox usually allow muted autoplay
-      canAutoplay = true;
-    } else {
-      // Other desktop browsers - try autoplay
-      canAutoplay = true;
-    }
-
-    return {
-      canAutoplay,
-      supportsVideo,
-      isIOS,
-      isSafari,
-      isAndroid,
-      touchSupported
+      totalFrames: 240,        // Same for both devices
+      duration: 8000,          // 8 seconds for both
+      fps: 30,                 // Standard 30fps
+      canvasWidth: isMobile ? 1080 : 1920,   // Device-specific canvas
+      canvasHeight: isMobile ? 1920 : 1080,  // Device-specific canvas
+      aspectRatio: isMobile ? '9/16' : '16/9'
     };
-  }, []);
+  };
 
-  const detectNetworkInfo = useCallback((): NetworkInfo => {
-    if (typeof navigator === 'undefined' || !('connection' in navigator)) {
-      return {
-        isSlowConnection: false,
-        connectionType: 'unknown',
-        estimatedSpeed: 'medium'
-      };
-    }
+  const videoSpecs = getVideoSpecs();
+  const fps = 30;
+  const frameDuration = 1000 / fps;
 
-    const connection = (navigator as any).connection;
-    const connectionType = connection?.effectiveType || 'unknown';
-    const isSlowConnection = ['slow-2g', '2g'].includes(connectionType);
+  // Device-specific frame loading with device-specific folders
+  const getFramePath = (frameNumber: number) => {
+    const frameStr = frameNumber.toString().padStart(4, '0');
     
-    let estimatedSpeed: 'slow' | 'medium' | 'fast' = 'medium';
-    if (['slow-2g', '2g'].includes(connectionType)) {
-      estimatedSpeed = 'slow';
-    } else if (['3g'].includes(connectionType)) {
-      estimatedSpeed = 'medium';
-    } else if (['4g'].includes(connectionType)) {
-      estimatedSpeed = 'fast';
-    }
-
-    return {
-      isSlowConnection,
-      connectionType,
-      estimatedSpeed
-    };
-  }, []);
-
-  // Video source selection based on device and network  
-  const getOptimalVideoSource = useCallback(() => {
-    if (networkInfo.estimatedSpeed === 'slow') {
-      // For slow connections, try to use smallest file
-      return '/videos/asteria_intro_mobile.mp4';
-    }
-    
-    // Desktop gets the web-optimized version
-    return '/videos/intro_web.mp4';
-  }, [networkInfo]);
-
-  // Comprehensive timeout management
-  const startFallbackTimer = useCallback((reason: FallbackReason, delay: number) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    
-    timeoutRef.current = setTimeout(() => {
-      addDebugInfo(`Fallback triggered: ${reason} after ${delay}ms`);
-      handleComplete(reason);
-    }, delay);
-  }, [addDebugInfo]);
-
-  const handleComplete = useCallback((reason: FallbackReason = 'user_skip') => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    
-    setVideoState('completed');
-    addDebugInfo(`Video intro completed: ${reason}`);
-    
-    // Force scroll to top
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    
-    setTimeout(() => {
-      onComplete();
-    }, 100);
-  }, [onComplete, addDebugInfo]);
-
-  // Video event handlers
-  const attemptAutoplay = useCallback(async () => {
-    if (!videoRef.current) return;
-    
-    try {
-      setVideoState('playing');
-      await videoRef.current.play();
-      addDebugInfo('Autoplay succeeded');
-      setShowPlayButton(false);
-      // Clear any timeout since video is playing
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    } catch (error) {
-      addDebugInfo(`Autoplay failed: ${error}`);
-      setShowPlayButton(true);
-      setVideoState('ready');
-      // Set up a longer timeout for manual interaction (30 seconds)
-      // Give user plenty of time to manually start the video
-      startFallbackTimer('autoplay', 30000);
-    }
-  }, [addDebugInfo, startFallbackTimer]);
-
-  const handleVideoLoad = useCallback(() => {
-    addDebugInfo('Video loaded successfully');
-    setVideoState('ready');
-    setLoadingProgress(100);
-    
-    if (!videoRef.current) return;
-    
-    const video = videoRef.current;
-    
-    // Set up progress tracking
-    const updateProgress = () => {
-      if (video.duration && video.currentTime) {
-        const progressPercent = (video.currentTime / video.duration) * 100;
-        setProgress(progressPercent);
-      }
-    };
-    
-    video.addEventListener('timeupdate', updateProgress);
-    
-    // Improved autoplay strategy - try immediately for desktop browsers
-    if (deviceCapabilities.canAutoplay) {
-      // Clear any existing timeout since video is ready
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      // Try autoplay immediately for desktop browsers
-      attemptAutoplay();
+    if (isMobile) {
+      return `/frames/mobile/frame_${frameStr}.jpg`;
     } else {
-      // Clear timeout and show manual play for iOS/Safari
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      setShowPlayButton(true);
-      addDebugInfo('Manual interaction required for playback (iOS/Safari)');
+      return `/frames/desktop/frame_${frameStr}.jpg`;
     }
-    
-  }, [deviceCapabilities, addDebugInfo, attemptAutoplay]);
+  };
 
-  const handleVideoEnd = useCallback(() => {
-    addDebugInfo('Video playback completed naturally');
-    handleComplete('user_skip');
-  }, [handleComplete, addDebugInfo]);
-
-  const handleVideoError = useCallback((error: React.SyntheticEvent<HTMLVideoElement, Event>) => {
-    addDebugInfo(`Video error: ${error.type}`);
-    setVideoState('error');
+  // Enhanced fallback frame loading mechanism
+  const getFramePathWithFallback = (frameNumber: number) => {
+    const frameStr = frameNumber.toString().padStart(4, '0');
     
-    if (retryCountRef.current < 2) {
-      retryCountRef.current++;
-      addDebugInfo(`Retrying video load (attempt ${retryCountRef.current})`);
-      setTimeout(() => {
-        if (videoRef.current) {
-          videoRef.current.load();
-        }
-      }, 1000);
-    } else {
-      setErrorMessage('Video failed to load after multiple attempts');
-      startFallbackTimer('error', 2000);
-    }
-  }, [addDebugInfo, startFallbackTimer]);
-
-  const handleManualPlay = useCallback(() => {
-    hasUserInteractedRef.current = true;
-    attemptAutoplay();
-  }, [attemptAutoplay]);
-
-  const handleSkip = useCallback(() => {
-    localStorage.setItem('asteria-intro-skipped', Date.now().toString());
-    handleComplete('user_skip');
-  }, [handleComplete]);
-
-  // Initialization effect
-  useEffect(() => {
-    addDebugInfo(`Desktop VideoIntro mounted - Screen: ${deviceInfo.screenWidth}x${deviceInfo.screenHeight}`);
-    startTimeRef.current = Date.now();
+    // Primary path
+    const primaryPath = getFramePath(frameNumber);
     
-    // Detect device capabilities
-    const capabilities = detectDeviceCapabilities();
-    setDeviceCapabilities(capabilities);
-    addDebugInfo(`Device: iOS=${capabilities.isIOS}, Safari=${capabilities.isSafari}, Touch=${capabilities.touchSupported}`);
+    // Fallback paths in order of preference
+    const fallbackPaths = [
+      primaryPath,
+      `/frames/frame_${frameStr}.jpg`, // Original location
+      isMobile 
+        ? `/frames/desktop/frame_${frameStr}.jpg` // Cross-device fallback
+        : `/frames/mobile/frame_${frameStr}.jpg`
+    ];
     
-    // Detect network
-    const network = detectNetworkInfo();
-    setNetworkInfo(network);
-    addDebugInfo(`Network: ${network.connectionType}, Speed: ${network.estimatedSpeed}`);
+    return fallbackPaths;
+  };
+
+  // Try loading image with multiple fallback paths
+  const tryLoadImageWithFallbacks = (img: HTMLImageElement, frameNumber: number, onSuccess: () => void, onFailure: () => void) => {
+    const fallbackPaths = getFramePathWithFallback(frameNumber);
+    let pathIndex = 0;
     
-    // Check if user recently skipped
-    const lastSkipped = localStorage.getItem('asteria-intro-skipped');
-    if (lastSkipped) {
-      const oneHourAgo = Date.now() - (60 * 60 * 1000);
-      if (parseInt(lastSkipped) > oneHourAgo) {
-        addDebugInfo('User recently skipped intro - auto-completing');
-        handleComplete('user_skip');
+    const tryNextPath = () => {
+      if (pathIndex >= fallbackPaths.length) {
+        // All paths failed
+        console.warn(`🚨 All fallback paths failed for frame ${frameNumber}`);
+        onFailure();
         return;
       }
-    }
-    
-    // Set up UI timers
-    setTimeout(() => setShowSkip(true), 1500);
-    
-    // Set up loading timeout (only for actual loading failures)
-    // This will be cleared once video loads successfully
-    const loadingTimeout = network.estimatedSpeed === 'slow' ? 15000 : 
-                          network.estimatedSpeed === 'medium' ? 10000 : 8000;
-    startFallbackTimer('timeout', loadingTimeout);
-    
-    // Keyboard handlers
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' || event.key === ' ') {
-        event.preventDefault();
-        handleSkip();
-      }
+      
+      const currentPath = fallbackPaths[pathIndex];
+      pathIndex++;
+      
+      const testImg = new Image();
+      testImg.onload = () => {
+        // Success! Use this path
+        img.src = currentPath;
+        onSuccess();
+      };
+      testImg.onerror = () => {
+        if (pathIndex === 1) {
+          console.warn(`❌ Primary path failed for frame ${frameNumber}: ${currentPath}`);
+        }
+        tryNextPath(); // Try next fallback
+      };
+      testImg.src = currentPath;
     };
     
-    window.addEventListener('keydown', handleKeyPress);
+    tryNextPath();
+  };
+
+  // Frame content validation function
+  const validateFrameContent = useCallback(async () => {
+    console.log('🔍 Starting frame content validation...');
     
-    // Start video loading
-    setVideoState('loading');
+    // Test first frame from each device type
+    const desktopFrameUrl = '/frames/desktop/frame_0001.jpg';
+    const mobileFrameUrl = '/frames/mobile/frame_0001.jpg';
+    
+    try {
+      // Load both images and compare dimensions
+      const loadImage = (url: string): Promise<HTMLImageElement> => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = url;
+        });
+      };
+      
+      const [desktopImg, mobileImg] = await Promise.all([
+        loadImage(desktopFrameUrl),
+        loadImage(mobileFrameUrl)
+      ]);
+      
+      const desktopDims = `${desktopImg.naturalWidth}x${desktopImg.naturalHeight}`;
+      const mobileDims = `${mobileImg.naturalWidth}x${mobileImg.naturalHeight}`;
+      
+      console.log(`🖥️ Desktop frame dimensions: ${desktopDims}`);
+      console.log(`📱 Mobile frame dimensions: ${mobileDims}`);
+      
+      // Validate expected dimensions
+      const desktopExpected = desktopImg.naturalWidth === 1920 && desktopImg.naturalHeight === 1080;
+      const mobileExpected = mobileImg.naturalWidth === 1080 && mobileImg.naturalHeight === 1920;
+      const contentDifferent = desktopDims !== mobileDims;
+      
+      if (!desktopExpected) {
+        console.warn(`⚠️ Desktop frame wrong dimensions! Expected 1920x1080, got ${desktopDims}`);
+      }
+      
+      if (!mobileExpected) {
+        console.warn(`⚠️ Mobile frame wrong dimensions! Expected 1080x1920, got ${mobileDims}`);
+      }
+      
+      if (desktopExpected && mobileExpected && contentDifferent) {
+        console.log('✅ Frame content validation passed - different content confirmed');
+        setFrameValidation({
+          desktopDimensions: desktopDims,
+          mobileDimensions: mobileDims,
+          contentVerified: true
+        });
+      } else {
+        console.warn('⚠️ Frame content validation issues detected');
+        setFrameValidation({
+          desktopDimensions: desktopDims,
+          mobileDimensions: mobileDims,
+          contentVerified: false
+        });
+      }
+      
+    } catch (error) {
+      console.error('🚨 Frame validation failed:', error);
+      setFrameValidation({
+        desktopDimensions: 'Error loading',
+        mobileDimensions: 'Error loading',
+        contentVerified: false
+      });
+    }
+  }, []);
+
+  // Enhanced debugging and frame validation on mount
+  useEffect(() => {
+    if (isMounted && !deviceInfo.isSSR) {
+      console.log(`🎬 DEVICE-SPECIFIC VIDEO INTRO SETUP:`);
+      console.log(`  📱 Device: ${isMobile ? 'MOBILE' : 'DESKTOP'}`);
+      console.log(`  📏 Screen: ${deviceInfo.screenWidth}x${deviceInfo.screenHeight}`);
+      console.log(`  🎬 Canvas: ${videoSpecs.canvasWidth}x${videoSpecs.canvasHeight}`);
+      console.log(`  📁 Total Frames: ${videoSpecs.totalFrames}`);
+      console.log(`  ⏱️ Duration: ${videoSpecs.duration}ms (${videoSpecs.duration/1000}s)`);
+      console.log(`  🎯 FPS: ${videoSpecs.fps}`);
+      console.log(`  📂 Frame Folder: ${isMobile ? 'mobile' : 'desktop'}`);
+      console.log(`  📂 Frame Path Pattern: ${getFramePath(1).replace('0001', 'XXXX')}`);
+      console.log(`  🎭 Aspect Ratio: ${videoSpecs.aspectRatio}`);
+      console.log(`  👆 Touch Support: ${deviceInfo.touchSupported}`);
+      
+      // Start frame content validation
+      setTimeout(() => validateFrameContent(), 1000);
+    }
+  }, [isMounted, isMobile, deviceInfo, videoSpecs, validateFrameContent]);
+
+  // SSR hydration guard
+  useEffect(() => {
+    setIsMounted(true);
+    console.log('🎬 VideoIntro mounted - Starting unified initialization');
+  }, []);
+
+  // Enhanced frame testing for unified approach
+  useEffect(() => {
+    if (!isMounted || deviceInfo.isSSR) {
+      console.log('🎬 Waiting for mount/hydration completion');
+      return;
+    }
+    
+    console.log(`🎬 STARTING UNIFIED FRAME TESTS for ${isMobile ? 'MOBILE' : 'DESKTOP'}...`);
+    
+    // ENHANCED: Show skip button immediately for better UX
+    setShowSkip(true);
+    
+    // Skip button countdown functionality
+    let skipCountdown = 3;
+    setSkipCountdownText(`Skip in ${skipCountdown}s`);
+    
+    const countdownInterval = setInterval(() => {
+      skipCountdown--;
+      if (skipCountdown > 0) {
+        setSkipCountdownText(`Skip in ${skipCountdown}s`);
+      } else {
+        setSkipCountdownText('Skip Intro');
+        clearInterval(countdownInterval);
+      }
+    }, 1000);
+    
+    // Test comprehensive frame availability across full range
+    const testFrameExistence = () => {
+      const testFrames = [1, 60, 120, 180, 240]; // Key frames across full 8-second range
+      let passedTests = 0;
+      let failedTests = 0;
+      
+      console.log(`🧪 Testing ${isMobile ? 'MOBILE' : 'DESKTOP'} frame availability: ${testFrames.join(', ')}`);
+      
+      testFrames.forEach(frameNum => {
+        const testImg = new Image();
+        testImg.onload = () => {
+          passedTests++;
+          console.log(`✅ ${isMobile ? 'Mobile' : 'Desktop'} frame ${frameNum} exists: ${testImg.src}`);
+          
+          if (passedTests + failedTests === testFrames.length) {
+            console.log(`🧪 Frame tests complete: ${passedTests}/${testFrames.length} passed`);
+            if (passedTests >= testFrames.length * 0.8) { // 80% pass rate
+              console.log(`🎬 ${isMobile ? 'Mobile' : 'Desktop'} frame tests passed (${passedTests}/${testFrames.length})`);
+              setFrameTestPassed(true);
+              setTimeout(() => startFrameLoading(), 100);
+            } else {
+              console.warn(`🚨 Too many key frames missing (${failedTests}/${testFrames.length})`);
+              handleTestError(new Error(`Only ${passedTests}/${testFrames.length} frames available`));
+            }
+          }
+        };
+        
+        testImg.onerror = () => {
+          failedTests++;
+          console.log(`❌ ${isMobile ? 'Mobile' : 'Desktop'} frame ${frameNum} missing: ${testImg.src}`);
+          
+          if (passedTests + failedTests === testFrames.length) {
+            console.log(`🧪 Frame tests complete: ${passedTests}/${testFrames.length} passed`);
+            if (passedTests >= testFrames.length * 0.8) { // 80% pass rate
+              console.log(`🎬 ${isMobile ? 'Mobile' : 'Desktop'} frame tests passed (${passedTests}/${testFrames.length})`);
+              setFrameTestPassed(true);
+              setTimeout(() => startFrameLoading(), 100);
+            } else {
+              console.warn(`🚨 Too many key frames missing (${failedTests}/${testFrames.length})`);
+              handleTestError(new Error(`Only ${passedTests}/${testFrames.length} frames available`));
+            }
+          }
+        };
+        
+        testImg.src = getFramePath(frameNum);
+      });
+    };
+    
+    const handleTestError = (e: any) => {
+      console.error('❌ Unified frame test FAILED - frames not available:', e);
+      setCanvasError(true);
+      
+      // Try fallback methods
+      setTimeout(() => {
+        if (onError) {
+          console.log('🎬 Calling onError callback due to frame test failure');
+          onError();
+        } else {
+          console.log('🎬 No onError callback, calling onComplete as fallback');
+          onComplete();
+        }
+      }, 2000);
+    };
+
+    // Start comprehensive testing
+    testFrameExistence();
     
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      window.removeEventListener('keydown', handleKeyPress);
+      clearInterval(countdownInterval);
     };
-  }, [deviceInfo, detectDeviceCapabilities, detectNetworkInfo, handleComplete, handleSkip, startFallbackTimer, addDebugInfo]);
+    
+  }, [isMounted, deviceInfo.isSSR, isMobile, onError, onComplete]);
 
-  // Loading progress simulation
-  useEffect(() => {
-    if (videoState === 'loading') {
-      const interval = setInterval(() => {
-        setLoadingProgress(prev => {
-          const increment = networkInfo.estimatedSpeed === 'slow' ? 2 : 
-                           networkInfo.estimatedSpeed === 'medium' ? 5 : 8;
-          return Math.min(prev + increment, 95); // Don't reach 100% until actually loaded
-        });
-      }, 100);
-      
-      return () => clearInterval(interval);
+  const startFrameLoading = useCallback(() => {
+    const { totalFrames } = videoSpecs;
+    console.log(`🎬 ${isMobile ? 'MOBILE' : 'DESKTOP'} OPTIMIZED LOADING: ${totalFrames} frames`);
+    console.log(`📁 Frame path pattern: ${getFramePath(1).replace('0001', 'XXXX')}`);
+    console.log(`⏱️ Expected duration: ${videoSpecs.duration}ms`);
+    
+    // Initialize enhanced loading stats
+    setLoadingStats({
+      loadedCount: 0,
+      failedCount: 0,
+      startTime: Date.now(),
+      isLoading: true
+    });
+    
+    // Initialize images array safely
+    const images: HTMLImageElement[] = [];
+    for (let i = 0; i < totalFrames; i++) {
+      images[i] = new Image();
     }
-  }, [videoState, networkInfo]);
+    
+    let loadedCount = 0;
+    let failedCount = 0;
+    
+    // MOBILE: More aggressive early start, smaller batches
+    // DESKTOP: Larger batches, more preloading
+    const minFramesToStart = isMobile ? 20 : 45;  // Mobile starts earlier
+    const maxFailures = Math.floor(totalFrames * (isMobile ? 0.15 : 0.10)); // Mobile more tolerant
+    
+    console.log(`🚨 ${isMobile ? 'MOBILE' : 'DESKTOP'} Strategy - Min frames to start: ${minFramesToStart}, Max failures: ${maxFailures}`);
 
-  // Error fallback UI
-  if (videoState === 'error') {
+    const updateProgress = () => {
+      const progress = Math.min((loadedCount / totalFrames) * 100, 100);
+      setLoadingProgress(progress);
+      
+      // Update enhanced loading stats
+      setLoadingStats(prev => ({
+        ...prev,
+        loadedCount,
+        failedCount,
+        isLoading: progress < 100
+      }));
+      
+      console.log(`🎬 LOADING PROGRESS: ${progress.toFixed(1)}% (${loadedCount}/${totalFrames}, ${failedCount} failed)`);
+      
+      // MOBILE: Start animation faster for perceived performance
+      if (loadedCount >= minFramesToStart && !isPlayingRef.current && progress > 8) {
+        console.log(`🎬 ⚡ ${isMobile ? 'MOBILE' : 'DESKTOP'} OPTIMIZED START: Animation with ${loadedCount} frames preloaded! (${(loadedCount/totalFrames*100).toFixed(1)}%)`);
+        startCanvasAnimation();
+      }
+    };
+
+    const loadFrameBatch = (startFrame: number, endFrame: number, delay: number = 0, priority: boolean = false) => {
+      setTimeout(() => {
+        const batchType = priority ? 'PRIORITY' : 'STANDARD';
+        console.log(`📦 ${isMobile ? 'MOBILE' : 'DESKTOP'} ${batchType} batch ${startFrame}-${endFrame} (delay: ${delay}ms)`);
+        
+        for (let i = startFrame; i <= Math.min(endFrame, totalFrames); i++) {
+          const frameIndex = i - 1; // Convert to 0-based array index
+          
+          if (frameIndex < 0 || frameIndex >= images.length) {
+            console.warn(`🎬 Frame index ${frameIndex} out of bounds, skipping`);
+            continue;
+          }
+          
+          const img = images[frameIndex];
+          const framePath = getFramePath(i);
+          
+          // MOBILE: Reduce timeout for faster perceived loading
+          const loadTimeout = setTimeout(() => {
+            console.error(`⏰ ${isMobile ? 'MOBILE' : 'DESKTOP'} FRAME TIMEOUT: ${framePath}`);
+            failedCount++;
+            loadedCount++;
+            updateProgress();
+          }, isMobile ? 6000 : 8000); // Faster timeout for mobile
+          
+          // MOBILE: Use fetchpriority for priority frames on supported browsers
+          if (priority && 'fetchPriority' in img) {
+            (img as any).fetchPriority = 'high';
+          }
+          
+          // Use fallback loading mechanism
+          tryLoadImageWithFallbacks(
+            img,
+            i,
+            // Success callback
+            () => {
+              clearTimeout(loadTimeout);
+              loadedCount++;
+              
+              if (loadedCount <= 5 || loadedCount % 50 === 0) {
+                console.log(`✅ ${isMobile ? 'Mobile' : 'Desktop'} frame ${i} loaded successfully (${batchType})`);
+              }
+              
+              updateProgress();
+            },
+            // Failure callback
+            () => {
+              clearTimeout(loadTimeout);
+              failedCount++;
+              loadedCount++;
+              
+              // Enhanced error logging
+              if (failedCount <= 10) {
+                console.error(`🚨 ${isMobile ? 'MOBILE' : 'DESKTOP'} FRAME FAILED #${failedCount}: All paths failed for frame ${i}`);
+                
+                // Test primary URL accessibility
+                fetch(framePath, { method: 'HEAD' })
+                  .then(response => {
+                    console.error(`   Primary HTTP Status: ${response.status} ${response.statusText}`);
+                  })
+                  .catch(err => {
+                    console.error(`   Primary Network Error: ${err.message}`);
+                  });
+              }
+              
+              updateProgress();
+              
+              // If too many frames fail, trigger error
+              if (failedCount > maxFailures) {
+                console.error(`🚨 TOO MANY FRAME FAILURES: ${failedCount}/${maxFailures} max, triggering error`);
+                setCanvasError(true);
+                if (onError) {
+                  onError();
+                } else {
+                  setTimeout(() => onComplete(), 1000);
+                }
+                return;
+              }
+            }
+          );
+        }
+      }, delay);
+    };
+
+    // DEVICE-SPECIFIC: Optimized loading strategies
+    if (isMobile) {
+      // MOBILE: Small batches, priority on first frames, longer delays
+      loadFrameBatch(1, 20, 0, true);      // Priority: First 20 frames immediately
+      loadFrameBatch(21, 40, 300, true);   // Priority: Next 20 frames quickly
+      loadFrameBatch(41, 80, 600);         // Standard: Next 40 frames
+      loadFrameBatch(81, 120, 900);        // Standard: Next 40 frames
+      loadFrameBatch(121, 160, 1200);      // Standard: Next 40 frames
+      loadFrameBatch(161, 200, 1500);      // Standard: Next 40 frames
+      loadFrameBatch(201, 240, 1800);      // Standard: Final 40 frames
+    } else {
+      // DESKTOP: Larger batches, shorter delays, more aggressive preloading
+      loadFrameBatch(1, 45, 0, true);      // Priority: First 45 frames immediately
+      loadFrameBatch(46, 90, 150, true);   // Priority: Next 45 frames quickly
+      loadFrameBatch(91, 150, 300);        // Standard: Next 60 frames
+      loadFrameBatch(151, 210, 450);       // Standard: Next 60 frames
+      loadFrameBatch(211, 240, 600);       // Standard: Final 30 frames
+    }
+    
+    imagesRef.current = images;
+
+    // MOBILE: Shorter emergency timeout for better UX
+    const emergencyTimeout = isMobile ? 18000 : 25000; // Faster timeout for mobile
+    setTimeout(() => {
+      if (!isPlayingRef.current && loadedCount < minFramesToStart) {
+        console.error(`🎬 🚨 ${isMobile ? 'MOBILE' : 'DESKTOP'} EMERGENCY TIMEOUT: Only ${loadedCount} frames loaded after ${emergencyTimeout}ms`);
+        setCanvasError(true);
+        if (onError) {
+          onError();
+        } else {
+          onComplete();
+        }
+      }
+    }, emergencyTimeout);
+
+  }, [videoSpecs, isMobile, onError, onComplete]);
+
+  const startCanvasAnimation = useCallback(() => {
+    if (isPlayingRef.current || !isMounted) {
+      console.warn('🎬 Animation already playing or not mounted, skipping start');
+      return;
+    }
+    
+    // ENHANCED: Multiple canvas validation checks
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      console.error('🚨 CANVAS SETUP FAILED: Canvas element not found');
+      setCanvasError(true);
+      if (onError) onError();
+      return;
+    }
+    
+    // OPTIMIZED: Get context with performance hints
+    const ctx = canvas.getContext('2d', {
+      alpha: false,           // No transparency = faster
+      willReadFrequently: false,  // Optimized for write-only
+      desynchronized: true    // Reduce input lag
+    });
+    if (!ctx) {
+      console.error('🚨 CANVAS SETUP FAILED: Could not get 2D context');
+      setCanvasError(true);
+      if (onError) onError();
+      return;
+    }
+    
+    // OPTIMIZED: Set rendering hints for better performance
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    
+    if (!imagesRef.current || !Array.isArray(imagesRef.current)) {
+      console.error('🚨 CANVAS SETUP FAILED: Images array not initialized');
+      setCanvasError(true);
+      if (onError) onError();
+      return;
+    }
+    
+    if (imagesRef.current.length === 0) {
+      console.error('🚨 CANVAS SETUP FAILED: No images loaded');
+      setCanvasError(true);
+      if (onError) onError();
+      return;
+    }
+    
+    // Check if enough frames are loaded
+    const loadedFrames = imagesRef.current.filter(img => 
+      img && img.complete && img.naturalWidth > 0
+    ).length;
+    
+    if (loadedFrames < 10) {
+      console.error(`🚨 CANVAS SETUP FAILED: Only ${loadedFrames} frames loaded`);
+      setCanvasError(true);
+      if (onError) onError();
+      return;
+    }
+    
+    // SUCCESS: All validations passed
+    console.log(`✅ OPTIMIZED CANVAS SETUP SUCCESS: ${loadedFrames} frames ready`);
+    console.log(`🎬 STARTING OPTIMIZED ANIMATION: ${videoSpecs.duration/1000}s @ ${videoSpecs.fps}fps`);
+    
+    isPlayingRef.current = true;
+    frameIndexRef.current = 0;
+    let startTime = performance.now();
+    
+    // OPTIMIZED: Enhanced timing for smoother playback
+    const targetFps = videoSpecs.fps;
+    const frameDuration = 1000 / targetFps;
+
+    const drawFrame = (currentTime: number) => {
+      // Re-validate on each frame
+      if (!isPlayingRef.current || !canvas || !ctx || !imagesRef.current) {
+        console.warn('🎬 Animation stopped - invalid state');
+        return;
+      }
+
+      // OPTIMIZED: Precise timing calculation
+      const elapsed = currentTime - startTime;
+      const expectedFrame = Math.floor(elapsed / frameDuration);
+      
+      // Skip frames if we're behind (maintains smooth timing)
+      if (expectedFrame > frameIndexRef.current) {
+        frameIndexRef.current = expectedFrame;
+      }
+      
+      // Bounds checking
+      if (frameIndexRef.current >= videoSpecs.totalFrames) {
+        console.log(`🎬 SMOOTH ANIMATION COMPLETE after ${videoSpecs.totalFrames} frames`);
+        handleComplete();
+        return;
+      }
+      
+      const img = imagesRef.current[frameIndexRef.current];
+      
+      if (img && img.complete && img.naturalWidth > 0) {
+        try {
+          // OPTIMIZED: Use faster drawing method with specific source/destination rectangles
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          
+          // OPTIMIZED: Direct image drawing with explicit dimensions
+          ctx.drawImage(
+            img, 
+            0, 0, img.naturalWidth, img.naturalHeight,
+            0, 0, canvas.width, canvas.height
+          );
+          
+        } catch (error) {
+          console.error('🎬 Error drawing frame:', error);
+          // Continue animation despite single frame error
+        }
+        
+        // OPTIMIZED: Memory management - cleanup old frames (less aggressive)
+        if (frameIndexRef.current > 60 && imagesRef.current[frameIndexRef.current - 60]) {
+          const oldImg = imagesRef.current[frameIndexRef.current - 60];
+          if (oldImg && oldImg.src) {
+            oldImg.src = '';
+          }
+        }
+      }
+
+      frameIndexRef.current++;
+
+      // Animation completion check - unified frames
+      if (frameIndexRef.current >= videoSpecs.totalFrames) {
+        console.log(`🎬 OPTIMIZED ANIMATION COMPLETE after ${videoSpecs.totalFrames} frames`);
+        handleComplete();
+        return;
+      }
+
+      // Continue animation
+      animationIdRef.current = requestAnimationFrame(drawFrame);
+    };
+
+    // Start the optimized animation loop
+    animationIdRef.current = requestAnimationFrame(drawFrame);
+  }, [isMounted, videoSpecs, onComplete, onError]);
+
+  const handleComplete = useCallback(() => {
+    console.log('🎬 VideoIntro handleComplete called');
+    isPlayingRef.current = false;
+    
+    // SAFE: Cancel animation before completion
+    if (animationIdRef.current) {
+      cancelAnimationFrame(animationIdRef.current);
+      animationIdRef.current = null;
+    }
+    
+    // SAFE: Clear canvas reference before transition
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        try {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        } catch (error) {
+          // Silent - canvas may be unmounting
+        }
+      }
+    }
+    
+    // Store completion preference (but don't block future shows)
+    try {
+      localStorage.setItem('asteria-intro-completed', Date.now().toString());
+    } catch (error) {
+      console.warn('Could not save completion status');
+    }
+    
+    // Complete transition
+    onComplete();
+  }, [onComplete]);
+
+  const handleSkip = useCallback(() => {
+    console.log('🎬 VideoIntro skipped by user');
+    handleComplete();
+  }, [handleComplete]);
+
+  // Enhanced mobile touch gesture handling
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    setTouchStartY(e.touches[0].clientY);
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    const touchEndY = e.changedTouches[0].clientY;
+    const swipeDistance = touchStartY - touchEndY;
+    
+    // Swipe up 100px to skip
+    if (swipeDistance > 100) {
+      console.log('📱 Mobile swipe up detected - skipping video');
+      handleSkip();
+    }
+  }, [touchStartY, handleSkip]);
+
+  const handleContinueWatching = useCallback(() => {
+    console.log('🎬 User chose to continue watching');
+    setShowContinueOption(false);
+    // Hide skip options for 2 seconds
+    setShowSkip(false);
+    setTimeout(() => {
+      setShowSkip(true);
+      setSkipCountdownText('Skip Intro');
+    }, 2000);
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      console.log('�� VideoIntro cleanup starting');
+      isPlayingRef.current = false;
+      
+      // SAFE: Cancel animation frame
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current);
+        animationIdRef.current = null;
+      }
+      
+      // SAFE: Cleanup images with null checks
+      if (imagesRef.current && Array.isArray(imagesRef.current)) {
+        imagesRef.current.forEach((img, index) => {
+          if (img && img.src) {
+            try {
+              img.src = '';
+              img.onload = null;
+              img.onerror = null;
+            } catch (error) {
+              // Silent cleanup - don't log errors during unmount
+            }
+          }
+        });
+        imagesRef.current = [];
+      }
+      
+      // SAFE: Clear canvas reference without accessing DOM
+      // Don't try to access canvas during unmount
+      console.log('🎬 VideoIntro cleanup complete');
+    };
+  }, []);
+
+  // SSR guard
+  if (!isMounted) {
     return (
-      <motion.div
-        className="fixed inset-0 z-[9999] bg-tag-dark-purple flex items-center justify-center"
-        initial={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="text-center max-w-md mx-auto px-6">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-tag-gold to-tag-gold-dark flex items-center justify-center mb-6 mx-auto">
-            <span className="text-2xl">✨</span>
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        background: '#000',
+        zIndex: 9999
+      }} />
+    );
+  }
+
+  // If canvas error, show branded error state
+  if (canvasError) {
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        background: 'linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#ffffff',
+        textAlign: 'center',
+        padding: '24px',
+        zIndex: 9999
+      }}>
+        <div style={{
+          width: '100px',
+          height: '100px',
+          borderRadius: '50%',
+          background: 'linear-gradient(45deg, #d4af37, #f7dc6f)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '40px',
+          fontWeight: 'bold',
+          color: '#0f172a',
+          marginBottom: '32px'
+        }}>
+          A
           </div>
-          <h2 className="text-tag-cream text-xl mb-4">Welcome to Asteria</h2>
-          <p className="text-tag-neutral-gray text-sm mb-6">
-            {errorMessage || 'Preparing your luxury experience...'}
-          </p>
+        
+        <h2 style={{ fontSize: '28px', marginBottom: '16px', color: '#d4af37' }}>
+          Welcome to Asteria
+        </h2>
+        
+        <p style={{ fontSize: '18px', marginBottom: '32px', maxWidth: '400px' }}>
+          Where luxury meets possibility
+        </p>
+        
           <button
-            onClick={handleSkip}
-            className="px-6 py-3 bg-tag-gold text-tag-dark-purple rounded-lg font-medium hover:bg-tag-gold-light transition-colors"
-          >
-            Continue to Asteria
+          onClick={handleComplete}
+          style={{
+            padding: '16px 32px',
+            background: 'linear-gradient(45deg, #d4af37, #f7dc6f)',
+            color: '#0f172a',
+            border: 'none',
+            borderRadius: '12px',
+            fontSize: '18px',
+            fontWeight: '600',
+            cursor: 'pointer'
+          }}
+        >
+          Enter Experience
           </button>
         </div>
-      </motion.div>
     );
   }
 
   return (
-    <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 z-[9999] bg-tag-dark-purple overflow-hidden"
-        initial={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.8, ease: "easeInOut" }}
-      >
-        {/* Loading State */}
-        {(videoState === 'initializing' || videoState === 'loading') && (
-          <div className="absolute inset-0 flex items-center justify-center bg-tag-dark-purple">
-            <div className="text-center max-w-md mx-auto px-6">
-              <div className="relative mb-6">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-tag-gold to-tag-gold-dark flex items-center justify-center mx-auto">
-                  <span className="text-2xl">✨</span>
-                </div>
-                <div className="absolute inset-0 rounded-full border-2 border-tag-gold/30 animate-pulse"></div>
-                
-                {/* Loading progress ring */}
-                <svg className="absolute inset-0 w-16 h-16 mx-auto" viewBox="0 0 36 36">
-                  <path
-                    className="text-tag-gold/20"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                  <path
-                    className="text-tag-gold"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeDasharray={`${loadingProgress}, 100`}
-                    strokeLinecap="round"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                </svg>
-              </div>
-              
-              <motion.p 
-                className="text-tag-cream font-light tracking-wide text-lg"
-                animate={{ opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                Preparing your luxury experience...
-              </motion.p>
-              
-              {/* Network status indicator */}
-              <div className="text-tag-gold/60 text-xs mb-2">
-                {networkInfo.connectionType !== 'unknown' && (
-                  <span>Optimizing for {networkInfo.connectionType} connection</span>
-                )}
-              </div>
-              
-              {/* Debug info for testing */}
-              {process.env.NODE_ENV === 'development' && debugInfo.length > 0 && (
-                <div className="mt-4 text-left">
-                  <details className="text-xs text-tag-neutral-gray">
-                    <summary className="cursor-pointer">Debug Info (Desktop)</summary>
-                    <div className="mt-2 space-y-1 font-mono">
-                      {debugInfo.map((info, i) => (
-                        <div key={i}>{info}</div>
-                      ))}
-                    </div>
-                  </details>
-                </div>
-              )}
-            </div>
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100vw',
+      height: '100vh',
+      background: '#000',
+      zIndex: 9999,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}
+    onTouchStart={handleTouchStart}
+    onTouchEnd={handleTouchEnd}
+    >
+      {/* CSS for animations */}
+      <style jsx>{`
+        @keyframes fadeInOut {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 1; }
+        }
+      `}</style>
+      
+      {/* Canvas for frame animation */}
+      <canvas
+        ref={canvasRef}
+        width={videoSpecs.canvasWidth}
+        height={videoSpecs.canvasHeight}
+        style={{
+          width: '100vw',
+          height: '100vh',
+          objectFit: isMobile ? 'cover' : 'contain', // Cover on mobile, contain on desktop
+          display: 'block',
+          backgroundColor: '#000',
+          // Center the video properly on both devices
+          objectPosition: 'center'
+        }}
+      />
+      
+      {/* Loading progress */}
+      {loadingProgress < 100 && frameTestPassed && (
+        <div style={{
+          position: 'absolute',
+          bottom: '80px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          color: '#d4af37',
+          fontSize: isMobile ? '14px' : '16px',
+          textAlign: 'center'
+        }}>
+          <div style={{ marginBottom: '8px' }}>
+            Loading luxury experience... {Math.round(loadingProgress)}%
           </div>
-        )}
+          <div style={{
+            width: isMobile ? '200px' : '300px',
+            height: '2px',
+            background: 'rgba(212, 175, 55, 0.3)',
+            borderRadius: '1px',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              width: `${loadingProgress}%`,
+              height: '100%',
+              background: '#d4af37',
+              transition: 'width 0.3s ease'
+            }} />
+          </div>
+        </div>
+      )}
 
-        {/* Video Container */}
-        <div className="relative w-full h-full flex items-center justify-center">
-          <video
-            ref={videoRef}
-            className="w-full h-full object-cover"
-            muted
-            playsInline
-            preload="auto"
-            onLoadedData={handleVideoLoad}
-            onEnded={handleVideoEnd}
-            onError={handleVideoError}
-            style={{ display: (videoState === 'ready' || videoState === 'playing') ? 'block' : 'none' }}
-            controls={false}
-            autoPlay={false}
-            onLoadStart={() => addDebugInfo('Video load started')}
-            onProgress={() => addDebugInfo('Video loading progress')}
-            onCanPlayThrough={() => addDebugInfo('Video can play through')}
+      {/* Mobile swipe hint */}
+      {isMobile && showSkip && (
+        <div style={{
+          position: 'absolute',
+          bottom: '140px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          color: 'rgba(255,255,255,0.6)',
+          fontSize: '12px',
+          textAlign: 'center',
+          animation: 'fadeInOut 2s infinite'
+        }}>
+          Swipe up to skip ↗️
+        </div>
+      )}
+
+      {/* Enhanced Skip Button UI */}
+      <AnimatePresence>
+        {showSkip && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.8 }}
+            style={{
+              position: 'absolute',
+              bottom: '20px',
+              right: '20px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px',
+              zIndex: 10
+            }}
           >
-            <source src={getOptimalVideoSource()} type="video/mp4" />
-            <source src="/videos/asteria_intro_mobile.mp4" type="video/mp4" />
-            <source src="/videos/intro.mp4" type="video/mp4" />
-            <p className="text-tag-cream text-center">
-              Your browser does not support the video tag. 
-              <br />
-              <span className="text-tag-gold">Welcome to Asteria - Where Energy Meets Experience</span>
-            </p>
-          </video>
-
-          {/* Manual Play Button */}
-          {showPlayButton && videoState === 'ready' && (
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center bg-tag-dark-purple/80 backdrop-blur-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
+            {/* MAIN Skip Button - More Prominent */}
+            <motion.button
+              onClick={handleSkip}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              style={{
+                background: 'linear-gradient(45deg, #d4af37, #f7dc6f)',
+                border: 'none',
+                color: '#0f172a',
+                padding: isMobile ? '14px 28px' : '16px 32px',
+                borderRadius: '30px',
+                fontSize: isMobile ? '16px' : '18px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                boxShadow: '0 6px 20px rgba(212, 175, 55, 0.4)',
+                minWidth: isMobile ? '140px' : '160px',
+                textAlign: 'center',
+                letterSpacing: '0.5px'
+              }}
             >
-              <div className="text-center">
-                <motion.button
-                  onClick={handleManualPlay}
-                  className="group relative w-24 h-24 rounded-full bg-gradient-to-br from-tag-gold to-tag-gold-dark flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <div className="absolute inset-0 rounded-full bg-tag-gold/20 animate-ping"></div>
-                  <div className="text-3xl text-tag-dark-purple ml-1">
-                    ▶
-                  </div>
-                </motion.button>
-                <div className="mt-6">
-                  <p className="text-tag-cream font-light mb-2 text-lg">
-                    {deviceCapabilities.isIOS ? 'Tap to begin your journey' : 'Click to begin your journey'}
-                  </p>
-                  {deviceCapabilities.isIOS && (
-                    <p className="text-tag-gold/60 text-xs">iOS requires user interaction for video playback</p>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Skip Button */}
-          <AnimatePresence>
-            {showSkip && (
+              {skipCountdownText}
+            </motion.button>
+            
+            {/* SECONDARY: Continue Watching Button - Only show for first few seconds */}
+            {showContinueOption && skipCountdownText.includes('Skip in') && (
               <motion.button
-                onClick={handleSkip}
-                className="absolute top-8 right-8 px-6 py-3 text-base bg-black/70 backdrop-blur-md text-white border border-white/20 rounded-xl transition-all duration-300 hover:bg-black/80 hover:border-white/40 active:scale-95 shadow-2xl z-10"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                onClick={handleContinueWatching}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                style={{
+                  background: 'rgba(255,255,255,0.1)',
+                  border: '1px solid rgba(212, 175, 55, 0.5)',
+                  color: '#ffffff',
+                  padding: isMobile ? '10px 20px' : '12px 24px',
+                  borderRadius: '20px',
+                  fontSize: isMobile ? '13px' : '14px',
+                  cursor: 'pointer',
+                  backdropFilter: 'blur(10px)',
+                  textAlign: 'center'
+                }}
               >
-                <div className="flex items-center gap-2">
-                  <span className="font-light tracking-wide">Skip Intro</span>
-                  <div className="w-4 h-4 border border-white/40 rounded-full flex items-center justify-center">
-                    <span className="text-xs">⏭</span>
-                  </div>
-                </div>
+                Continue Watching
               </motion.button>
             )}
-          </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-          {/* Video Progress Indicator */}
-          {videoState === 'playing' && progress > 0 && (
-            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-              <div className="w-32 h-1 bg-white/20 rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-tag-gold rounded-full"
-                  style={{ width: `${progress}%` }}
-                  transition={{ duration: 0.1 }}
-                />
-              </div>
+      {/* Enhanced development debug info for device-specific approach */}
+      {process.env.NODE_ENV === 'development' && (
+        <div style={{
+          position: 'absolute',
+          top: '20px',
+          left: '20px',
+          background: 'rgba(0,0,0,0.95)',
+          color: '#d4af37',
+          padding: '16px',
+          borderRadius: '8px',
+          fontSize: '11px',
+          fontFamily: 'monospace',
+          maxWidth: '450px',
+          zIndex: 20,
+          border: '1px solid #d4af37'
+        }}>
+          <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: 'bold' }}>
+            🎬 PERFORMANCE DEBUG PANEL
+          </div>
+          
+          <div>🖥️ DEVICE: {isMobile ? 'MOBILE' : 'DESKTOP'}</div>
+          <div>📏 VIEWPORT: {deviceInfo.screenWidth}x{deviceInfo.screenHeight}</div>
+          <div>🎬 CANVAS: {videoSpecs.canvasWidth}x{videoSpecs.canvasHeight}</div>
+          <div>📁 FRAMES: {videoSpecs.totalFrames} ({videoSpecs.duration/1000}s)</div>
+          <div>🎯 FPS: {videoSpecs.fps} (performance optimized)</div>
+          <div>📂 FOLDER: {isMobile ? 'mobile' : 'desktop'}</div>
+          <div>📂 PATH: {getFramePath(1).replace('0001', 'XXXX')}</div>
+          
+          {/* PERFORMANCE METRICS */}
+          <div style={{ 
+            marginTop: '8px', 
+            padding: '8px', 
+            background: 'rgba(0, 255, 0, 0.1)',
+            borderRadius: '4px',
+            border: '1px solid #44ff44'
+          }}>
+            <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+              ⚡ PERFORMANCE METRICS
             </div>
-          )}
-
-          {/* Ambient Glow Effects */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-tag-gold/5 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-tag-light-purple/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
+            <div>🎮 PLAYING: {isPlayingRef.current ? 'YES' : 'NO'}</div>
+            <div>🖼️ CURRENT FRAME: {frameIndexRef.current}/{videoSpecs.totalFrames}</div>
+            <div>📊 PROGRESS: {Math.round(loadingProgress)}%</div>
+            <div>⏱️ FRAME TIME: {(1000/videoSpecs.fps).toFixed(1)}ms</div>
+            <div>🔄 TARGET FPS: {videoSpecs.fps}</div>
+            <div>📱 TOUCH DEVICE: {deviceInfo.touchSupported ? 'YES' : 'NO'}</div>
           </div>
-        </div>
 
-        {/* Luxury Branding Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-8 pb-16 bg-gradient-to-t from-black/60 via-black/30 to-transparent">
-          <div className="text-center">
-            <motion.div
-              className="inline-flex items-center gap-2 text-white/90 bg-black/30 backdrop-blur-sm px-4 py-2 rounded-full"
-              animate={{ opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 3, repeat: Infinity }}
+          {/* ENHANCED LOADING STATISTICS */}
+          <div style={{ 
+            marginTop: '8px', 
+            padding: '8px', 
+            background: loadingStats.failedCount > 0 ? 'rgba(255,0,0,0.1)' : 'rgba(0,255,0,0.1)',
+            borderRadius: '4px',
+            border: `1px solid ${loadingStats.failedCount > 0 ? '#ff4444' : '#44ff44'}`
+          }}>
+            <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+              🚨 LOADING STATISTICS ({isMobile ? 'MOBILE OPTIMIZED' : 'DESKTOP OPTIMIZED'})
+            </div>
+            <div>✅ LOADED: {loadingStats.loadedCount}/{videoSpecs.totalFrames}</div>
+            <div>❌ FAILED: {loadingStats.failedCount}/{videoSpecs.totalFrames}</div>
+            <div>📊 SUCCESS RATE: {loadingStats.loadedCount > 0 ? 
+              ((loadingStats.loadedCount / (loadingStats.loadedCount + loadingStats.failedCount)) * 100).toFixed(1) 
+              : '0'}%</div>
+            <div>⏱️ LOAD TIME: {loadingStats.startTime > 0 ? 
+              ((Date.now() - loadingStats.startTime) / 1000).toFixed(1) 
+              : '0'}s</div>
+            <div>🔄 STATUS: {loadingStats.isLoading ? 'LOADING...' : 'COMPLETE'}</div>
+            <div>🎯 MIN TO START: {isMobile ? '20' : '45'} frames</div>
+            <div>🚨 MAX FAILURES: {Math.floor(videoSpecs.totalFrames * (isMobile ? 0.15 : 0.10))}</div>
+          </div>
+          
+          {/* SKIP FUNCTIONALITY STATUS */}
+          <div style={{ 
+            marginTop: '8px', 
+            padding: '8px', 
+            background: 'rgba(212, 175, 55, 0.1)',
+            borderRadius: '4px',
+            border: '1px solid #d4af37'
+          }}>
+            <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+              ⏭️ SKIP FUNCTIONALITY
+            </div>
+            <div>👆 SKIP VISIBLE: {showSkip ? 'YES' : 'NO'}</div>
+            <div>📱 SWIPE ENABLED: {isMobile ? 'YES' : 'NO'}</div>
+            <div>⏰ SKIP TEXT: {skipCountdownText}</div>
+            <div>🔄 CONTINUE OPTION: {showContinueOption ? 'AVAILABLE' : 'HIDDEN'}</div>
+            <div>🎬 VIDEO PERSISTENCE: DISABLED (shows every refresh)</div>
+          </div>
+
+          {/* FRAME CONTENT VALIDATION */}
+          <div style={{ 
+            marginTop: '8px', 
+            padding: '8px', 
+            background: frameValidation.contentVerified ? 'rgba(0,255,0,0.1)' : 'rgba(255,255,0,0.1)',
+            borderRadius: '4px',
+            border: `1px solid ${frameValidation.contentVerified ? '#44ff44' : '#ffaa00'}`
+          }}>
+            <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+              🔍 CONTENT VALIDATION
+            </div>
+            <div>🖥️ DESKTOP: {frameValidation.desktopDimensions || 'Checking...'}</div>
+            <div>📱 MOBILE: {frameValidation.mobileDimensions || 'Checking...'}</div>
+            <div>✅ VERIFIED: {frameValidation.contentVerified ? 'YES' : 'PENDING'}</div>
+            <div>🎬 CURRENT FRAME: {frameIndexRef.current}</div>
+            
+            {/* Frame inspection button */}
+            <button 
+              onClick={() => {
+                const currentFramePath = getFramePath(Math.max(1, frameIndexRef.current || 1));
+                window.open(currentFramePath, '_blank');
+              }}
+              style={{
+                marginTop: '4px',
+                padding: '4px 8px',
+                background: '#d4af37',
+                color: '#000',
+                border: 'none',
+                borderRadius: '4px',
+                fontSize: '10px',
+                cursor: 'pointer',
+                width: '100%'
+              }}
             >
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-              <span className="font-light tracking-wider text-sm">
-                REDEFINING LUXURY, ONE CONNECTION AT A TIME
-              </span>
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-            </motion.div>
+              🔍 INSPECT CURRENT FRAME
+            </button>
+          </div>
+
+          {/* OPTIMIZATION CONTROLS */}
+          <div style={{ 
+            marginTop: '8px', 
+            padding: '8px', 
+            background: 'rgba(138, 43, 226, 0.1)',
+            borderRadius: '4px',
+            border: '1px solid #8a2be2'
+          }}>
+            <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+              🛠️ OPTIMIZATION STATUS
+            </div>
+            <div>⚠️ ERROR: {canvasError ? 'YES' : 'NO'}</div>
+            <div>🔧 SSR: {deviceInfo.isSSR ? 'YES' : 'NO'}</div>
+            <div>🧪 FRAME_TEST: {frameTestPassed ? 'PASS' : 'PENDING'}</div>
+            <div>💾 MOUNTED: {isMounted ? 'YES' : 'NO'}</div>
+            <div>🎛️ CANVAS OPTS: alpha:false, willReadFrequently:false</div>
+            
+            <button 
+              onClick={() => {
+                console.log('🎬 PERFORMANCE TEST: Measuring frame timing...');
+                const now = performance.now();
+                console.log(`📊 Current timestamp: ${now}`);
+                console.log(`📊 Frame index: ${frameIndexRef.current}`);
+                console.log(`📊 Loading stats:`, loadingStats);
+                console.log(`📊 Device info:`, deviceInfo);
+              }}
+              style={{
+                marginTop: '4px',
+                padding: '4px 8px',
+                background: '#8a2be2',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '4px',
+                fontSize: '10px',
+                cursor: 'pointer',
+                width: '100%'
+              }}
+            >
+              📊 MEASURE PERFORMANCE
+            </button>
           </div>
         </div>
-      </motion.div>
-    </AnimatePresence>
+      )}
+    </div>
   );
 } 

@@ -1,0 +1,155 @@
+{
+  "id": "run-1748742855826-84car6",
+  "timestamp": "2025-06-01T01:54:15.826Z",
+  "memberId": "demo-member-001",
+  "originalMessage": "Hello",
+  "intentAnalysis": {
+    "primaryBucket": "lifestyle",
+    "secondaryBuckets": [],
+    "serviceType": "general",
+    "urgency": "standard",
+    "confidence": 0.9,
+    "extractedEntities": {
+      "dates": [],
+      "locations": [],
+      "people": [],
+      "preferences": []
+    },
+    "suggestedTier": "extraordinary"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "lifestyle",
+            "tier": "extraordinary",
+            "searchTerm": "general"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-01T01:54:15.535Z",
+          "result": {
+            "services": [],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 0,
+            "searchSummary": "Found 0 services in lifestyle at extraordinary tier matching \"general\""
+          },
+          "executionTime": 0
+        },
+        {
+          "toolName": "create_ticket",
+          "parameters": {
+            "serviceId": "to_be_determined",
+            "requirements": {},
+            "priority": "standard"
+          },
+          "status": "failed",
+          "timestamp": "2025-06-01T01:54:15.535Z",
+          "result": {
+            "error": "Missing required information: pickup, destination, date, time, passengers"
+          }
+        }
+      ],
+      "strategy": "direct_fulfillment",
+      "expectedOutcome": "Complete lifestyle service booking with confirmation",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "lifestyle",
+          "tier": "extraordinary",
+          "searchTerm": "general"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-01T01:54:15.535Z",
+        "result": {
+          "services": [],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 0,
+          "searchSummary": "Found 0 services in lifestyle at extraordinary tier matching \"general\""
+        },
+        "executionTime": 0
+      },
+      {
+        "toolName": "create_ticket",
+        "parameters": {
+          "serviceId": "to_be_determined",
+          "requirements": {},
+          "priority": "standard"
+        },
+        "status": "failed",
+        "timestamp": "2025-06-01T01:54:15.535Z",
+        "result": {
+          "error": "Missing required information: pickup, destination, date, time, passengers"
+        }
+      }
+    ],
+    "finalResult": {
+      "services": [],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 0,
+      "searchSummary": "Found 0 services in lifestyle at extraordinary tier matching \"general\""
+    },
+    "recommendations": [
+      "Some services may require additional information - our concierge team will follow up"
+    ],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": true
+  },
+  "outcome": "escalation",
+  "metrics": {
+    "responseTime": 293,
+    "toolsUsed": [
+      "fetch_active_services",
+      "create_ticket"
+    ],
+    "escalationTriggered": true
+  },
+  "learnings": {
+    "intentAccuracy": 0.9,
+    "executionEfficiency": 0.5,
+    "areas_for_improvement": [
+      "Tool execution reliability"
+    ],
+    "successful_patterns": [
+      "High confidence lifestyle intent recognition"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

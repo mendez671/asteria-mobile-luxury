@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useReducer, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpIcon, SparklesIcon, Bars3Icon, MicrophoneIcon } from '@heroicons/react/24/solid';
 import VoiceInterface from '../VoiceInterface';
@@ -21,6 +21,61 @@ interface ServiceResponse {
   urgency: string;
   readyForTicket: boolean;
 }
+
+// Chat state management with deduplication
+interface ChatState {
+  messages: Message[];
+  isLoading: boolean;
+}
+
+type ChatAction = 
+  | { type: 'ADD_MESSAGE'; payload: Message }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'CLEAR_MESSAGES' }
+  | { type: 'CLEAR_DUPLICATES' };
+
+const chatReducer = (state: ChatState, action: ChatAction): ChatState => {
+  switch (action.type) {
+    case 'ADD_MESSAGE':
+      // PREVENT DUPLICATES: Check if message already exists
+      const exists = state.messages.some(
+        msg => msg.id === action.payload.id || 
+               (msg.content === action.payload.content && 
+                msg.sender === action.payload.sender &&
+                Math.abs(msg.timestamp.getTime() - action.payload.timestamp.getTime()) < 1000)
+      );
+      
+      if (exists) {
+        console.warn('🚫 Duplicate message prevented:', action.payload.content.substring(0, 50));
+        return state;
+      }
+      
+      return {
+        ...state,
+        messages: [...state.messages, action.payload]
+      };
+      
+    case 'SET_LOADING':
+      return { ...state, isLoading: action.payload };
+      
+    case 'CLEAR_MESSAGES':
+      return { ...state, messages: [] };
+      
+    case 'CLEAR_DUPLICATES':
+      // Remove duplicates based on content, sender, and timestamp
+      const uniqueMessages = state.messages.filter((msg, index, arr) => 
+        index === arr.findIndex(m => 
+          m.content === msg.content && 
+          m.sender === msg.sender &&
+          Math.abs(m.timestamp.getTime() - msg.timestamp.getTime()) < 1000
+        )
+      );
+      return { ...state, messages: uniqueMessages };
+      
+    default:
+      return state;
+  }
+};
 
 // TypeScript declarations for Speech Recognition API
 interface SpeechRecognitionEvent extends Event {
@@ -54,9 +109,14 @@ declare global {
 }
 
 export default function ChatInterface() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  // Enhanced state management with deduplication
+  const [chatState, dispatch] = useReducer(chatReducer, {
+    messages: [],
+    isLoading: false
+  });
+
+  // UI state with enhanced mobile support
   const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -65,6 +125,12 @@ export default function ChatInterface() {
   const [progressValue, setProgressValue] = useState(0);
   const [errorState, setErrorState] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  
+  // Enhanced mobile states
+  const [isMobile, setIsMobile] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(0);
+  const [originalViewportHeight, setOriginalViewportHeight] = useState(0);
   
   // Voice-specific states
   const [voiceSupported, setVoiceSupported] = useState(false);
@@ -76,14 +142,82 @@ export default function ChatInterface() {
   // Enhanced voice states
   const [isVoiceProcessing, setIsVoiceProcessing] = useState(false);
   
-  const messagesEndRef = useRef<HTMLDivElement>(null); const greetingAddedRef = useRef(false);
+  // FIX: Add hydration guard for client-side only rendering
+  const [isClient, setIsClient] = useState(false);
+  
+  const messagesEndRef = useRef<HTMLDivElement>(null); 
+  const greetingAddedRef = useRef(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const synthesisRef = useRef<SpeechSynthesis | null>(null);
 
+  // FIX: Add client-side hydration guard
+  useEffect(() => {
+    setIsClient(true);
+    
+    // Enhanced mobile detection
+    const checkMobile = () => {
+      if (typeof window !== 'undefined') {
+        const isMobileDevice = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        setIsMobile(isMobileDevice);
+        
+        // Track viewport changes for keyboard detection
+        const currentHeight = window.visualViewport?.height || window.innerHeight;
+        setViewportHeight(currentHeight);
+        
+        // Set original height on first load
+        if (originalViewportHeight === 0) {
+          setOriginalViewportHeight(window.innerHeight);
+        }
+        
+        // Detect if keyboard is visible (significant height reduction on mobile)
+        if (isMobileDevice && originalViewportHeight > 0) {
+          const heightDifference = originalViewportHeight - currentHeight;
+          setKeyboardVisible(heightDifference > 150); // Threshold for keyboard detection
+        }
+      }
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    // Enhanced viewport change handling for mobile keyboard
+    const handleViewportChange = () => {
+      if (window.visualViewport) {
+        checkMobile();
+      }
+    };
+    
+    window.visualViewport?.addEventListener('resize', handleViewportChange);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      window.visualViewport?.removeEventListener('resize', handleViewportChange);
+    };
+  }, [originalViewportHeight]);
+
+  // Enhanced message addition with deduplication
+  const addMessage = useCallback((content: string, sender: 'user' | 'asteria', category?: string, urgency?: 'low' | 'medium' | 'high') => {
+    const newMessage: Message = {
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // More unique ID
+      content,
+      sender,
+      timestamp: new Date(),
+      serviceCategory: category,
+      urgency: urgency || 'low',
+      status: 'pending'
+    };
+    
+    console.log(`💬 Adding ${sender} message:`, content.substring(0, 50));
+    dispatch({ type: 'ADD_MESSAGE', payload: newMessage });
+  }, []);
+
   // Voice initialization
   useEffect(() => {
+    // FIX: Guard against SSR and add defensive checks
+    if (!isClient || typeof window === 'undefined') return;
+    
     // Check for Speech Recognition support
     if (typeof window !== 'undefined') {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -106,15 +240,31 @@ export default function ChatInterface() {
         };
         
         recognition.onresult = (event) => {
+          // FIX: Add defensive checks for event.results
+          if (!event || !event.results || typeof event.resultIndex !== 'number') {
+            console.warn('🎤 Invalid speech recognition event:', event);
+            return;
+          }
+          
           let finalTranscript = '';
           let interimTranscript = '';
           
-          for (let i = event.resultIndex; i < event.results.length; i++) {
-            const transcript = event.results[i][0].transcript;
-            if (event.results[i].isFinal) {
-              finalTranscript += transcript;
-            } else {
-              interimTranscript += transcript;
+          // FIX: Check event.results is array-like and has length
+          const results = event.results;
+          if (!results || typeof results.length !== 'number') {
+            console.warn('🎤 Invalid results object:', results);
+            return;
+          }
+          
+          for (let i = event.resultIndex; i < results.length; i++) {
+            // FIX: Add bounds checking and null safety
+            if (i >= 0 && i < results.length && results[i] && results[i][0]) {
+              const transcript = results[i][0].transcript;
+              if (results[i].isFinal) {
+                finalTranscript += transcript;
+              } else {
+                interimTranscript += transcript;
+              }
             }
           }
           
@@ -148,7 +298,7 @@ export default function ChatInterface() {
         setVoiceError('Voice features not supported in this browser');
       }
     }
-  }, []);
+  }, [isClient]);
 
   // Text-to-Speech function
   const speakText = (text: string) => {
@@ -164,31 +314,24 @@ export default function ChatInterface() {
     
     // Try to use a more elegant voice
     const voices = synthesisRef.current.getVoices();
-    const preferredVoice = voices.find(voice => 
-      voice.name.includes('Samantha') || 
-      voice.name.includes('Karen') || 
-      voice.name.includes('Female') ||
-      voice.lang.includes('en-US')
-    );
-    
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
+    // FIX: Add defensive check for voices array
+    if (voices && Array.isArray(voices) && voices.length > 0) {
+      const preferredVoice = voices.find(voice => 
+        voice && voice.name && (
+          voice.name.includes('Samantha') || 
+          voice.name.includes('Karen') || 
+          voice.name.includes('Moira') ||
+          voice.name.includes('Fiona')
+        )
+      );
+      if (preferredVoice) {
+        utterance.voice = preferredVoice;
+      }
     }
     
-    utterance.onstart = () => {
-      console.log('🔊 Asteria started speaking');
-      setIsSpeaking(true);
-    };
-    
-    utterance.onend = () => {
-      console.log('🔊 Asteria finished speaking');
-      setIsSpeaking(false);
-    };
-    
-    utterance.onerror = (event) => {
-      console.error('🔊 Speech synthesis error:', event.error);
-      setIsSpeaking(false);
-    };
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
     
     synthesisRef.current.speak(utterance);
   };
@@ -196,110 +339,59 @@ export default function ChatInterface() {
   // Request microphone permission
   const requestMicPermission = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      await navigator.mediaDevices.getUserMedia({ audio: true });
       setMicPermission('granted');
-      stream.getTracks().forEach(track => track.stop()); // Clean up
       return true;
     } catch (error) {
       console.error('Microphone permission denied:', error);
       setMicPermission('denied');
-      setVoiceError('Microphone access denied. Please enable microphone permissions.');
+      setVoiceError('Microphone access denied');
       return false;
     }
   };
 
   const getTimeBasedGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good morning! The world is full of possibilities today.";
-    if (hour < 17) return "Good afternoon! How may I elevate your day?";
-    if (hour < 21) return "Good evening! Ready for something extraordinary?";
-    return "Good evening! Let's create magical moments tonight.";
+    if (hour < 6) return 'Good evening! How may I assist you tonight?';
+    if (hour < 12) return 'Good morning! How may I elevate your day?';
+    if (hour < 18) return 'Good afternoon! What can I help you achieve today?';
+    return 'Good evening! How may I assist you tonight?';
   };
 
-  // Enhanced ElevenLabs voice synthesis
   const speakWithElevenLabs = async (text: string) => {
-    if (!text || isVoiceProcessing) return;
-    
     try {
-      setIsVoiceProcessing(true);
-      console.log('🔊 Synthesizing with ElevenLabs:', text.substring(0, 50) + '...');
-      
-      const response = await fetch('/api/voice/elevenlabs', {
+      setIsSpeaking(true);
+      const response = await fetch('/api/tts', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: text,
-          voiceSettings: {
-            stability: 0.8,
-            similarity_boost: 0.75,
-            style: 0.6,
-            use_speaker_boost: true
-          }
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
       });
 
       if (!response.ok) {
-        throw new Error(`Voice synthesis failed: ${response.status}`);
+        throw new Error('TTS request failed');
       }
 
-      const audioBuffer = await response.arrayBuffer();
-      const audioBlob = new Blob([audioBuffer], { type: 'audio/mpeg' });
+      const audioBlob = await response.blob();
       const audioUrl = URL.createObjectURL(audioBlob);
-      
       const audio = new Audio(audioUrl);
       
-      audio.onloadstart = () => {
-        console.log('🔊 Audio loading started');
-        setIsSpeaking(true);
-      };
-      
-      audio.onplay = () => {
-        console.log('🔊 Audio playback started');
-      };
-      
       audio.onended = () => {
-        console.log('🔊 Audio playback ended');
         setIsSpeaking(false);
-        setIsVoiceProcessing(false);
         URL.revokeObjectURL(audioUrl);
       };
       
-      audio.onerror = (error) => {
-        console.error('🔊 Audio playback error:', error);
+      audio.onerror = () => {
         setIsSpeaking(false);
-        setIsVoiceProcessing(false);
         URL.revokeObjectURL(audioUrl);
+        console.error('Audio playback failed');
       };
       
       await audio.play();
-      
     } catch (error) {
-      console.error('🔊 ElevenLabs synthesis error:', error);
-      setIsVoiceProcessing(false);
+      console.error('ElevenLabs TTS error:', error);
       setIsSpeaking(false);
-      
       // Fallback to browser TTS
       speakText(text);
-    }
-  };
-
-  // Updated addMessage to use ElevenLabs
-  const addMessage = (content: string, sender: 'user' | 'asteria', category?: string, urgency?: 'low' | 'medium' | 'high') => {
-    const newMessage: Message = {
-      id: `${Date.now()}-${Math.random().toString(36).substring(2)}`,
-      content,
-      sender,
-      timestamp: new Date(),
-      serviceCategory: category,
-      urgency: urgency
-    };
-    setMessages(prev => [...prev, newMessage]);
-    
-    // Use ElevenLabs for Asteria responses
-    if (sender === 'asteria' && voiceSupported && !isSpeaking && !isVoiceProcessing) {
-      setTimeout(() => speakWithElevenLabs(content), 500);
     }
   };
 
@@ -320,7 +412,7 @@ export default function ChatInterface() {
     setTimeout(() => sendElement?.classList.remove('message-send-trail'), 1000);
 
     addMessage(userMessage, 'user');
-    setIsLoading(true);
+    dispatch({ type: 'SET_LOADING', payload: true });
     setIsTyping(true);
 
     // Enhanced progress simulation
@@ -339,7 +431,13 @@ export default function ChatInterface() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage, conversationHistory: messages.map(m => ({ role: m.sender === "user" ? "user" : "assistant", content: m.content })) })
+        body: JSON.stringify({ 
+          message: userMessage, 
+          conversationHistory: chatState.messages.map(m => ({ 
+            role: m.sender === "user" ? "user" : "assistant", 
+            content: m.content 
+          })) 
+        })
       });
 
       const data = await response.json();
@@ -348,7 +446,12 @@ export default function ChatInterface() {
       setProgressValue(100);
       
       setTimeout(() => {
-        addMessage(data.response || data.message || "I apologize, but I encountered an issue processing your request.", 'asteria', data.metadata?.intentAnalysis?.bucket, data.metadata?.intentAnalysis?.urgency as 'low' | 'medium' | 'high');
+        addMessage(
+          data.response || data.message || "I apologize, but I encountered an issue processing your request.", 
+          'asteria', 
+          data.metadata?.intentAnalysis?.bucket, 
+          data.metadata?.intentAnalysis?.urgency as 'low' | 'medium' | 'high'
+        );
         
         // Trigger success celebration
         if (data.readyForTicket) {
@@ -356,7 +459,7 @@ export default function ChatInterface() {
           setTimeout(() => setShowSuccessAnimation(false), 2000);
         }
         
-        setIsLoading(false);
+        dispatch({ type: 'SET_LOADING', payload: false });
         setIsTyping(false);
         setProgressValue(0);
       }, 500);
@@ -368,7 +471,7 @@ export default function ChatInterface() {
       
       setTimeout(() => {
         addMessage("I apologize for the inconvenience. Please allow me a moment to reconnect with our luxury services.", 'asteria');
-        setIsLoading(false);
+        dispatch({ type: 'SET_LOADING', payload: false });
         setIsTyping(false);
         setErrorState(false);
         setProgressValue(0);
@@ -447,7 +550,7 @@ export default function ChatInterface() {
   };
 
   const handleClearChat = () => {
-    setMessages([]);
+    dispatch({ type: 'CLEAR_MESSAGES' });
     // Add refresh animation
     const container = chatContainerRef.current;
     container?.classList.add('pull-refresh');
@@ -478,45 +581,56 @@ export default function ChatInterface() {
         });
       }
     }
-  }, [messages, isInitialLoad]);
+  }, [chatState.messages, isInitialLoad]);
 
   useEffect(() => {
-    if (messages.length === 0 && !greetingAddedRef.current) { greetingAddedRef.current = true;
+    // FIX: Add defensive checks for messages array to prevent "n.length" error
+    if (!Array.isArray(chatState.messages)) {
+      console.warn('Messages is not an array:', chatState.messages);
+      return;
+    }
+
+    // Add greeting message only once when component mounts
+    if (!greetingAddedRef.current && isClient && chatState.messages.length === 0) {
+      greetingAddedRef.current = true;
       setTimeout(() => {
         addMessage(getTimeBasedGreeting(), 'asteria');
-        // Mark initial load as complete after the greeting message
-        setTimeout(() => {
-          setIsInitialLoad(false);
-        }, 500); // Small delay to ensure no scroll during transition
+        setIsInitialLoad(false);
       }, 1000);
     }
-  }, [messages.length]);
+  }, [isClient, chatState.messages.length, addMessage]);
 
-  // Enhanced voice input handler
   const handleVoiceInput = (transcript: string) => {
-    if (transcript.trim()) {
-      setInputValue(transcript);
-      // Auto-send voice messages for seamless experience
-      setTimeout(() => {
-        if (transcript.trim()) {
-          handleSendMessage();
-        }
-      }, 500);
-    }
+    setInputValue(transcript);
   };
 
+  // FIX: Guard against SSR rendering
+  if (!isClient) {
+    return (
+      <div className="w-full h-96 glass rounded-touch-xl flex items-center justify-center">
+        <div className="text-tag-gold">Loading chat interface...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full max-w-4xl mx-auto h-[80vh] flex flex-col relative">
-      {/* Enhanced Chat Header with Gesture Indicators */}
-      <div className="glass rounded-t-2xl p-6 border-b border-tag-gold/20 relative">
+    <div className={`w-full max-w-4xl mx-auto flex flex-col relative ${
+      isMobile ? 'h-[calc(100vh-120px)]' : 'h-[80vh]'
+    } ${keyboardVisible ? 'mobile-keyboard-visible' : ''}`}>
+      {/* Enhanced Chat Header with Mobile Optimizations */}
+      <div className={`glass rounded-t-2xl border-b border-tag-gold/20 relative ${
+        isMobile ? 'p-4 sticky top-0 z-10' : 'p-6'
+      }`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className={`w-12 h-12 rounded-full bg-gradient-to-br from-tag-gold to-tag-gold-dark flex items-center justify-center floating-luxury ${showSuccessAnimation ? 'success-celebration' : ''}`}>
-              <SparklesIcon className="w-6 h-6 text-tag-dark-purple" />
+            <div className={`rounded-full bg-gradient-to-br from-tag-gold to-tag-gold-dark flex items-center justify-center floating-luxury ${
+              showSuccessAnimation ? 'success-celebration' : ''
+            } ${isMobile ? 'w-10 h-10' : 'w-12 h-12'}`}>
+              <SparklesIcon className={`text-tag-dark-purple ${isMobile ? 'w-5 h-5' : 'w-6 h-6'}`} />
             </div>
             <div>
-              <h2 className="text-xl font-serif text-tag-cream">Asteria</h2>
-              <div className="text-sm text-tag-neutral-gray flex items-center gap-2">
+              <h2 className={`font-serif text-tag-cream ${isMobile ? 'text-lg' : 'text-xl'}`}>Asteria</h2>
+              <div className={`text-tag-neutral-gray flex items-center gap-2 ${isMobile ? 'text-xs' : 'text-sm'}`}>
                 Your Personal Concierge
                 {isListening && (
                   <div className="voice-waveform">
@@ -532,16 +646,21 @@ export default function ChatInterface() {
           </div>
           
           <div className="flex items-center gap-3">
-            {/* Member Badge */}
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-tag-gold/10 border border-tag-gold/30">
-              <div className="w-2 h-2 bg-tag-gold rounded-full"></div>
-              <span className="text-tag-gold text-xs font-medium">Elite Member</span>
-            </div>
+            {/* Member Badge - Hidden on small mobile */}
+            {!isMobile && (
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-tag-gold/10 border border-tag-gold/30">
+                <div className="w-2 h-2 bg-tag-gold rounded-full"></div>
+                <span className="text-tag-gold text-xs font-medium">Elite Member</span>
+              </div>
+            )}
             
+            {/* Enhanced Voice Button */}
             <button
               onClick={toggleVoiceInput}
-              disabled={!voiceSupported || isLoading}
-              className={`voice-button min-h-touch-min p-4 rounded-full transition-all duration-300 relative overflow-hidden ${
+              disabled={!voiceSupported || chatState.isLoading}
+              className={`voice-button min-h-touch-min rounded-full transition-all duration-300 relative overflow-hidden ${
+                isMobile ? 'p-3' : 'p-4'
+              } ${
                 isListening 
                   ? 'bg-gradient-to-br from-red-500 to-red-600 shadow-lg shadow-red-500/30 scale-110' 
                   : isSpeaking
@@ -565,21 +684,21 @@ export default function ChatInterface() {
                 {isListening ? (
                   // Pulsing microphone when listening
                   <div className="relative">
-                    <MicrophoneIcon className="w-6 h-6 text-white z-10 relative" />
+                    <MicrophoneIcon className={`text-white z-10 relative ${isMobile ? 'w-5 h-5' : 'w-6 h-6'}`} />
                     <div className="absolute inset-0 bg-white/20 rounded-full animate-ping"></div>
                     <div className="absolute inset-1 bg-white/10 rounded-full animate-pulse"></div>
                   </div>
                 ) : isSpeaking ? (
                   // Speaker icon when Asteria is speaking
                   <div className="relative">
-                    <div className="w-6 h-6 text-tag-dark-purple relative z-10 flex items-center justify-center">
+                    <div className={`text-tag-dark-purple relative z-10 flex items-center justify-center ${isMobile ? 'w-5 h-5' : 'w-6 h-6'}`}>
                       🔊
                     </div>
                     <div className="absolute inset-0 bg-tag-dark-purple/20 rounded-full animate-pulse"></div>
                   </div>
                 ) : (
                   // Regular microphone icon
-                  <MicrophoneIcon className={`w-6 h-6 ${voiceSupported ? 'text-tag-gold' : 'text-gray-400'}`} />
+                  <MicrophoneIcon className={`${voiceSupported ? 'text-tag-gold' : 'text-gray-400'} ${isMobile ? 'w-5 h-5' : 'w-6 h-6'}`} />
                 )}
               </div>
               
@@ -589,28 +708,20 @@ export default function ChatInterface() {
               )}
             </button>
             
-            {/* Voice Waveform Animation for Header */}
-            {(isListening || isTranscribing) && (
-              <div className="voice-waveform">
-                <div className="bar"></div>
-                <div className="bar"></div>
-                <div className="bar"></div>
-                <div className="bar"></div>
-                <div className="bar"></div>
-              </div>
-            )}
-            
+            {/* Clear Chat Button */}
             <button
               onClick={handleClearChat}
-              className="min-h-touch-min p-3 rounded-full bg-tag-dark-purple/50 border border-tag-gold/30 transition-all duration-200 hover:scale-105 active:scale-95"
+              className={`min-h-touch-min rounded-full bg-tag-dark-purple/50 border border-tag-gold/30 transition-all duration-200 hover:scale-105 active:scale-95 ${
+                isMobile ? 'p-2' : 'p-3'
+              }`}
             >
-              <Bars3Icon className="w-5 h-5 text-tag-gold" />
+              <Bars3Icon className={`text-tag-gold ${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
             </button>
           </div>
         </div>
 
         {/* Progress Bar */}
-        {isLoading && (
+        {chatState.isLoading && (
           <div className="progress-bar-luxury mt-4">
             <div 
               className="progress-fill" 
@@ -636,7 +747,7 @@ export default function ChatInterface() {
         onTouchEnd={handleTouchEnd}
       >
         <AnimatePresence>
-          {messages.map((message, index) => (
+          {chatState.messages.map((message, index) => (
             <motion.div
               key={message.id}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -716,19 +827,25 @@ export default function ChatInterface() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Enhanced Input Section */}
-      <div className="message-input-container glass rounded-b-2xl p-6 border-t border-tag-gold/20">
+      {/* Enhanced Input Section with Mobile Optimizations */}
+      <div className={`message-input-container glass rounded-b-2xl border-t border-tag-gold/20 ${
+        isMobile ? 'p-4 mobile-safe-bottom chat-input-container' : 'p-6'
+      }`}>
         {/* Voice Error Display */}
         {voiceError && (
-          <div className="mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-300 text-sm">
+          <div className={`mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-300 ${
+            isMobile ? 'text-sm mobile-error-shake' : 'text-sm'
+          }`}>
             {voiceError}
           </div>
         )}
         
         {/* Voice Status Display */}
         {isListening && (
-          <div className="mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-300 text-sm flex items-center gap-2">
-            <MicrophoneIcon className="w-4 h-4 animate-pulse" />
+          <div className={`mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-300 flex items-center gap-2 ${
+            isMobile ? 'text-sm' : 'text-sm'
+          }`}>
+            <MicrophoneIcon className={`animate-pulse ${isMobile ? 'w-4 h-4' : 'w-4 h-4'}`} />
             <span>Listening... Speak now</span>
             <div className="flex gap-1 ml-auto">
               <div className="w-1 h-4 bg-red-400 rounded animate-pulse"></div>
@@ -740,8 +857,10 @@ export default function ChatInterface() {
         )}
         
         {isSpeaking && (
-          <div className="mb-4 p-3 bg-tag-gold/20 border border-tag-gold/30 rounded-lg text-tag-gold text-sm flex items-center gap-2">
-            <div className="w-4 h-4 flex items-center justify-center">🔊</div>
+          <div className={`mb-4 p-3 bg-tag-gold/20 border border-tag-gold/30 rounded-lg text-tag-gold flex items-center gap-2 ${
+            isMobile ? 'text-sm' : 'text-sm'
+          }`}>
+            <div className={`flex items-center justify-center ${isMobile ? 'w-4 h-4' : 'w-4 h-4'}`}>🔊</div>
             <span>Asteria is speaking...</span>
             <div className="flex gap-1 ml-auto">
               <div className="w-1 h-3 bg-tag-gold rounded animate-bounce"></div>
@@ -752,7 +871,7 @@ export default function ChatInterface() {
           </div>
         )}
         
-        <div className="flex gap-4 items-end">
+        <div className={`flex gap-4 items-end ${isMobile ? 'gap-3' : 'gap-4'}`}>
           <div className="flex-1 relative">
             <textarea
               ref={textareaRef}
@@ -771,27 +890,37 @@ export default function ChatInterface() {
                   ? "✨ Transcribing your message..."
                   : "Describe your luxury experience..."
               }
-              className={`luxury-input w-full bg-tag-dark-purple/50 border rounded-xl p-4 text-tag-cream placeholder-tag-neutral-gray resize-none focus:outline-none transition-all duration-300 ${
+              className={`luxury-input w-full bg-tag-dark-purple/50 border rounded-xl text-tag-cream placeholder-tag-neutral-gray resize-none focus:outline-none transition-all duration-300 ${
+                isMobile 
+                  ? 'p-3 text-base min-h-[44px]' // iOS minimum touch target
+                  : 'p-4'
+              } ${
                 isListening 
                   ? 'border-red-500/60 shadow-lg shadow-red-500/20 bg-red-500/10' 
                   : isTranscribing
                   ? 'border-tag-gold/60 shadow-lg shadow-tag-gold/20 bg-tag-gold/10'
                   : 'border-tag-gold/30 focus:border-tag-gold/60'
               }`}
-              rows={3}
-              disabled={isLoading}
+              rows={isMobile ? 2 : 3}
+              disabled={chatState.isLoading}
+              style={{
+                fontSize: isMobile ? '16px' : '14px', // Prevent zoom on iOS
+                lineHeight: isMobile ? '1.4' : '1.5'
+              }}
             />
             
             {/* Loading Overlay */}
-            {isLoading && (
+            {chatState.isLoading && (
               <div className="absolute inset-0 bg-tag-dark-purple/80 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                <div className="tag-spinner"></div>
+                <div className={`tag-spinner ${isMobile ? 'w-6 h-6' : ''}`}></div>
               </div>
             )}
             
             {/* Voice Transcription Indicator */}
             {isTranscribing && (
-              <div className="absolute top-2 right-2 flex items-center gap-2 bg-tag-gold/20 px-2 py-1 rounded text-xs text-tag-gold">
+              <div className={`absolute top-2 right-2 flex items-center gap-2 bg-tag-gold/20 px-2 py-1 rounded ${
+                isMobile ? 'text-xs' : 'text-xs'
+              } text-tag-gold`}>
                 <div className="w-2 h-2 bg-tag-gold rounded-full animate-pulse"></div>
                 Transcribing
               </div>
@@ -800,12 +929,21 @@ export default function ChatInterface() {
           
           <button
             onClick={handleSendMessage}
-            disabled={!inputValue.trim() || isLoading}
-            className="min-h-touch-min bg-gradient-to-r from-tag-gold to-tag-gold-light p-4 rounded-xl text-tag-dark-purple font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[60px] transition-all duration-200 hover:scale-105 active:scale-95"
+            disabled={!inputValue.trim() || chatState.isLoading}
+            className={`min-h-touch-min bg-gradient-to-r from-tag-gold to-tag-gold-light text-tag-dark-purple font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 mobile-haptic-medium ${
+              isMobile 
+                ? 'p-3 rounded-xl min-w-[48px]' // iOS minimum touch target
+                : 'p-4 rounded-xl min-w-[60px]'
+            }`}
           >
-            <ArrowUpIcon className="w-5 h-5" />
+            <ArrowUpIcon className={`${isMobile ? 'w-5 h-5' : 'w-5 h-5'}`} />
           </button>
         </div>
+
+        {/* Mobile-specific keyboard spacer */}
+        {isMobile && keyboardVisible && (
+          <div className="h-4"></div>
+        )}
       </div>
 
       {/* NEW: Floating Voice Interface */}
