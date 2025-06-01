@@ -219,6 +219,13 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
     
     console.log(`🎬 OPTIMIZED ANIMATION START: ${videoSpecs.duration/1000}s @ ${videoSpecs.fps}fps (${videoSpecs.totalFrames} frames)`);
     
+    // ENHANCED: Track animation start and reset frame drops
+    setPerformanceMetrics(prev => ({ 
+      ...prev, 
+      animationStartTime: performance.now(),
+      frameDrops: 0
+    }));
+    
     isPlayingRef.current = true;
     frameIndexRef.current = 0;
     let startTime = performance.now();
@@ -239,12 +246,20 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
       // OPTIMIZED: Calculate exact frame based on elapsed time (prevents drift)
       const expectedFrame = Math.floor(elapsed / frameDuration);
       
-      // ENHANCED: Frame dropping logic for smooth timing
+      // ENHANCED: Frame dropping logic with state tracking
       if (expectedFrame > frameIndexRef.current) {
         const framesToSkip = expectedFrame - frameIndexRef.current;
         if (framesToSkip > 1) {
-          frameDrops += framesToSkip - 1;
-          console.log(`🎬 ⚡ Frame drop: Skipped ${framesToSkip - 1} frames for smooth timing`);
+          const drops = framesToSkip - 1;
+          frameDrops += drops;
+          
+          // ENHANCED: Update performance metrics with frame drops
+          setPerformanceMetrics(prev => ({ 
+            ...prev, 
+            frameDrops: frameDrops 
+          }));
+          
+          console.log(`🎬 ⚡ Frame drop: Skipped ${drops} frames for smooth timing (total: ${frameDrops})`);
         }
         frameIndexRef.current = expectedFrame;
       }
@@ -298,6 +313,16 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
     const performance = videoSpecs.performance;
     console.log(`🎬 ${isMobile ? 'MOBILE' : 'DESKTOP'} OPTIMIZED LOADING: ${totalFrames} frames (${performance} performance)`);
     
+    // ENHANCED: Track loading start time
+    const loadStartTime = performance.now();
+    setPerformanceMetrics(prev => ({ 
+      ...prev, 
+      loadStartTime,
+      loadTime: 0,
+      loadedFrames: 0,
+      failedFrames: 0
+    }));
+    
     const images: HTMLImageElement[] = new Array(totalFrames).fill(null);
     let loadedCount = 0;
     let failedCount = 0;
@@ -313,6 +338,14 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
     const updateProgress = () => {
       const progress = Math.min((loadedCount / totalFrames) * 100, 100);
       setLoadingProgress(progress);
+      
+      // ENHANCED: Update performance metrics in real-time
+      setPerformanceMetrics(prev => ({ 
+        ...prev, 
+        loadedFrames: loadedCount,
+        failedFrames: failedCount,
+        loadTime: (performance.now() - loadStartTime) / 1000
+      }));
       
       // MOBILE: Start animation faster for perceived performance
       if (loadedCount >= minFramesToStart && !isPlayingRef.current) {
@@ -759,11 +792,16 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
           {/* LOADING STATISTICS */}
           <div style={{ marginTop: '8px', padding: '8px', background: 'rgba(212, 175, 55, 0.1)' }}>
             <div style={{ fontWeight: 'bold' }}>📈 LOADING STATISTICS</div>
-            <div>✅ LOADED: {Math.round((loadingProgress / 100) * videoSpecs.totalFrames)}/{videoSpecs.totalFrames}</div>
+            <div>✅ LOADED: {performanceMetrics.loadedFrames}/{videoSpecs.totalFrames}</div>
             <div>❌ FAILED: {performanceMetrics.failedFrames}/{videoSpecs.totalFrames}</div>
-            <div>📊 SUCCESS RATE: {loadingProgress > 0 ? (100 - (performanceMetrics.failedFrames / videoSpecs.totalFrames * 100)).toFixed(1) : 100}%</div>
-            <div>⏱️ LOAD TIME: {performanceMetrics.loadTime || 0}s</div>
+            <div>📊 SUCCESS RATE: {
+              performanceMetrics.loadedFrames > 0 
+                ? (((performanceMetrics.loadedFrames - performanceMetrics.failedFrames) / performanceMetrics.loadedFrames) * 100).toFixed(1)
+                : 100
+            }%</div>
+            <div>⏱️ LOAD TIME: {performanceMetrics.loadTime.toFixed(1)}s</div>
             <div>📋 STATUS: {loadingProgress >= 100 ? 'COMPLETE' : 'LOADING'}</div>
+            <div>🎬 FRAME DROPS: {performanceMetrics.frameDrops}</div>
           </div>
 
           {/* ENHANCED: Timing Information */}
