@@ -1,0 +1,38 @@
+# ===================================
+# ASTERIA MVP - ENVIRONMENT VARIABLES
+# ===================================
+# For production deployment on Vercel
+# Domain: innercircle.thriveachievegrow.com
+
+# ===================================
+# REQUIRED FOR CORE FUNCTIONALITY
+# ===================================
+
+# OpenAI API - Required for Asteria AI responses
+OPENAI_API_KEY=sk-proj-xxxxx
+
+# Slack Integration - Required for admin notifications
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/xxxxx
+
+# ===================================
+# OPTIONAL FEATURES
+# ===================================
+
+# ElevenLabs - For voice synthesis features
+ELEVENLABS_API_KEY=sk_xxxxx
+
+# Twilio - For SMS notifications and phone features
+TWILIO_ACCOUNT_SID=ACxxxxx
+TWILIO_AUTH_TOKEN=xxxxx
+TWILIO_PHONE_NUMBER=+1xxxxx
+
+# Tavily - For web search capabilities
+TAVILY_API_KEY=tvly-xxxxx
+
+# ===================================
+# DEPLOYMENT NOTES
+# ===================================
+# 1. Set these in Vercel dashboard under project settings
+# 2. OPENAI_API_KEY and SLACK_WEBHOOK_URL are required
+# 3. All other variables are optional feature enhancements
+# 4. Never commit actual values to repository 
