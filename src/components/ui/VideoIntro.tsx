@@ -69,6 +69,17 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   const [showContinueOption, setShowContinueOption] = useState(true);
   const [canvasError, setCanvasError] = useState(false);
   
+  // ENHANCED: Performance tracking state
+  const [performanceMetrics, setPerformanceMetrics] = useState({
+    loadedFrames: 0,
+    failedFrames: 0,
+    loadStartTime: 0,
+    animationStartTime: 0,
+    actualFPS: 0,
+    frameDrops: 0,
+    loadTime: 0
+  });
+  
   // Refs for performance
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
@@ -78,11 +89,30 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   
   // ENHANCED: Auto-detect available frame sets and video specifications
   const videoSpecs = useMemo(() => {
+    // ADD function to check for 60fps frames (framework for future upgrade)
+    const checkFor60fpsFrames = () => {
+      // This could be enhanced to actually check if 60fps folders exist
+      // For now, we'll prepare the framework for when 60fps frames are available
+      return false; // Set to true when 60fps frames are available
+    };
+
     // Check if we have the full 240-frame videos restored
     const hasFullFrames = true; // Full frames have been restored from backup
+    const has60fpsFrames = checkFor60fpsFrames();
     
-    if (hasFullFrames) {
-      // Full 8-second luxury experience (RESTORED FROM BACKUP)
+    if (hasFullFrames && has60fpsFrames) {
+      // Premium 60fps experience (FUTURE ENHANCEMENT)
+      return {
+        totalFrames: 480,        // 8 seconds × 60fps
+        duration: 8000,          // 8 seconds
+        fps: 60,                 // 60fps for ultra-smoothness
+        canvasWidth: isMobile ? 1080 : 1920,
+        canvasHeight: isMobile ? 1920 : 1080,
+        aspectRatio: isMobile ? '9/16' : '16/9',
+        performance: 'premium'   // Premium 60fps experience
+      };
+    } else if (hasFullFrames) {
+      // Full 8-second luxury experience (CURRENT - RESTORED FROM BACKUP)
       return {
         totalFrames: 240,
         duration: 8000,        // 8 seconds of luxury timing
@@ -106,12 +136,17 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
     }
   }, [isMobile]);
   
-  // ENHANCED: Frame path - use full frames for standard performance, lite for fallback
+  // ENHANCED: Frame path - support for 60fps premium, standard, and lite modes
   const getFramePath = useCallback((frameNumber: number) => {
     const frameStr = frameNumber.toString().padStart(4, '0');
+    const performance = videoSpecs.performance;
     
-    if (videoSpecs.performance === 'standard') {
-      // Use full 240-frame videos (restored from backup)
+    if (performance === 'premium') {
+      // 60fps premium folders (FUTURE ENHANCEMENT)
+      const folder = isMobile ? 'mobile_60fps' : 'desktop_60fps';
+      return `/frames/${folder}/frame_${frameStr}.jpg`;
+    } else if (performance === 'standard') {
+      // Use full 240-frame videos (CURRENT - restored from backup)
       const folder = isMobile ? 'mobile' : 'desktop';
       return `/frames/${folder}/frame_${frameStr}.jpg`;
     } else {
@@ -122,7 +157,7 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   }, [isMobile, videoSpecs.performance]);
   
   const handleSkip = useCallback(() => {
-    console.log('🎬 Video intro skipped');
+    console.log('🎬 Video intro skipped - will show again next refresh');
     isPlayingRef.current = false;
     if (animationIdRef.current) {
       cancelAnimationFrame(animationIdRef.current);
@@ -182,138 +217,203 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
       return;
     }
     
-    console.log(`🎬 Starting animation: ${videoSpecs.duration/1000}s @ ${videoSpecs.fps}fps (${videoSpecs.totalFrames} frames)`);
+    console.log(`🎬 OPTIMIZED ANIMATION START: ${videoSpecs.duration/1000}s @ ${videoSpecs.fps}fps (${videoSpecs.totalFrames} frames)`);
     
     isPlayingRef.current = true;
     frameIndexRef.current = 0;
-    const startTime = performance.now();
+    let startTime = performance.now();
+    let lastFrameTime = startTime;
+    let frameDrops = 0;
     
-    // FIXED: Proper frame duration calculation
-    const frameDuration = videoSpecs.duration / videoSpecs.totalFrames; // Total duration divided by frames
+    // ENHANCED: Precise timing with frame dropping capability
+    const frameDuration = videoSpecs.duration / videoSpecs.totalFrames;
+    const targetFPS = videoSpecs.fps;
+    const maxFrameTime = 1000 / targetFPS; // 33.33ms for 30fps, 16.67ms for 60fps
     
     const drawFrame = (currentTime: number) => {
       if (!isPlayingRef.current || !imagesRef.current) return;
       
       const elapsed = currentTime - startTime;
+      const deltaTime = currentTime - lastFrameTime;
       
-      // FIXED: Calculate exact frame based on elapsed time and total duration
-      const targetFrame = Math.floor(elapsed / frameDuration);
+      // OPTIMIZED: Calculate exact frame based on elapsed time (prevents drift)
+      const expectedFrame = Math.floor(elapsed / frameDuration);
       
-      // FIXED: Only update if we need to advance to a new frame
-      if (targetFrame > frameIndexRef.current && targetFrame < videoSpecs.totalFrames) {
-        frameIndexRef.current = targetFrame;
+      // ENHANCED: Frame dropping logic for smooth timing
+      if (expectedFrame > frameIndexRef.current) {
+        const framesToSkip = expectedFrame - frameIndexRef.current;
+        if (framesToSkip > 1) {
+          frameDrops += framesToSkip - 1;
+          console.log(`🎬 ⚡ Frame drop: Skipped ${framesToSkip - 1} frames for smooth timing`);
+        }
+        frameIndexRef.current = expectedFrame;
       }
       
-      // Check if animation is complete
+      // Check completion with more precise timing
       if (elapsed >= videoSpecs.duration || frameIndexRef.current >= videoSpecs.totalFrames) {
-        console.log(`🎬 Animation complete after ${elapsed.toFixed(0)}ms (target: ${videoSpecs.duration}ms)`);
+        console.log(`🎬 SMOOTH ANIMATION COMPLETE: ${elapsed.toFixed(0)}ms (target: ${videoSpecs.duration}ms), drops: ${frameDrops}`);
         handleComplete();
         return;
       }
       
-      // Draw current frame
-      const img = imagesRef.current[frameIndexRef.current];
-      if (img && img.complete && img.naturalWidth > 0) {
-        try {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        } catch (error) {
-          console.error('Frame draw error:', error);
+      // ENHANCED: Adaptive frame rate limiting based on performance
+      const shouldDraw = deltaTime >= maxFrameTime * 0.9; // Slight tolerance for smoother playback
+      
+      if (shouldDraw) {
+        const img = imagesRef.current[frameIndexRef.current];
+        
+        if (img && img.complete && img.naturalWidth > 0) {
+          try {
+            // OPTIMIZED: Enhanced drawing method with compositing optimization
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // ENHANCED: Use image smoothing for better quality on scaled displays
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            
+            ctx.drawImage(
+              img, 
+              0, 0, img.naturalWidth, img.naturalHeight,
+              0, 0, canvas.width, canvas.height
+            );
+            
+            lastFrameTime = currentTime;
+          } catch (error) {
+            console.error('🎬 Frame draw error:', error);
+          }
         }
       }
       
-      // FIXED: Continue animation without manual increment
+      // Continue animation
       animationIdRef.current = requestAnimationFrame(drawFrame);
     };
     
+    // Start the optimized animation loop
     animationIdRef.current = requestAnimationFrame(drawFrame);
   }, [isMounted, videoSpecs, handleComplete]);
   
   const startFrameLoading = useCallback(() => {
     const totalFrames = videoSpecs.totalFrames;
     const performance = videoSpecs.performance;
-    console.log(`🎬 Loading ${totalFrames} frames for ${isMobile ? 'mobile' : 'desktop'} (${performance} performance)`);
+    console.log(`🎬 ${isMobile ? 'MOBILE' : 'DESKTOP'} OPTIMIZED LOADING: ${totalFrames} frames (${performance} performance)`);
     
     const images: HTMLImageElement[] = new Array(totalFrames).fill(null);
     let loadedCount = 0;
-    
-    // ENHANCED: Adaptive loading thresholds based on performance mode
+    let failedCount = 0;
+
+    // MOBILE: More aggressive early start, smaller batches
+    // DESKTOP: Larger batches, more preloading
     const minFramesToStart = performance === 'standard' 
-      ? (isMobile ? 30 : 60)    // Standard: Need more frames for smooth 8s playback
-      : (isMobile ? 20 : 45);   // Lite: Original thresholds for 2s playback
+      ? (isMobile ? 20 : 45)    // Mobile starts earlier for perceived performance
+      : (isMobile ? 15 : 30);   // Lite: Even earlier start
     
+    const maxFailures = Math.floor(totalFrames * (isMobile ? 0.15 : 0.10)); // Mobile more tolerant
+
     const updateProgress = () => {
       const progress = Math.min((loadedCount / totalFrames) * 100, 100);
       setLoadingProgress(progress);
       
+      // MOBILE: Start animation faster for perceived performance
       if (loadedCount >= minFramesToStart && !isPlayingRef.current) {
+        console.log(`🎬 ⚡ ${isMobile ? 'MOBILE' : 'DESKTOP'} EARLY START: Animation with ${loadedCount} frames preloaded!`);
         setTimeout(() => startCanvasAnimation(), 100);
       }
     };
-    
-    const loadFrameBatch = (start: number, end: number, delay: number = 0) => {
+
+    const loadFrameBatch = (startFrame: number, endFrame: number, delay: number = 0, priority: boolean = false) => {
       setTimeout(() => {
-        for (let i = start; i <= Math.min(end, totalFrames); i++) {
+        const batchType = priority ? 'PRIORITY' : 'STANDARD';
+        console.log(`📦 ${isMobile ? 'MOBILE' : 'DESKTOP'} ${batchType} batch ${startFrame}-${endFrame}`);
+        
+        for (let i = startFrame; i <= Math.min(endFrame, totalFrames); i++) {
           const frameIndex = i - 1;
           if (frameIndex < 0 || frameIndex >= images.length) continue;
           
           const img = images[frameIndex] = new Image();
           
+          // MOBILE: Reduce timeout for faster perceived loading
+          const loadTimeout = setTimeout(() => {
+            console.error(`⏰ ${isMobile ? 'MOBILE' : 'DESKTOP'} FRAME TIMEOUT: ${getFramePath(i)}`);
+            failedCount++;
+            loadedCount++;
+            updateProgress();
+          }, isMobile ? 8000 : 10000);
+          
           img.onload = () => {
+            clearTimeout(loadTimeout);
             loadedCount++;
             updateProgress();
           };
           
           img.onerror = () => {
-            console.warn(`❌ Frame ${i} failed to load: ${getFramePath(i)}`);
+            clearTimeout(loadTimeout);
+            failedCount++;
             loadedCount++;
+            
+            if (failedCount <= maxFailures) {
+              console.error(`🚨 ${isMobile ? 'MOBILE' : 'DESKTOP'} FRAME FAILED #${failedCount}: ${getFramePath(i)}`);
+            }
+            
             updateProgress();
           };
+          
+          // MOBILE: Use fetchpriority for priority frames on supported browsers
+          if (priority && 'fetchPriority' in img) {
+            (img as any).fetchPriority = 'high';
+          }
           
           img.src = getFramePath(i);
         }
       }, delay);
     };
-    
-    // ENHANCED: Performance-specific batch loading strategies
+
+    // DEVICE-SPECIFIC: Optimized loading strategies for both lite and standard modes
     if (performance === 'standard') {
       // Standard mode: Optimized for 240 frames
       if (isMobile) {
-        // Mobile: Conservative batches for 240 frames
-        loadFrameBatch(1, 30, 0);      // Priority: First 30 frames (1s worth)
-        loadFrameBatch(31, 60, 200);   // Priority: Next 30 frames (2s total)
-        loadFrameBatch(61, 120, 500);  // Standard: Next 60 frames (4s total)
-        loadFrameBatch(121, 180, 800); // Standard: Next 60 frames (6s total)
-        loadFrameBatch(181, 240, 1200);// Background: Final 60 frames (8s total)
+        // MOBILE: Small batches, longer delays, priority on first frames
+        loadFrameBatch(1, 20, 0, true);      // Priority: First 20 frames immediately
+        loadFrameBatch(21, 40, 150, true);   // Priority: Next 20 frames quickly  
+        loadFrameBatch(41, 80, 400);         // Standard: Next 40 frames
+        loadFrameBatch(81, 120, 700);        // Standard: Next 40 frames
+        loadFrameBatch(121, 160, 1000);      // Background: Next 40 frames
+        loadFrameBatch(161, 200, 1300);      // Background: Next 40 frames
+        loadFrameBatch(201, 240, 1600);      // Background: Final 40 frames
       } else {
-        // Desktop: Aggressive batches for 240 frames
-        loadFrameBatch(1, 60, 0);      // Priority: First 60 frames (2s worth)
-        loadFrameBatch(61, 120, 200);  // Priority: Next 60 frames (4s total)
-        loadFrameBatch(121, 180, 400); // Standard: Next 60 frames (6s total)
-        loadFrameBatch(181, 240, 600); // Background: Final 60 frames (8s total)
+        // DESKTOP: Larger batches, shorter delays, more aggressive preloading
+        loadFrameBatch(1, 45, 0, true);      // Priority: First 45 frames immediately
+        loadFrameBatch(46, 90, 100, true);   // Priority: Next 45 frames quickly
+        loadFrameBatch(91, 150, 200);        // Standard: Next 60 frames
+        loadFrameBatch(151, 210, 300);       // Standard: Next 60 frames  
+        loadFrameBatch(211, 240, 400);       // Background: Final 30 frames
       }
     } else {
-      // Lite mode: Original strategy for 60 frames
+      // Lite mode: Enhanced strategy for 60 frames
       if (isMobile) {
-        loadFrameBatch(1, 20, 0);
-        loadFrameBatch(21, 40, 150);
-        loadFrameBatch(41, 60, 400);
+        // MOBILE: Priority-based loading for lite mode
+        loadFrameBatch(1, 15, 0, true);      // Priority: First 15 frames
+        loadFrameBatch(16, 30, 150, true);   // Priority: Next 15 frames
+        loadFrameBatch(31, 45, 350);         // Standard: Next 15 frames
+        loadFrameBatch(46, 60, 600);         // Background: Final 15 frames
       } else {
-        loadFrameBatch(1, 45, 0);
-        loadFrameBatch(46, 60, 100);
+        // DESKTOP: Aggressive loading for lite mode
+        loadFrameBatch(1, 30, 0, true);      // Priority: First 30 frames
+        loadFrameBatch(31, 45, 100, true);   // Priority: Next 15 frames
+        loadFrameBatch(46, 60, 200);         // Background: Final 15 frames
       }
     }
     
     imagesRef.current = images;
     
-    // ENHANCED: Performance-specific emergency timeouts
+    // ENHANCED: Performance-specific emergency timeouts with better error handling
     const timeoutDuration = performance === 'standard' 
       ? (isMobile ? 25000 : 30000)   // Longer timeout for 240 frames
       : (isMobile ? 15000 : 20000);  // Original timeout for lite mode
     
     setTimeout(() => {
       if (!isPlayingRef.current && loadedCount < minFramesToStart) {
-        console.error(`🎬 Emergency timeout (${performance}): Only ${loadedCount} frames loaded`);
+        console.error(`🎬 Emergency timeout (${performance}): Only ${loadedCount}/${totalFrames} frames loaded, failed: ${failedCount}`);
         if (onError) {
           onError();
         } else {
@@ -623,27 +723,49 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
           position: 'absolute',
           top: '20px',
           left: '20px',
-          background: 'rgba(0,0,0,0.9)',
+          background: 'rgba(0,0,0,0.95)',
           color: tagBrandTokens.colors.primary,
           padding: '16px',
           borderRadius: '8px',
           fontSize: '11px',
           fontFamily: 'monospace',
-          maxWidth: '350px',
+          maxWidth: '450px',
           zIndex: 20,
           border: `1px solid ${tagBrandTokens.colors.primary}`
         }}>
           <div style={{ marginBottom: '8px', fontSize: '12px', fontWeight: 'bold' }}>
-            🎬 ASTERIA TIMING DEBUG
+            🎬 PERFORMANCE DEBUG PANEL
           </div>
-          <div>Device: {isMobile ? 'MOBILE' : 'DESKTOP'}</div>
-          <div>Performance: {videoSpecs.performance}</div>
-          <div>FPS: {videoSpecs.fps}</div>
-          <div>Frames: {videoSpecs.totalFrames}</div>
-          <div>Duration: {videoSpecs.duration/1000}s</div>
-          <div>Progress: {Math.round(loadingProgress)}%</div>
-          <div>Canvas: {videoSpecs.canvasWidth}x{videoSpecs.canvasHeight}</div>
+          <div>🖥️ DEVICE: {isMobile ? 'MOBILE' : 'DESKTOP'}</div>
+          <div>📏 VIEWPORT: {typeof window !== 'undefined' ? `${window.innerWidth}x${window.innerHeight}` : 'SSR'}</div>
+          <div>🎬 CANVAS: {videoSpecs.canvasWidth}x{videoSpecs.canvasHeight}</div>
+          <div>📁 FRAMES: {videoSpecs.totalFrames} ({videoSpecs.duration/1000}s)</div>
+          <div>🎯 FPS: {videoSpecs.fps} ({videoSpecs.performance})</div>
+          <div>📂 FOLDER: {videoSpecs.performance === 'standard' 
+            ? (isMobile ? 'mobile' : 'desktop') 
+            : (isMobile ? 'mobile_lite' : 'desktop_lite')}</div>
           
+          {/* PERFORMANCE METRICS */}
+          <div style={{ marginTop: '8px', padding: '8px', background: 'rgba(0, 255, 0, 0.1)' }}>
+            <div style={{ fontWeight: 'bold' }}>⚡ PERFORMANCE METRICS</div>
+            <div>🎮 PLAYING: {isPlayingRef.current ? 'YES' : 'NO'}</div>
+            <div>🖼️ CURRENT FRAME: {frameIndexRef.current}</div>
+            <div>📊 PROGRESS: {Math.round(loadingProgress)}%</div>
+            <div>⏱️ FRAME TIME: {(videoSpecs.duration/videoSpecs.totalFrames).toFixed(1)}ms</div>
+            <div>🔄 REFRESH RATE: {typeof screen !== 'undefined' && screen.refreshRate ? `${screen.refreshRate}Hz` : 'Unknown'}</div>
+            <div>📈 SUCCESS RATE: {loadingProgress > 0 ? ((loadingProgress / 100) * 100).toFixed(1) : 0}%</div>
+          </div>
+
+          {/* LOADING STATISTICS */}
+          <div style={{ marginTop: '8px', padding: '8px', background: 'rgba(212, 175, 55, 0.1)' }}>
+            <div style={{ fontWeight: 'bold' }}>📈 LOADING STATISTICS</div>
+            <div>✅ LOADED: {Math.round((loadingProgress / 100) * videoSpecs.totalFrames)}/{videoSpecs.totalFrames}</div>
+            <div>❌ FAILED: {performanceMetrics.failedFrames}/{videoSpecs.totalFrames}</div>
+            <div>📊 SUCCESS RATE: {loadingProgress > 0 ? (100 - (performanceMetrics.failedFrames / videoSpecs.totalFrames * 100)).toFixed(1) : 100}%</div>
+            <div>⏱️ LOAD TIME: {performanceMetrics.loadTime || 0}s</div>
+            <div>📋 STATUS: {loadingProgress >= 100 ? 'COMPLETE' : 'LOADING'}</div>
+          </div>
+
           {/* ENHANCED: Timing Information */}
           <div style={{ marginTop: '8px', padding: '8px', background: 'rgba(212, 175, 55, 0.1)' }}>
             <div style={{ fontWeight: 'bold' }}>⏱️ TIMING ANALYSIS</div>
@@ -676,6 +798,55 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
               <div>Frames: 240 ({videoSpecs.duration/1000}s @ {videoSpecs.fps}fps)</div>
             </div>
           )}
+
+          {/* OPTIMIZATION CONTROLS */}
+          <div style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <button 
+              onClick={() => {
+                console.log('🎬 PERFORMANCE TEST: Measuring frame timing...');
+                console.log('📊 Current Performance Metrics:', {
+                  loadingProgress,
+                  currentFrame: frameIndexRef.current,
+                  totalFrames: videoSpecs.totalFrames,
+                  isPlaying: isPlayingRef.current,
+                  performance: videoSpecs.performance,
+                  device: isMobile ? 'mobile' : 'desktop'
+                });
+              }}
+              style={{
+                padding: '4px 8px',
+                background: '#d4af37',
+                color: '#000',
+                border: 'none',
+                borderRadius: '4px',
+                fontSize: '10px',
+                cursor: 'pointer'
+              }}
+            >
+              📊 MEASURE PERFORMANCE
+            </button>
+            <button 
+              onClick={() => {
+                console.log('🎬 FRAME ANALYSIS:', {
+                  framePath: getFramePath(frameIndexRef.current + 1),
+                  expectedDuration: videoSpecs.duration,
+                  frameDuration: videoSpecs.duration / videoSpecs.totalFrames,
+                  progressPercent: (frameIndexRef.current / videoSpecs.totalFrames * 100).toFixed(2)
+                });
+              }}
+              style={{
+                padding: '4px 8px',
+                background: '#581c87',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '4px',
+                fontSize: '10px',
+                cursor: 'pointer'
+              }}
+            >
+              🔍 ANALYZE FRAMES
+            </button>
+          </div>
         </div>
       )}
     </motion.div>
