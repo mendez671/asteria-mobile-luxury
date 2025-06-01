@@ -1,148 +1,120 @@
-import { OpenAI } from 'openai';
 import { NextRequest, NextResponse } from 'next/server';
-
-// Import the complete Agent Loop system
-import { AsteriaAgentLoop } from '@/lib/agent/agent_loop';
+import OpenAI from 'openai';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  timeout: 8000,
 });
 
-export async function POST(req: NextRequest) {
-  const requestId = Math.random().toString(36).substring(7);
-  
-  // Extract request data at the top level for access in catch blocks
-  let message = '';
-  let conversationHistory: Array<{ role: string; content: string }> = [];
-  
+// Clean Asteria system prompt (no debug info)
+const ASTERIA_SYSTEM_PROMPT = `You are Asteria, the personal concierge for TAG's elite members. You embody sophistication, anticipation, and curated excellence.
+
+PERSONALITY:
+- Sophisticated ally, not eager servant
+- Confident whisper, not loud enthusiasm  
+- Anticipate needs, don't just react
+- Every word serves a purpose
+
+CONVERSATION STYLE:
+- Natural, flowing responses
+- No corporate jargon or process explanations
+- Acknowledge context elegantly
+- Offer curated suggestions, not generic options
+
+FORBIDDEN RESPONSES:
+- Never say "I understand your interest in..."
+- Never mention "expediting requests" 
+- Never show debug info or internal processing
+- Never use "Next steps:" or "I'll continue monitoring"
+
+SAMPLE RESPONSES:
+User: "I need a dinner reservation for tonight"
+You: "Of course. I have several exceptional venues in mind that would suit perfectly for tonight. Shall I share my recommendations?"
+
+User: "Hello Asteria"  
+You: "Good evening. It's my pleasure to assist you with whatever extraordinary experience you have in mind."
+
+Remember: You are curating experiences, not processing requests. Be naturally helpful, elegantly brief, and genuinely anticipatory.`;
+
+export async function POST(request: NextRequest) {
   try {
-    console.log(`[${requestId}] === ASTERIA AGENT LOOP API ===`);
-    
-    const requestData = await req.json();
-    message = requestData.message;
-    conversationHistory = requestData.conversationHistory || [];
+    const { message, conversationHistory = [] } = await request.json();
 
     if (!message) {
-      return NextResponse.json({ error: 'Message is required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Message is required' },
+        { status: 400 }
+      );
     }
 
-    console.log(`[${requestId}] Processing through Agent Loop: ${message.substring(0, 100)}...`);
+    // Simple, clean OpenAI call - NO AGENT COMPLEXITY
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        { role: "system", content: ASTERIA_SYSTEM_PROMPT },
+        ...conversationHistory,
+        { role: "user", content: message }
+      ],
+      max_tokens: 200,
+      temperature: 0.7
+    });
 
-    // Initialize the Agent Loop
-    const agentLoop = new AsteriaAgentLoop();
+    const response = completion.choices[0].message.content;
 
-    // Create agent context for processing
-    const agentContext = {
-      memberId: 'demo-member-001', // MVP default
-      memberName: 'Valued Member',
-      memberTier: 'founding', // Assume premium tier for MVP
-      originalMessage: message,
-      conversationHistory,
-      maxRetries: 2
-    };
-
-    // Process the request through the complete Agent Loop
-    const startTime = Date.now();
-    const agentResult = await agentLoop.processRequest(agentContext);
-    const processingTime = Date.now() - startTime;
-
-    console.log(`[${requestId}] Agent Loop completed in ${processingTime}ms:`);
-    console.log(`[${requestId}] - Success: ${agentResult.success}`);
-    console.log(`[${requestId}] - Goals Achieved: ${agentResult.goalValidation.achieved}`);
-    console.log(`[${requestId}] - Intent: ${agentResult.intentAnalysis.primaryBucket} (${(agentResult.intentAnalysis.confidence * 100).toFixed(1)}%)`);
-    console.log(`[${requestId}] - Tools Used: ${agentResult.executionResult.executedSteps.map(s => s.toolName).join(', ')}`);
-
-    // Enhance response with execution details for development
-    let enhancedResponse = agentResult.response;
+    // Simple service detection for Slack notification
+    const isServiceRequest = /\b(book|reserve|arrange|plan|need|want|restaurant|flight|hotel|car|event|tickets|dinner|travel)\b/i.test(message);
+    const isUrgent = /\b(urgent|emergency|asap|immediately)\b/i.test(message);
     
-    if (process.env.NODE_ENV === 'development') {
-      // Add debug information in development
-      enhancedResponse += `\n\n---\n**Debug Info:**\n`;
-      enhancedResponse += `🎯 Intent: ${agentResult.intentAnalysis.primaryBucket} (${(agentResult.intentAnalysis.confidence * 100).toFixed(1)}% confidence)\n`;
-      enhancedResponse += `⚙️ Strategy: ${agentResult.executionResult.plan.strategy}\n`;
-      enhancedResponse += `🔧 Tools: ${agentResult.executionResult.executedSteps.map(s => s.toolName).join(', ')}\n`;
-      enhancedResponse += `📊 Goals: ${agentResult.goalValidation.achieved ? 'Achieved' : 'Partial'} (${(agentResult.goalValidation.score * 100).toFixed(1)}%)\n`;
-      enhancedResponse += `⏱️ Processing: ${processingTime}ms\n`;
-      enhancedResponse += `🆔 Run ID: ${agentResult.runLog.id}`;
+    // Send Slack notification if it's a service request
+    if (isServiceRequest) {
+      await sendSlackNotification(message, response, isUrgent ? 'high' : 'medium');
     }
 
+    // Clean response - NO DEBUG INFO
     return NextResponse.json({
-      response: enhancedResponse,
+      response,
       conversationHistory: [
         ...conversationHistory,
-        { role: 'user', content: message },
-        { role: 'assistant', content: agentResult.response }
+        { role: "user", content: message },
+        { role: "assistant", content: response }
       ],
-      // Additional metadata for frontend
-      metadata: {
-        success: agentResult.success,
-        processingTime,
-        intentAnalysis: {
-          bucket: agentResult.intentAnalysis.primaryBucket,
-          confidence: agentResult.intentAnalysis.confidence,
-          urgency: agentResult.intentAnalysis.urgency
-        },
-        executionSummary: {
-          strategy: agentResult.executionResult.plan.strategy,
-          toolsUsed: agentResult.executionResult.executedSteps.map(s => s.toolName),
-          escalationNeeded: agentResult.executionResult.escalationNeeded
-        },
-        recommendations: agentResult.recommendations,
-        nextSteps: agentResult.nextSteps,
-        runId: agentResult.runLog.id
-      }
+      success: true
     });
 
   } catch (error) {
-    console.error(`[${requestId}] Agent Loop API error:`, error);
-    
-    // Fallback to basic OpenAI response if Agent Loop fails
-    try {
-      console.log(`[${requestId}] Falling back to basic OpenAI response...`);
-      
-      const fallbackPrompt = `You are Asteria, TAG's luxury AI concierge. Respond elegantly to: ${message}`;
-      
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4-turbo-preview',
-        messages: [
-          { role: 'system', content: fallbackPrompt },
-          { role: 'user', content: message }
-        ],
-        temperature: 0.7,
-        max_tokens: 1500
-      });
+    console.error('Chat API error:', error);
+    return NextResponse.json({
+      response: "I apologize, but I'm experiencing a brief interruption. Please try again in a moment.",
+      conversationHistory: [],
+      success: false
+    });
+  }
+}
 
-      const fallbackResponse = completion.choices[0].message.content || 'I apologize, but I\'m experiencing technical difficulties.';
+// Simple Slack notification
+async function sendSlackNotification(userMessage: string, asteriaResponse: string, priority: 'medium' | 'high') {
+  if (!process.env.SLACK_WEBHOOK_URL) return;
 
-      return NextResponse.json({
-        response: fallbackResponse + '\n\n*Note: Operating in fallback mode - full Agent Loop temporarily unavailable.*',
-        conversationHistory: [
-          ...conversationHistory,
-          { role: 'user', content: message },
-          { role: 'assistant', content: fallbackResponse }
-        ],
-        metadata: {
-          success: false,
-          fallbackMode: true,
-          error: 'Agent Loop unavailable'
-        }
-      });
-
-    } catch (fallbackError) {
-      console.error(`[${requestId}] Fallback also failed:`, fallbackError);
-      
-      return NextResponse.json(
-        { 
-          error: 'I apologize, but I\'m experiencing technical difficulties. Please try again in a moment.',
-          metadata: {
-            success: false,
-            systemError: true
+  const priorityEmoji = priority === 'high' ? '🚨' : '🌟';
+  
+  try {
+    await fetch(process.env.SLACK_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text: `${priorityEmoji} New Member Request`,
+        blocks: [
+          {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: `*Member Request:*\n${userMessage}\n\n*Asteria Response:*\n${asteriaResponse}\n\n*Priority:* ${priority}`
+            }
           }
-        },
-        { status: 500 }
-      );
-    }
+        ]
+      })
+    });
+  } catch (error) {
+    console.error('Slack notification failed:', error);
   }
 }
 
