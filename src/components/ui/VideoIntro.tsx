@@ -129,12 +129,12 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const isPlayingRef = useRef(false);
 
-  // UNIFIED: Video specifications - DEPLOYMENT OPTIMIZED (2 seconds for faster deployment)
+  // UNIFIED: Video specifications - RESTORED TO FULL LUXURY EXPERIENCE
   const getVideoSpecs = () => {
       return {
-      totalFrames: 60,         // Reduced for deployment (2 seconds)
-      duration: 2000,          // 2 seconds for fast deployment
-      fps: 30,                 // Standard 30fps
+      totalFrames: 60,         // Available frames in lite deployment
+      duration: 8000,          // RESTORED: Full 8 seconds for luxury experience  
+      fps: 7.5,                // Adjusted: 60 frames / 8 seconds = 7.5fps (cinematic)
       canvasWidth: isMobile ? 1080 : 1920,   // Device-specific canvas
       canvasHeight: isMobile ? 1920 : 1080,  // Device-specific canvas
       aspectRatio: isMobile ? '9/16' : '16/9'
@@ -142,7 +142,7 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   };
 
   const videoSpecs = getVideoSpecs();
-  const fps = 30;
+  const fps = videoSpecs.fps;  // Use dynamic fps from specs
   const frameDuration = 1000 / fps;
 
   // Device-specific frame loading with device-specific folders - DEPLOYMENT OPTIMIZED
@@ -427,7 +427,7 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
     
     // MOBILE: More aggressive early start, smaller batches
     // DESKTOP: Larger batches, more preloading
-    const minFramesToStart = isMobile ? 20 : 45;  // Mobile starts earlier
+    const minFramesToStart = isMobile ? 15 : 25;  // Adjusted for 60-frame set
     const maxFailures = Math.floor(totalFrames * (isMobile ? 0.15 : 0.10)); // Mobile more tolerant
     
     console.log(`🚨 ${isMobile ? 'MOBILE' : 'DESKTOP'} Strategy - Min frames to start: ${minFramesToStart}, Max failures: ${maxFailures}`);
@@ -536,23 +536,16 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
       }, delay);
     };
 
-    // DEVICE-SPECIFIC: Optimized loading strategies
+    // DEVICE-SPECIFIC: Optimized loading strategies for 60-frame set
     if (isMobile) {
-      // MOBILE: Small batches, priority on first frames, longer delays
+      // MOBILE: Small batches, priority loading, longer delays
       loadFrameBatch(1, 20, 0, true);      // Priority: First 20 frames immediately
       loadFrameBatch(21, 40, 300, true);   // Priority: Next 20 frames quickly
-      loadFrameBatch(41, 80, 600);         // Standard: Next 40 frames
-      loadFrameBatch(81, 120, 900);        // Standard: Next 40 frames
-      loadFrameBatch(121, 160, 1200);      // Standard: Next 40 frames
-      loadFrameBatch(161, 200, 1500);      // Standard: Next 40 frames
-      loadFrameBatch(201, 240, 1800);      // Standard: Final 40 frames
+      loadFrameBatch(41, 60, 600);         // Standard: Final 20 frames
     } else {
-      // DESKTOP: Larger batches, shorter delays, more aggressive preloading
-      loadFrameBatch(1, 45, 0, true);      // Priority: First 45 frames immediately
-      loadFrameBatch(46, 90, 150, true);   // Priority: Next 45 frames quickly
-      loadFrameBatch(91, 150, 300);        // Standard: Next 60 frames
-      loadFrameBatch(151, 210, 450);       // Standard: Next 60 frames
-      loadFrameBatch(211, 240, 600);       // Standard: Final 30 frames
+      // DESKTOP: Larger batches, shorter delays, aggressive preloading
+      loadFrameBatch(1, 30, 0, true);      // Priority: First 30 frames immediately
+      loadFrameBatch(31, 60, 150, true);   // Priority: Final 30 frames quickly
     }
     
     imagesRef.current = images;
@@ -1123,7 +1116,7 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
               ((Date.now() - loadingStats.startTime) / 1000).toFixed(1) 
               : '0'}s</div>
             <div>🔄 STATUS: {loadingStats.isLoading ? 'LOADING...' : 'COMPLETE'}</div>
-            <div>🎯 MIN TO START: {isMobile ? '20' : '45'} frames</div>
+            <div>🎯 MIN TO START: {isMobile ? '15' : '25'} frames</div>
             <div>🚨 MAX FAILURES: {Math.floor(videoSpecs.totalFrames * (isMobile ? 0.15 : 0.10))}</div>
           </div>
           
