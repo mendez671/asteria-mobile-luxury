@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
-
-// Import our complete MVP modules
 const { classifyServiceRequest } = require('../../../lib/services/classifier.js');
-const { createServiceTicket } = require('../../../lib/services/tickets.js');
-const { sendSlackNotification } = require('../../../lib/notifications/slack.js');
-const { sendSMSNotification } = require('../../../lib/notifications/sms.js');
-const { detectServiceWithJourney } = require('../../../lib/services/journey.js');
+// import { createServiceTicket } from '../../../lib/services/tickets';
+// import { sendSlackNotification } from '../../../lib/notifications/slack';
+// import { sendSMSNotification } from '../../../lib/notifications/sms';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -55,9 +52,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // NEW: Analyze member journey phase
-    const journeyAnalysis = detectServiceWithJourney(message, conversationHistory);
-    console.log(`🧭 Journey Analysis: Phase=${journeyAnalysis.phase}, ReadyForTicket=${journeyAnalysis.readyForTicket}`);
+    // Classify the request to determine if it's a service request
+    const classification = classifyServiceRequest(message);
+    const isServiceRequest = classification.confidence > 5; // Threshold for service detection
 
     // Generate OpenAI response
     const completion = await openai.chat.completions.create({
@@ -73,39 +70,39 @@ export async function POST(request: NextRequest) {
 
     const response = completion.choices[0].message.content;
 
-    // UPDATED: Only create tickets when member is ready to confirm
-    let ticketId = null;
-    let extractedDetails = null;
-    let showBookButton = false;
-    
-    if (journeyAnalysis.shouldCreateTicket && response) {
-      try {
-        // Create detailed service ticket with extraction from FULL CONVERSATION
-        const ticket = createServiceTicket(message, 'TAG-001', conversationHistory);
-        ticketId = ticket.id;
-        extractedDetails = ticket.details;
-        
-        // Send enhanced notifications
-        await sendSlackNotification(ticket, message, response);
-        await sendSMSNotification(ticket);
-        
-        console.log(`🎫 Service ticket created: ${ticket.id} (${ticket.urgency} priority)`);
-        console.log(`📋 Details extracted:`, ticket.details);
-        
-      } catch (notificationError) {
-        console.error('❌ Notification error (continuing anyway):', notificationError);
+    // TODO: Create service ticket and send notifications
+    // For now, just send to Slack webhook directly for service requests
+    if (isServiceRequest && response) {
+      console.log(`🎯 Service detected: ${classification.bucket.name} (confidence: ${classification.confidence})`);
+      console.log(`🚨 Urgency: ${classification.is_urgent ? 'HIGH' : 'MEDIUM'}`);
+      
+      // Simple Slack notification
+      if (process.env.SLACK_WEBHOOK_URL) {
+        try {
+          await fetch(process.env.SLACK_WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              text: `🌟 New ${classification.bucket.name} Request`,
+              blocks: [
+                {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text: `*New Service Request*\nService: ${classification.bucket.name}\nUrgency: ${classification.is_urgent ? 'HIGH' : 'MEDIUM'}\n\n*Request:* "${message}"\n*Response:* "${response}"`
+                  }
+                }
+              ]
+            })
+          });
+          console.log('✅ Slack notification sent');
+        } catch (error) {
+          console.error('❌ Slack notification failed:', error);
+        }
       }
     }
-    
-    // Show book button when service discussion is detailed but not yet confirmed
-    if (journeyAnalysis.isServiceRelated && 
-        journeyAnalysis.conversationLength > 1 && 
-        !journeyAnalysis.readyForTicket &&
-        (journeyAnalysis.phase === 'detailed_discussion' || journeyAnalysis.phase === 'information_gathering')) {
-      showBookButton = true;
-    }
 
-    // Return enhanced response with journey information
+    // Return clean response
     return NextResponse.json({
       response: response || "I apologize, but I'm having difficulty processing your request at the moment.",
       conversationHistory: [
@@ -113,19 +110,10 @@ export async function POST(request: NextRequest) {
         { role: "user", content: message },
         { role: "assistant", content: response || "I apologize, but I'm having difficulty processing your request at the moment." }
       ],
-      // ENHANCED MVP FIELDS WITH JOURNEY
-      ticket_id: ticketId,
-      service_detected: journeyAnalysis.isServiceRelated,
-      service_type: journeyAnalysis.isServiceRelated ? 
-        classifyServiceRequest(message).bucket.name : null,
-      urgency: journeyAnalysis.shouldCreateTicket ? 
-        (classifyServiceRequest(message).is_urgent ? 'HIGH' : 'MEDIUM') : null,
-      extracted_details: extractedDetails,
-      // NEW JOURNEY FIELDS
-      journey_phase: journeyAnalysis.phase,
-      ready_for_ticket: journeyAnalysis.readyForTicket,
-      show_book_button: showBookButton,
-      is_confirming: journeyAnalysis.isConfirming,
+      ticket_id: null, // Will implement later
+      service_detected: isServiceRequest,
+      service_type: isServiceRequest ? classification.bucket.name : null,
+      urgency: isServiceRequest ? (classification.is_urgent ? 'HIGH' : 'MEDIUM') : null,
       success: true
     });
 

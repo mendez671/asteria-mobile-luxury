@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import { Mic, MicOff, Send, Volume2, VolumeX, Check } from 'lucide-react';
+import { Mic, MicOff, Send, Volume2, VolumeX } from 'lucide-react';
 
 // TypeScript declarations for Speech Recognition API
 declare global {
@@ -33,11 +33,6 @@ export default function ChatInterface({ className = '' }: ChatInterfaceProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
-  
-  // NEW: Journey state tracking
-  const [showBookButton, setShowBookButton] = useState(false);
-  const [journeyPhase, setJourneyPhase] = useState('initial');
-  const [lastTicketId, setLastTicketId] = useState<string | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -88,7 +83,7 @@ export default function ChatInterface({ className = '' }: ChatInterfaceProps) {
     setIsLoading(true);
 
     try {
-      // Enhanced API call with journey tracking
+      // Simple API call to our clean endpoint
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -115,98 +110,6 @@ export default function ChatInterface({ className = '' }: ChatInterfaceProps) {
           timestamp: new Date()
         };
         setMessages(prev => [...prev, assistantMessage]);
-        
-        // NEW: Update journey state
-        if (data.journey_phase) {
-          setJourneyPhase(data.journey_phase);
-        }
-        if (data.show_book_button !== undefined) {
-          setShowBookButton(data.show_book_button);
-        }
-        if (data.ticket_id) {
-          setLastTicketId(data.ticket_id);
-          setShowBookButton(false); // Hide button once ticket is created
-        }
-        
-        console.log(`🧭 Journey: ${data.journey_phase}, Show Button: ${data.show_book_button}, Ticket: ${data.ticket_id}`);
-        
-      } else {
-        throw new Error(data.error || 'Failed to get response');
-      }
-
-      // Optional: Text-to-speech if enabled
-      if (voiceEnabled && data.response) {
-        speakText(data.response);
-      }
-
-    } catch (error) {
-      console.error('Chat error:', error);
-      const errorMessage: Message = {
-        role: 'assistant',
-        content: "I apologize, but I'm experiencing a brief interruption. Please try again in a moment.",
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // NEW: Handle Book It button click - FIXED for one-click sending
-  const handleBookItClick = async () => {
-    const confirmationMessage = "Let's book it";
-    
-    // Create the user message immediately
-    const userMessage: Message = {
-      role: 'user',
-      content: confirmationMessage,
-      timestamp: new Date()
-    };
-
-    // Add to messages and start loading immediately
-    setMessages(prev => [...prev, userMessage]);
-    setInputValue(''); // Clear input
-    setIsLoading(true);
-    setShowBookButton(false); // Hide button immediately
-
-    try {
-      // Send the message directly without relying on state updates
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: confirmationMessage,
-          conversationHistory: messages.map(m => ({
-            role: m.role,
-            content: m.content
-          }))
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to get response');
-      }
-
-      const data = await response.json();
-      
-      if (data.success && data.response) {
-        const assistantMessage: Message = {
-          role: 'assistant',
-          content: data.response,
-          timestamp: new Date()
-        };
-        setMessages(prev => [...prev, assistantMessage]);
-        
-        // Update journey state
-        if (data.journey_phase) {
-          setJourneyPhase(data.journey_phase);
-        }
-        if (data.ticket_id) {
-          setLastTicketId(data.ticket_id);
-        }
-        
-        console.log(`🧭 Journey: ${data.journey_phase}, Ticket: ${data.ticket_id}`);
-        
       } else {
         throw new Error(data.error || 'Failed to get response');
       }
@@ -332,33 +235,6 @@ export default function ChatInterface({ className = '' }: ChatInterfaceProps) {
         
         <div ref={messagesEndRef} />
       </div>
-
-      {/* ENHANCED: Book It Button with better contrast and premium styling */}
-      {showBookButton && !isLoading && (
-        <div className="px-4 pb-2">
-          <div className="flex justify-center">
-            <button
-              onClick={handleBookItClick}
-              className="relative overflow-hidden bg-gradient-to-r from-tag-gold via-tag-gold-light to-tag-gold hover:from-tag-gold-light hover:via-tag-gold hover:to-tag-gold-light text-tag-purple-deep px-8 py-4 rounded-2xl font-bold text-lg flex items-center space-x-3 transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:scale-105 hover:-translate-y-1 border-2 border-tag-gold-light/30 hover:border-tag-gold group"
-              disabled={isLoading}
-            >
-              {/* Elegant glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              
-              {/* Icon with animation */}
-              <Check className="w-6 h-6 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12 relative z-10" />
-              
-              {/* Text with subtle animation */}
-              <span className="relative z-10 tracking-wide group-hover:tracking-wider transition-all duration-300">
-                Let's Book It
-              </span>
-              
-              {/* Premium shine effect */}
-              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Input */}
       <div className="p-4 border-t border-tag-purple-light/20">

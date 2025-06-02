@@ -1,0 +1,224 @@
+{
+  "id": "run-1748652732784-qasjwm",
+  "timestamp": "2025-05-31T00:52:12.784Z",
+  "memberId": "demo-member-001",
+  "originalMessage": "Connect me with a wealth management advisor for my portfolio",
+  "intentAnalysis": {
+    "primaryBucket": "investments",
+    "secondaryBuckets": [],
+    "serviceType": "wealth management",
+    "urgency": "standard",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [],
+      "locations": [],
+      "people": [],
+      "preferences": []
+    },
+    "suggestedTier": "extraordinary"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "investments",
+            "tier": "extraordinary",
+            "searchTerm": "wealth management"
+          },
+          "status": "completed",
+          "timestamp": "2025-05-31T00:52:12.614Z",
+          "result": {
+            "services": [
+              {
+                "id": "wealth-management",
+                "name": "Private Wealth Advisory",
+                "description": "Exclusive wealth management and investment advisory services",
+                "tier": "extraordinary",
+                "basePrice": 50000,
+                "availability": "by-invitation",
+                "bookingRequirements": [
+                  "netWorth",
+                  "objectives",
+                  "riskTolerance",
+                  "timeline"
+                ],
+                "features": [
+                  "Dedicated advisor",
+                  "Custom portfolio",
+                  "Tax optimization",
+                  "Estate planning"
+                ],
+                "leadTime": "2 weeks",
+                "minimumInvestment": 1000000
+              }
+            ],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 1,
+            "searchSummary": "Found 1 services in investments at extraordinary tier matching \"wealth management\""
+          },
+          "executionTime": 0
+        },
+        {
+          "toolName": "create_ticket",
+          "parameters": {
+            "serviceId": "to_be_determined",
+            "requirements": {},
+            "priority": "standard"
+          },
+          "status": "failed",
+          "timestamp": "2025-05-31T00:52:12.614Z",
+          "result": {
+            "error": "Missing required information: pickup, destination, date, time, passengers"
+          }
+        }
+      ],
+      "strategy": "direct_fulfillment",
+      "expectedOutcome": "Complete investments service booking with confirmation",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "investments",
+          "tier": "extraordinary",
+          "searchTerm": "wealth management"
+        },
+        "status": "completed",
+        "timestamp": "2025-05-31T00:52:12.614Z",
+        "result": {
+          "services": [
+            {
+              "id": "wealth-management",
+              "name": "Private Wealth Advisory",
+              "description": "Exclusive wealth management and investment advisory services",
+              "tier": "extraordinary",
+              "basePrice": 50000,
+              "availability": "by-invitation",
+              "bookingRequirements": [
+                "netWorth",
+                "objectives",
+                "riskTolerance",
+                "timeline"
+              ],
+              "features": [
+                "Dedicated advisor",
+                "Custom portfolio",
+                "Tax optimization",
+                "Estate planning"
+              ],
+              "leadTime": "2 weeks",
+              "minimumInvestment": 1000000
+            }
+          ],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 1,
+          "searchSummary": "Found 1 services in investments at extraordinary tier matching \"wealth management\""
+        },
+        "executionTime": 0
+      },
+      {
+        "toolName": "create_ticket",
+        "parameters": {
+          "serviceId": "to_be_determined",
+          "requirements": {},
+          "priority": "standard"
+        },
+        "status": "failed",
+        "timestamp": "2025-05-31T00:52:12.614Z",
+        "result": {
+          "error": "Missing required information: pickup, destination, date, time, passengers"
+        }
+      }
+    ],
+    "finalResult": {
+      "services": [
+        {
+          "id": "wealth-management",
+          "name": "Private Wealth Advisory",
+          "description": "Exclusive wealth management and investment advisory services",
+          "tier": "extraordinary",
+          "basePrice": 50000,
+          "availability": "by-invitation",
+          "bookingRequirements": [
+            "netWorth",
+            "objectives",
+            "riskTolerance",
+            "timeline"
+          ],
+          "features": [
+            "Dedicated advisor",
+            "Custom portfolio",
+            "Tax optimization",
+            "Estate planning"
+          ],
+          "leadTime": "2 weeks",
+          "minimumInvestment": 1000000
+        }
+      ],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 1,
+      "searchSummary": "Found 1 services in investments at extraordinary tier matching \"wealth management\""
+    },
+    "recommendations": [
+      "Some services may require additional information - our concierge team will follow up"
+    ],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": true
+  },
+  "outcome": "escalation",
+  "metrics": {
+    "responseTime": 171,
+    "toolsUsed": [
+      "fetch_active_services",
+      "create_ticket"
+    ],
+    "escalationTriggered": true
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 0.5,
+    "areas_for_improvement": [
+      "Tool execution reliability"
+    ],
+    "successful_patterns": [
+      "High confidence investments intent recognition"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}
