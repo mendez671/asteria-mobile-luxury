@@ -60,13 +60,25 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   const deviceInfo = useDeviceDetection();
   const isMobile = propIsMobile || deviceInfo.isMobile;
   
-  // State management
-  const [isMounted, setIsMounted] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [currentFrame, setCurrentFrame] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [frames, setFrames] = useState<HTMLImageElement[]>([]);
+  const [preloadedFrames, setPreloadedFrames] = useState<Set<number>>(new Set());
   const [showSkip, setShowSkip] = useState(false);
   const [skipCountdownText, setSkipCountdownText] = useState('Skip in 3s');
-  const [touchStartY, setTouchStartY] = useState(0);
   const [showContinueOption, setShowContinueOption] = useState(true);
+  const [isExiting, setIsExiting] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+  const [touchStartTime, setTouchStartTime] = useState(0);
+  const [touchStartY, setTouchStartY] = useState(0);
+  
+  // FIX: Add missing state variables
+  const [isMounted, setIsMounted] = useState(false);
   const [canvasError, setCanvasError] = useState(false);
   
   // ENHANCED: Performance tracking state
@@ -81,7 +93,6 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   });
   
   // Refs for performance
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const animationIdRef = useRef<number | null>(null);
   const frameIndexRef = useRef(0);
@@ -165,27 +176,45 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   }, [onComplete]);
   
   const handleComplete = useCallback(() => {
-    console.log('🎬 VideoIntro completed naturally');
+    console.log('🎬 VideoIntro completed naturally - starting crystal transition');
     isPlayingRef.current = false;
+    
+    // NEW: Start crystal expansion transition
+    setIsExiting(true);
     
     if (animationIdRef.current) {
       cancelAnimationFrame(animationIdRef.current);
       animationIdRef.current = null;
     }
     
+    // Apply crystal sphere expansion effect to canvas
     if (canvasRef.current) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
       if (ctx) {
         try {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          // Add crystal sphere glow effect
+          canvas.style.filter = 'blur(0px) brightness(1.2) contrast(1.1)';
+          canvas.style.transition = 'filter 800ms cubic-bezier(0.4, 0, 0.2, 1)';
+          
+          setTimeout(() => {
+            canvas.style.filter = 'blur(20px) brightness(1.5) contrast(1.3)';
+          }, 50);
+          
+          // Clean up after transition
+          setTimeout(() => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }, 750);
         } catch (error) {
           // Silent cleanup
         }
       }
     }
     
-    onComplete();
+    // Complete transition after crystal expansion
+    setTimeout(() => {
+      onComplete();
+    }, 800);
   }, [onComplete]);
   
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -199,6 +228,20 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
       handleSkip();
     }
   }, [touchStartY, handleSkip]);
+  
+  // UPGRADE: Enhanced video end handler with crystal transition - MOVED BEFORE EARLY RETURNS
+  const handleVideoEnd = useCallback(() => {
+    console.log('🎬 Video sequence completed - starting crystal transition');
+    
+    // Start crystal fade early to hide white frames
+    setFadeOut(true);
+    setIsExiting(true);
+    
+    // Complete transition after fade
+    setTimeout(() => {
+      onComplete();
+    }, 600);
+  }, [onComplete]);
   
   const startCanvasAnimation = useCallback(() => {
     if (isPlayingRef.current || !isMounted || !canvasRef.current) return;
@@ -227,7 +270,7 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
     
     isPlayingRef.current = true;
     frameIndexRef.current = 0;
-    let startTime = performance.now();
+    const startTime = performance.now();
     let lastFrameTime = startTime;
     let frameDrops = 0;
     
@@ -622,6 +665,7 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
       exit={{ opacity: 0 }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
+      className={`video-intro-overlay ${fadeOut ? 'fade-to-crystal' : ''} ${isExiting ? 'crystal-transition' : ''}`}
       style={{
         position: 'fixed',
         top: 0,
@@ -644,12 +688,25 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
           width: '100%',
           height: '100%',
           objectFit: isMobile ? 'cover' : 'contain',
-          objectPosition: 'center'
+          objectPosition: 'center',
+          opacity: fadeOut ? 0 : 1,
+          transition: 'opacity 0.4s ease-out'
         }}
       />
       
+      {/* NEW: Crystal Transition Overlay with proper fade-out */}
+      {(isExiting || fadeOut) && (
+        <div
+          className="crystal-transition-overlay"
+          onAnimationEnd={() => {
+            // Overlay fades out completely after crystalExpand + overlayFadeOut
+            console.log('🎬 Crystal transition overlay completed');
+          }}
+        />
+      )}
+
       {/* Loading progress */}
-      {loadingProgress < 100 && (
+      {loadingProgress < 100 && !fadeOut && (
         <div style={{
           position: 'absolute',
           bottom: '80px',

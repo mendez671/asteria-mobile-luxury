@@ -40,6 +40,13 @@ const SERVICE_BUCKETS = [
     keywords: ['shopping', 'personal', 'wellness', 'spa', 'fitness', 'health', 'home', 'cleaning', 'assistant'],
     priority_keywords: ['today', 'urgent', 'emergency'],
     detail_fields: ['service_type', 'date', 'time', 'location', 'preferences', 'budget']
+  },
+  {
+    id: 'custom',
+    name: 'Custom & specialized requests',
+    keywords: ['help', 'need', 'want', 'can you', 'could you', 'would you', 'please', 'assist', 'arrange', 'organize', 'handle', 'manage', 'coordinate', 'secure', 'obtain', 'get', 'find', 'source', 'provide', 'deliver', 'book', 'reserve', 'schedule'],
+    priority_keywords: ['urgent', 'asap', 'emergency', 'critical', 'important', 'priority', 'rush', 'immediate'],
+    detail_fields: ['request_type', 'timeline', 'location', 'budget', 'special_requirements', 'preferences']
   }
 ];
 
@@ -66,9 +73,31 @@ function classifyServiceRequest(message) {
   });
   
   // Find highest scoring bucket
-  const bestMatch = scores.reduce((prev, current) => 
+  let bestMatch = scores.reduce((prev, current) => 
     current.confidence > prev.confidence ? current : prev
   );
+  
+  // ENHANCED: Universal fallback - if no strong match found, use custom category
+  if (bestMatch.confidence === 0) {
+    // Check if message contains any service-like intent
+    const serviceIndicators = [
+      'i need', 'i want', 'can you', 'could you', 'help me', 'arrange', 'book', 'get me', 
+      'find me', 'organize', 'please', 'looking for', 'interested in', 'require'
+    ];
+    
+    const hasServiceIntent = serviceIndicators.some(indicator => 
+      lowerMessage.includes(indicator)
+    );
+    
+    if (hasServiceIntent) {
+      // Assign to custom category with medium confidence
+      bestMatch = {
+        bucket: SERVICE_BUCKETS.find(bucket => bucket.id === 'custom'),
+        confidence: 15, // Medium confidence for catch-all
+        is_urgent: false
+      };
+    }
+  }
   
   return bestMatch;
 }

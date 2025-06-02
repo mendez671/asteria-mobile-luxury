@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Mic, MicOff } from 'lucide-react';
+import { addPassiveResize } from '@/lib/utils/listeners';
 
 interface VoiceRecorderProps {
   onTranscriptionComplete?: (text: string) => void;
@@ -25,11 +26,15 @@ export function VoiceRecorder({
   // Mobile detection
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768 || 'ontouchstart' in window);
+      setIsMobile(window.innerWidth <= 768);
     };
+
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const cleanupResize = addPassiveResize(checkMobile);
+
+    return () => {
+      cleanupResize();
+    };
   }, []);
 
   // Auto-start recording when active (for mobile integration)

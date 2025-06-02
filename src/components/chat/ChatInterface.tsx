@@ -18,9 +18,10 @@ interface Message {
 
 interface ChatInterfaceProps {
   className?: string;
+  initialPrompt?: string;
 }
 
-export default function ChatInterface({ className = '' }: ChatInterfaceProps) {
+export default function ChatInterface({ className = '', initialPrompt }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
@@ -42,36 +43,7 @@ export default function ChatInterface({ className = '' }: ChatInterfaceProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
-
-  // Auto-scroll to bottom
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  // Initialize speech recognition
-  useEffect(() => {
-    if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'en-US';
-
-      recognitionRef.current.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setInputValue(transcript);
-        setIsListening(false);
-      };
-
-      recognitionRef.current.onerror = () => {
-        setIsListening(false);
-      };
-
-      recognitionRef.current.onend = () => {
-        setIsListening(false);
-      };
-    }
-  }, []);
+  const autoSentRef = useRef<string | null>(null); // Track which prompt was auto-sent
 
   // Handle sending messages
   const handleSendMessage = async () => {
@@ -151,6 +123,119 @@ export default function ChatInterface({ className = '' }: ChatInterfaceProps) {
       setIsLoading(false);
     }
   };
+
+  // Effect to handle initial prompt - AUTO-SEND for service card selections
+  useEffect(() => {
+    if (initialPrompt && initialPrompt !== inputValue && !isLoading && autoSentRef.current !== initialPrompt) {
+      setInputValue(initialPrompt);
+      
+      // Auto-send if this is a service card prompt (contains booking language)
+      const isServicePrompt = initialPrompt.includes('I need') || 
+                             initialPrompt.includes('Book me') || 
+                             initialPrompt.includes('Can you arrange') || 
+                             initialPrompt.includes('Can you book') ||
+                             initialPrompt.includes('I want') ||
+                             initialPrompt.includes('Help me') ||
+                             initialPrompt.includes('Reserve');
+      
+      if (isServicePrompt) {
+        // Mark this prompt as auto-sent to prevent loops
+        autoSentRef.current = initialPrompt;
+        
+        // Auto-send the service prompt after a brief delay
+        setTimeout(async () => {
+          if (!isLoading) {
+            const userMessage: Message = {
+              role: 'user',
+              content: initialPrompt,
+              timestamp: new Date()
+            };
+
+            setMessages(prev => [...prev, userMessage]);
+            setInputValue('');
+            setIsLoading(true);
+
+            try {
+              const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  message: initialPrompt,
+                  conversationHistory: messages.map(m => ({
+                    role: m.role,
+                    content: m.content
+                  }))
+                })
+              });
+
+              if (!response.ok) {
+                throw new Error('Failed to get response');
+              }
+
+              const data = await response.json();
+              
+              if (data.success && data.response) {
+                const assistantMessage: Message = {
+                  role: 'assistant',
+                  content: data.response,
+                  timestamp: new Date()
+                };
+                setMessages(prev => [...prev, assistantMessage]);
+                
+                // Update journey state
+                if (data.journey_phase) {
+                  setJourneyPhase(data.journey_phase);
+                }
+                if (data.show_book_button !== undefined) {
+                  setShowBookButton(data.show_book_button);
+                }
+                if (data.ticket_id) {
+                  setLastTicketId(data.ticket_id);
+                  setShowBookButton(false);
+                }
+                
+                console.log(`🧭 Auto-sent Journey: ${data.journey_phase}, Show Button: ${data.show_book_button}, Ticket: ${data.ticket_id}`);
+              }
+            } catch (error) {
+              console.error('Auto-send error:', error);
+            } finally {
+              setIsLoading(false);
+            }
+          }
+        }, 800);
+      }
+    }
+  }, [initialPrompt, isLoading]); // REMOVED 'messages' from dependencies
+
+  // Auto-scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.lang = 'en-US';
+
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setInputValue(transcript);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onerror = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+  }, []);
 
   // NEW: Handle Book It button click - FIXED for one-click sending
   const handleBookItClick = async () => {
@@ -263,9 +348,9 @@ export default function ChatInterface({ className = '' }: ChatInterfaceProps) {
   };
 
   return (
-    <div className={`flex flex-col h-full bg-gradient-to-b from-tag-purple-deep to-tag-purple ${className}`}>
+    <div className={`flex flex-col h-full bg-gradient-to-b from-tag-purple-deep to-tag-purple rounded-2xl overflow-hidden ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-tag-purple-light/20">
+      <div className="flex items-center justify-between p-4 sm:p-6 border-b border-tag-purple-light/20">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-tag-gold rounded-full flex items-center justify-center">
             <span className="text-tag-purple-deep font-bold text-sm">A</span>
@@ -294,14 +379,14 @@ export default function ChatInterface({ className = '' }: ChatInterfaceProps) {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
         {messages.map((message, index) => (
           <div
             key={index}
             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+              className={`max-w-[85%] sm:max-w-[80%] rounded-2xl px-4 py-3 ${
                 message.role === 'user'
                   ? 'bg-tag-gold text-tag-purple-deep'
                   : 'bg-tag-purple-light/30 text-tag-cream border border-tag-purple-light/20'
@@ -335,7 +420,7 @@ export default function ChatInterface({ className = '' }: ChatInterfaceProps) {
 
       {/* ENHANCED: Book It Button with better contrast and premium styling */}
       {showBookButton && !isLoading && (
-        <div className="px-4 pb-2">
+        <div className="px-4 sm:px-6 pb-2">
           <div className="flex justify-center">
             <button
               onClick={handleBookItClick}
@@ -361,7 +446,7 @@ export default function ChatInterface({ className = '' }: ChatInterfaceProps) {
       )}
 
       {/* Input */}
-      <div className="p-4 border-t border-tag-purple-light/20">
+      <div className="p-4 sm:p-6 border-t border-tag-purple-light/20">
         <div className="flex items-center space-x-3">
           <div className="flex-1 relative">
             <input

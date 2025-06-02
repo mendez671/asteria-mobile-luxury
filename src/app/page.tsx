@@ -1,101 +1,117 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { addPassiveResize, addPassiveScroll, addPassiveVisibilityChange } from '@/lib/utils/listeners';
 
 // EMERGENCY: DIRECT IMPORTS - No dynamic loading to prevent failures
 import ChatInterface from '@/components/chat/ChatInterface';
 import ServiceBadges from '@/components/sections/ServiceBadges';
+import HowItWorksSection from '@/components/sections/HowItWorksSection';
 import TagLogo from '@/components/ui/TagLogo';
 import TestApiButton from '@/components/TestApiButton';
 import VideoIntro from '@/components/ui/VideoIntro';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
+import { CrystalField } from '@/components/CrystalField';
+
+// UPGRADE 2 & 4: New sapphire components
+import { PrismStreak } from '@/components/effects/PrismStreak';
 
 export default function Home() {
+  // State Management - Optimized for performance
   const [mounted, setMounted] = useState(false);
-  const [currentTime, setCurrentTime] = useState(new Date());
   const [isVisible, setIsVisible] = useState(false);
-  const [touchDevice, setTouchDevice] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-  const [viewportHeight, setViewportHeight] = useState(0);
   const [showIntro, setShowIntro] = useState(true);
   const [hydrationComplete, setHydrationComplete] = useState(false);
+  
+  // Device detection
+  const [isMobile, setIsMobile] = useState(false);
+  const [touchDevice, setTouchDevice] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(0);
+  
+  // Time and background - memoized to prevent re-renders
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [selectedPrompt, setSelectedPrompt] = useState<string>('');
+  
+  // HYDRATION FIX: Stable background class for SSR
+  const [backgroundClass, setBackgroundClass] = useState('crystal-void-default');
 
   useEffect(() => {
     setMounted(true);
-    
-    // CRITICAL: Force scroll to top immediately
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    
-    // Disable browser's automatic scroll restoration
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
-    
-    // Additional scroll fixes
-    const immediateScrollFix = setTimeout(() => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }, 50);
-    
-    const finalScrollFix = setTimeout(() => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }, 200);
-    
-    // Hydration completion delay
-    const hydrationTimer = setTimeout(() => {
-      setHydrationComplete(true);
-    }, 300);
-    
-    // Enhanced mobile detection
+    setIsVisible(true);
+
+    // Mobile detection
     const checkMobile = () => {
-      const isMobileDevice = window.innerWidth <= 768 || 'ontouchstart' in window;
-      setIsMobile(isMobileDevice);
-      setTouchDevice(isMobileDevice);
-      setViewportHeight(window.innerHeight);
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      setTouchDevice('ontouchstart' in window);
     };
 
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    // Time updates
-    const timeInterval = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 60000);
+    // Time and background updates
+    const updateTimeAndBackground = () => {
+      const now = new Date();
+      const hour = now.getHours();
+      setCurrentTime(now);
 
-    // Scroll progress tracking
+      let newClass = 'crystal-void-default';
+      if (hour >= 0 && hour < 6) newClass = 'crystal-void-midnight';
+      else if (hour >= 6 && hour < 12) newClass = 'crystal-void-dawn';
+      else if (hour >= 12 && hour < 18) newClass = 'crystal-void-day';
+      else if (hour >= 18 && hour < 24) newClass = 'crystal-void-twilight';
+
+      if (newClass !== backgroundClass) {
+        console.log(`🌅 Background change: ${backgroundClass} → ${newClass} (${hour}:00)`);
+        setBackgroundClass(newClass);
+      }
+    };
+
+    // Visibility change handler  
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        updateTimeAndBackground();
+      }
+    };
+
+    // Optimized scroll handler
     const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = Math.min((scrollTop / documentHeight) * 100, 100);
-      setScrollProgress(progress);
+      const progress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      setScrollProgress(Math.min(progress, 100));
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    // Viewport changes
+    // Viewport change handler
     const handleViewportChange = () => {
-      setViewportHeight(window.visualViewport?.height || window.innerHeight);
+      checkMobile();
+      updateTimeAndBackground();
     };
 
-    window.visualViewport?.addEventListener('resize', handleViewportChange);
+    // Initial calls
+    checkMobile();
+    updateTimeAndBackground();
+
+    // Set up passive listeners with cleanup
+    const cleanupResize = addPassiveResize(checkMobile);
+    const cleanupScroll = addPassiveScroll(handleScroll);
+    const cleanupVisibility = addPassiveVisibilityChange(handleVisibilityChange);
+    
+    // Visual viewport with feature detection
+    let cleanupViewport: (() => void) | undefined;
+    if (window.visualViewport) {
+      cleanupViewport = addPassiveResize(handleViewportChange);
+    }
+
+    // Time interval
+    const timeInterval = setInterval(updateTimeAndBackground, 60000);
 
     return () => {
-      clearTimeout(immediateScrollFix);
-      clearTimeout(finalScrollFix);
-      clearTimeout(hydrationTimer);
+      // Cleanup all listeners
+      cleanupResize();
+      cleanupScroll();
+      cleanupVisibility();
+      if (cleanupViewport) cleanupViewport();
       clearInterval(timeInterval);
-      window.removeEventListener('resize', checkMobile);
-      window.removeEventListener('scroll', handleScroll);
-      window.visualViewport?.removeEventListener('resize', handleViewportChange);
     };
-  }, []);
+  }, [backgroundClass]);
 
   // Scroll position enforcement
   useEffect(() => {
@@ -135,22 +151,15 @@ export default function Home() {
   }, []);
 
   // Emergency video error handler
-  const handleVideoError = () => {
+  const handleVideoError = useCallback(() => {
     console.log('🎬 🚨 Video had issues - skipping directly to dashboard');
     setShowIntro(false);
     setIsVisible(true);
-  };
+  }, []);
 
-  const getTimeBasedBackground = () => {
-    const hour = currentTime.getHours();
-    if (hour < 6) return 'night-exclusive';
-    if (hour < 12) return 'morning-glow';
-    if (hour < 18) return 'afternoon-luxury';
-    if (hour < 22) return 'evening-elegance';
-    return 'night-exclusive';
-  };
-
+  // HYDRATION FIX: Safe time-based functions with null checks
   const getGreetingMessage = () => {
+    if (!currentTime) return 'Asteria Service';
     const hour = currentTime.getHours();
     if (hour < 6) return 'Exclusive Night Service';
     if (hour < 12) return 'Morning Excellence';
@@ -159,33 +168,38 @@ export default function Home() {
     return 'Midnight Concierge';
   };
 
-  // ENHANCED hydration handling - prevent rendering until fully ready
-  if (!mounted || !hydrationComplete) {
+  const getFormattedTime = () => {
+    if (!currentTime) return '--:--';
+    return currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  // Prompt selection handler (memoized)
+  const handlePromptSelect = useCallback((prompt: string) => {
+    console.log('🎯 Service prompt selected:', prompt);
+    setSelectedPrompt(prompt);
+    
+    // Smooth scroll to chat interface after short delay
+    setTimeout(() => {
+      document.getElementById('chat-interface')?.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }, 50);
+  }, []);
+
+  // HYDRATION FIX: Show loading state during SSR/hydration
+  if (!mounted) {
     return (
-      <div 
-        className="min-h-screen bg-tag-dark-purple flex items-center justify-center"
-        style={{ minHeight: '100vh' }}
-      >
-        <div style={{
-          width: '60px',
-          height: '60px',
-          borderRadius: '50%',
-          background: 'linear-gradient(45deg, #d4af37, #f7dc6f)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '24px',
-          fontWeight: 'bold',
-          color: '#0f172a',
-          animation: 'pulse 2s infinite'
-        }}>
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-600 to-yellow-500 
+                        flex items-center justify-center text-black text-2xl font-bold">
           A
         </div>
       </div>
     );
   }
 
-  // Show video intro if it hasn't been completed
+  // HYDRATION FIX: Show video intro properly (NO BYPASS HACK)
   if (showIntro) {
     console.log('🎬 Rendering VideoIntro component');
     return (
@@ -223,73 +237,26 @@ export default function Home() {
 
   return (
     <ErrorBoundary>
+      {/* Volumetric Background - MUST BE FIRST with negative z-index */}
+      <div className="crystal-void-volumetric">
+        <div className="void-layer void-layer-1" />
+        <div className="void-layer void-layer-2" />
+        <div className="void-layer void-layer-3" />
+      </div>
+
+      {/* CRYSTAL FIELD: Portal-based particle system - always-on, full viewport */}
+      <CrystalField />
+
+      {/* Main Background with Time-Based Crystal Themes */}
       <main 
-        className={`prevent-layout-shift luxury-page-container transition-all duration-1000 ${getTimeBasedBackground()} relative overflow-hidden ${
-          isMobile ? 'min-h-screen' : 'min-h-screen'
-        }`}
-        style={{ minHeight: isMobile ? '100dvh' : '100vh' }}
+        className={`
+          relative min-h-screen transition-all duration-1000 ease-in-out z-10
+          ${backgroundClass}
+        `}
       >
-        {/* Enhanced Mobile-First Scroll Progress Indicator */}
-        <div className="fixed top-0 left-0 w-full h-1 bg-tag-dark-purple/20 z-50">
-          <motion.div
-            className="h-full bg-gradient-to-r from-tag-gold to-tag-gold-light"
-            style={{ width: `${scrollProgress}%` }}
-            transition={{ duration: 0.1 }}
-          />
-        </div>
-
-        {/* Mobile-Optimized Header */}
-        <motion.header
-          className={`fixed top-0 left-0 w-full z-mobile-header backdrop-blur-mobile ${
-            isMobile ? 'bg-tag-dark-purple/95' : 'bg-tag-dark-purple/80'
-          }`}
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-        >
-          <div className="mobile-container py-3 sm:py-4">
-            <div className="flex items-center justify-between">
-              {/* Mobile-Optimized TAG Logo */}
-              <ErrorBoundary fallback={<div className="w-10 h-10 bg-yellow-500 rounded-lg" />}>
-                <TagLogo size={isMobile ? "sm" : "md"} showText={!isMobile} />
-              </ErrorBoundary>
-              
-              {/* Member Status - Hidden on mobile, show on tablet+ */}
-              <div className="hidden sm:flex items-center gap-2 text-tag-gold/80 text-sm">
-                <div className="w-2 h-2 bg-tag-gold rounded-full animate-pulse"></div>
-                <span className="hidden md:inline">Power Networker</span>
-                <span className="sm:hidden md:hidden lg:inline">•</span>
-                <span className="hidden lg:inline">{getGreetingMessage()}</span>
-              </div>
-
-              {/* Mobile Time Display */}
-              {isMobile && (
-                <div className="text-tag-gold text-sm font-medium">
-                  {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </div>
-              )}
-            </div>
-          </div>
-        </motion.header>
-
-        {/* Reduced Ambient Background Particles for Mobile Performance */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {!isMobile && (
-            <>
-              <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-tag-gold rounded-full opacity-15 animate-pulse"></div>
-              <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-tag-gold-light rounded-full opacity-15 animate-pulse delay-1000"></div>
-              <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-tag-gold rounded-full opacity-15 animate-pulse delay-2000"></div>
-              <div className="absolute top-2/3 right-1/4 w-1 h-1 bg-tag-gold-light rounded-full opacity-15 animate-pulse delay-3000"></div>
-            </>
-          )}
-          {isMobile && (
-            <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-tag-gold rounded-full opacity-20 animate-pulse"></div>
-          )}
-        </div>
-
         {/* Mobile-First Hero Section */}
         <motion.section 
-          className={`relative z-10 mobile-container ${
+          className={`relative z-10 mobile-container hero-section ${
             isMobile 
               ? 'pt-20 pb-8' 
               : 'pt-32 pb-10'
@@ -312,44 +279,45 @@ export default function Home() {
               }`}>
                 <div className="w-2 h-2 bg-tag-gold rounded-full animate-pulse"></div>
                 <span className="text-tag-gold font-medium tracking-wide">
-                  {getGreetingMessage()} • {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  {getGreetingMessage()} • {getFormattedTime()}
                 </span>
               </div>
               
-              {/* Responsive Typography */}
+              {/* UPGRADE 1: Enhanced Typography with Hero Word Glow */}
               <h1 className={`font-serif text-tag-cream mb-4 sm:mb-6 fade-in-elegant stagger-1 ${
                 isMobile 
                   ? 'text-4xl leading-tight' 
                   : 'text-5xl md:text-7xl lg:text-8xl'
               }`}>
-                <span className="block">Asteria</span>
-                <span className={`block text-tag-gold shimmer-gold ${
-                  isMobile 
-                    ? 'text-2xl' 
-                    : 'text-4xl md:text-5xl lg:text-6xl'
-                }`}>
-                  Where Energy Meets Experience
-                </span>
+                <span className="block hero-word">Access the Asteria Network Now.</span>
               </h1>
-              
-              {/* Mobile-Optimized Description */}
-              <p className={`text-tag-neutral-gray max-w-4xl mx-auto leading-relaxed fade-in-elegant stagger-2 ${
-                isMobile 
-                  ? 'text-base px-4' 
-                  : 'text-xl md:text-2xl'
+
+              {/* Process Steps - Micro Copy */}
+              <div className={`mb-6 sm:mb-8 fade-in-elegant stagger-2 ${
+                isMobile ? 'space-y-2' : 'space-y-3'
               }`}>
-                True luxury transcends possessions—it&apos;s the energy that arises when meaning, beauty, and purpose converge.
-                {!isMobile && (
-                  <span className="text-tag-gold"> For those who understand that luxury isn&apos;t what you have, but how you move.</span>
-                )}
-                {isMobile && (
-                  <span className="text-tag-gold block mt-2">For those who understand true luxury.</span>
-                )}
+                <div className={`flex items-center justify-center gap-8 sm:gap-12 ${
+                  isMobile ? 'text-lg' : 'text-xl md:text-2xl'
+                }`}>
+                  <span className="text-crystal-prism-cyan font-medium">1. Request.</span>
+                  <span className="text-crystal-prism-blue font-medium">2. Book.</span>
+                  <span className="text-crystal-prism-white font-medium">3. Relax.</span>
+                </div>
+              </div>
+
+              {/* Luxury Kicker */}
+              <p className={`crystal-shimmer font-serif mb-6 sm:mb-8 fade-in-elegant stagger-3 ${
+                isMobile 
+                  ? 'text-xl' 
+                  : 'text-2xl md:text-3xl'
+              }`}>
+                Luxury, Simplified.
               </p>
             </motion.div>
 
-            {/* Mobile-Optimized Chat Interface */}
+            {/* UPGRADE 3: Enhanced Chat Interface with Glass Card */}
             <motion.div
+              id="chat-interface"
               className="relative"
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -364,7 +332,13 @@ export default function Home() {
               )}
               
               <ErrorBoundary fallback={<div className="w-full h-96 bg-slate-800/30 rounded-lg flex items-center justify-center text-yellow-500">Chat Loading...</div>}>
-                <ChatInterface />
+                <div className={`chat-container ${
+                  isMobile 
+                    ? 'px-4 mx-2' // Mobile: more breathing room from edges
+                    : 'px-6 mx-4' // Desktop: standard spacing
+                }`}>
+                  <ChatInterface initialPrompt={selectedPrompt} />
+                </div>
               </ErrorBoundary>
               
               {/* Interactive Background Glow */}
@@ -375,7 +349,21 @@ export default function Home() {
           </div>
         </motion.section>
 
-        {/* Service Excellence Showcase - Responsive */}
+        {/* How It Works Section - Collapsible */}
+        <motion.section 
+          className={`relative z-10 mobile-container ${
+            isMobile ? 'py-6' : 'py-12'
+          }`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isVisible ? 1 : 0 }}
+          transition={{ duration: 1.2, delay: 0.7 }}
+        >
+          <ErrorBoundary fallback={<div className="border border-gray-600 rounded-lg p-4 text-center">How It Works section unavailable</div>}>
+            <HowItWorksSection />
+          </ErrorBoundary>
+        </motion.section>
+
+        {/* Service Excellence Showcase - Enhanced with Prompt Selection */}
         <motion.section 
           className={`relative z-10 mobile-container ${
             isMobile ? 'py-8' : 'py-16'
@@ -384,9 +372,37 @@ export default function Home() {
           animate={{ opacity: isVisible ? 1 : 0 }}
           transition={{ duration: 1.2, delay: 0.8 }}
         >
+          {/* Enhanced Section Header */}
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-light text-tag-cream mb-4">
+              Curated Experiences That Transcend
+            </h2>
+            <p className="text-tag-cream/80 max-w-3xl mx-auto leading-relaxed">
+              True luxury is the energy that emerges when exceptional craftsmanship, meaningful 
+              connections, and personal values align. Each experience is curated to spark that non-negotiable 
+              resonance within you.
+            </p>
+          </div>
+
           <ErrorBoundary fallback={<div className="grid grid-cols-1 md:grid-cols-3 gap-4">{[1,2,3].map(i => <div key={i} className="h-20 bg-slate-800/30 rounded-lg" />)}</div>}>
-            <ServiceBadges />
+            <ServiceBadges onPromptSelect={handlePromptSelect} />
           </ErrorBoundary>
+
+          {/* Bottom Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12">
+            <button 
+              onClick={() => document.getElementById('chat-interface')?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-8 py-3 bg-transparent border border-tag-gold text-tag-gold hover:bg-tag-gold hover:text-tag-purple transition-all duration-300 rounded-full font-medium"
+            >
+              Curate Your Experience
+            </button>
+            <button 
+              onClick={() => window.open('/about', '_blank')}
+              className="px-8 py-3 bg-tag-gold text-tag-purple hover:bg-tag-gold-light transition-all duration-300 rounded-full font-medium"
+            >
+              Discover Your Energy
+            </button>
+          </div>
         </motion.section>
 
         {/* Development Tools - Hidden in production */}
@@ -398,11 +414,62 @@ export default function Home() {
             transition={{ duration: 1.2, delay: 1 }}
           >
             <div className="glass p-6 rounded-2xl border border-tag-gold/20">
+              {/* UPGRADED: Enhanced Crystal Status Indicator */}
+              <div className="mb-4 p-4 bg-crystal-deep/30 rounded-lg border border-crystal-prism-blue/20">
+                <h4 className="text-crystal-prism-cyan text-sm font-semibold mb-2">
+                  💎 SAPPHIRE CUT STATUS
+                </h4>
+                <div className="space-y-1 text-xs">
+                  <div className="text-crystal-prism-white">✅ All 5 Sapphire Upgrades Active</div>
+                  <div className="text-crystal-prism-cyan">🔹 Hero Inner Glow: Active</div>
+                  <div className="text-crystal-prism-blue">🔹 Prism Light Streaks: {isMobile ? 3 : 6} active</div>
+                  <div className="text-crystal-prism-purple">🔹 Depth Glass Cards: Enhanced</div>
+                  <div className="text-crystal-prism-cyan">🔹 Organic Particles: Simplex Noise</div>
+                  <div className="text-crystal-prism-white">🔹 Volumetric Void: 3 Layers</div>
+                  <div className="text-crystal-prism-blue">Background: {backgroundClass}</div>
+                  <div className="text-crystal-prism-cyan">Time: {getFormattedTime()}</div>
+                  <div className="hero-word text-sm font-semibold">Hero Glow Test ✨</div>
+                </div>
+              </div>
+              
               <h3 className="text-tag-gold text-lg font-semibold mb-4">Development Tools</h3>
               <div className="space-y-4">
                 <ErrorBoundary fallback={<div className="px-4 py-2 bg-slate-600 rounded-lg">Test Button Loading...</div>}>
                   <TestApiButton />
                 </ErrorBoundary>
+                
+                {/* Background Test Button */}
+                <button 
+                  onClick={() => {
+                    const hours = [0, 6, 12, 18, 22];
+                    const randomHour = hours[Math.floor(Math.random() * hours.length)];
+                    const fakeDate = new Date();
+                    fakeDate.setHours(randomHour);
+                    console.log(`🧪 Testing hour: ${randomHour}`);
+                    
+                    // Manually trigger background update with fake time
+                    const hour = randomHour;
+                    let bgClass = 'crystal-void-default';
+                    
+                    if (hour >= 0 && hour < 6) {
+                      bgClass = 'crystal-void-midnight';
+                    } else if (hour >= 6 && hour < 12) {
+                      bgClass = 'crystal-void-dawn';
+                    } else if (hour >= 12 && hour < 18) {
+                      bgClass = 'crystal-void-day';
+                    } else if (hour >= 18 && hour < 22) {
+                      bgClass = 'crystal-void-twilight';
+                    } else {
+                      bgClass = 'crystal-void-midnight';
+                    }
+                    
+                    console.log(`🎨 Setting background: ${bgClass}`);
+                    setBackgroundClass(bgClass);
+                  }}
+                  className="px-4 py-2 bg-crystal-prism-blue/20 text-crystal-prism-blue rounded-lg hover:bg-crystal-prism-blue/30 transition-colors"
+                >
+                  🎨 Test Background Change
+                </button>
                 
                 {/* Debug Information */}
                 <div className="text-xs text-tag-neutral-gray/60 space-y-1">

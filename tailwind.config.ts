@@ -6,6 +6,29 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  
+  // CRITICAL: Safelist for particle system classes
+  safelist: [
+    'animate-prism',
+    'prismFloat',
+    'crystal-layer',
+    'crystal-prism-particle',
+    'crystal-transition-overlay',
+    'crystal-fade-layer',
+    'night-exclusive',
+    'glass-card',
+    'crystal-void-volumetric',
+    'void-layer',
+    'void-layer-1',
+    'void-layer-2',
+    'void-layer-3',
+    'crystal-void-default',
+    'crystal-void-midnight',
+    'crystal-void-dawn',
+    'crystal-void-day',
+    'crystal-void-twilight'
+  ],
+  
   theme: {
     extend: {
       // Comprehensive Mobile-First Breakpoints
@@ -52,6 +75,26 @@ const config: Config = {
           accent: '#DBBB44',
           text: '#FCFAF7',
           muted: '#8E9196',
+        },
+        
+        // NEW: Crystal Theme Colors
+        crystal: {
+          void: 'var(--crystal-void)',
+          deep: 'var(--crystal-deep)',
+          surface: 'var(--crystal-surface)',
+          prism: {
+            white: 'var(--crystal-prism-white)',
+            blue: 'var(--crystal-prism-blue)',
+            cyan: 'var(--crystal-prism-cyan)',
+            purple: 'var(--crystal-prism-purple)'
+          },
+          glass: {
+            1: 'var(--crystal-glass-1)',
+            2: 'var(--crystal-glass-2)',
+            3: 'var(--crystal-glass-3)',
+            border: 'var(--crystal-glass-border)',
+            shimmer: 'var(--crystal-glass-shimmer)'
+          }
         }
       },
 
@@ -105,6 +148,12 @@ const config: Config = {
         'elegant-fade-in': 'elegantFadeIn 0.8s ease-out forwards',
         'luxury-pulse': 'luxuryPulse 2s ease-in-out infinite',
         
+        // NEW: Crystal Theme Animations
+        'crystal-shimmer': 'crystalShimmer 8s linear infinite',
+        'prism-float': 'prismFloat 15s ease-in-out infinite',
+        'glass-breathe': 'glassBreathe 4s ease-in-out infinite',
+        'crystal-expand': 'crystalExpand 800ms cubic-bezier(0.4, 0, 0.2, 1) forwards',
+        
         // Mobile-optimized animations (60fps)
         'mobile-slide-up': 'mobileSlideUp 0.3s ease-out forwards',
         'mobile-slide-down': 'mobileSlideDown 0.3s ease-out forwards',
@@ -143,6 +192,57 @@ const config: Config = {
           },
           '50%': { 
             boxShadow: '0 0 0 10px rgba(219, 187, 68, 0)' 
+          },
+        },
+        
+        // NEW: Crystal Theme Keyframes
+        crystalShimmer: {
+          '0%': { 
+            backgroundPosition: '-200% center',
+            filter: 'brightness(1) hue-rotate(0deg)'
+          },
+          '50%': {
+            filter: 'brightness(1.2) hue-rotate(10deg)'
+          },
+          '100%': { 
+            backgroundPosition: '200% center',
+            filter: 'brightness(1) hue-rotate(0deg)'
+          },
+        },
+        prismFloat: {
+          '0%, 100%': { 
+            transform: 'translate(0, 0) rotate(-15deg) scale(1)',
+            filter: 'blur(0.8px) brightness(1)'
+          },
+          '25%': { 
+            transform: 'translate(40px, -30px) rotate(15deg) scale(1.2)',
+            filter: 'blur(0.5px) brightness(1.3)'
+          },
+          '50%': { 
+            transform: 'translate(-30px, -50px) rotate(-45deg) scale(0.9)',
+            filter: 'blur(1px) brightness(0.8)'
+          },
+          '75%': { 
+            transform: 'translate(-50px, 20px) rotate(30deg) scale(1.1)',
+            filter: 'blur(0.6px) brightness(1.1)'
+          },
+        },
+        glassBreathe: {
+          '0%, 100%': { 
+            backdropFilter: 'blur(20px) saturate(100%)'
+          },
+          '50%': { 
+            backdropFilter: 'blur(25px) saturate(120%)'
+          },
+        },
+        crystalExpand: {
+          '0%': { 
+            transform: 'scale(0.5)',
+            opacity: '0'
+          },
+          '100%': { 
+            transform: 'scale(1.5)',
+            opacity: '1'
           },
         },
         
