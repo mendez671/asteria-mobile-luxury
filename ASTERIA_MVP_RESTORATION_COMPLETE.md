@@ -26,12 +26,12 @@ npm install twilio  # ✅ Successfully installed
 
 **Environment Variables Verified:**
 ```env
-OPENAI_API_KEY=sk-... ✅ Configured
-SLACK_WEBHOOK_URL=https://hooks.slack.com/... ✅ Configured  
-TWILIO_ACCOUNT_SID=ACc67619eaf6433ee31854928d70976db0 ✅ Configured
+OPENAI_API_KEY=sk-*** ✅ Configured
+SLACK_WEBHOOK_URL=https://hooks.slack.com/*** ✅ Configured  
+TWILIO_ACCOUNT_SID=*** ✅ Configured
 TWILIO_AUTH_TOKEN=*** ✅ Configured
-TWILIO_PHONE_NUMBER=+17027689728 ✅ Configured
-CONCIERGE_PHONE_NUMBER=+18106411893 ✅ Configured
+TWILIO_PHONE_NUMBER=*** ✅ Configured
+CONCIERGE_PHONE_NUMBER=*** ✅ Configured
 ```
 
 **Directory Structure Created:**
