@@ -16,6 +16,7 @@ import { CrystalField } from '@/components/CrystalField';
 
 // UPGRADE 2 & 4: New sapphire components
 import { PrismStreak } from '@/components/effects/PrismStreak';
+import { ParticleRoot } from '@/components/ParticleRoot';
 
 export default function Home() {
   // State Management - Optimized for performance
@@ -244,8 +245,8 @@ export default function Home() {
         <div className="void-layer void-layer-3" />
       </div>
 
-      {/* CRYSTAL FIELD: Portal-based particle system - always-on, full viewport */}
-      <CrystalField />
+      {/* UNIFIED PARTICLE SYSTEM: RAF-based with parallax */}
+      <ParticleRoot />
 
       {/* Main Background with Time-Based Crystal Themes */}
       <main 

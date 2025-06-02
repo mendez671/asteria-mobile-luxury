@@ -1803,23 +1803,16 @@ html {
 .crystal-layer {
   position: fixed !important;
   inset: 0 !important;
-  z-index: 99999 !important; /* TEMP: Force to very top to test stacking hypothesis */
+  z-index: 2 !important; /* Restored proper z-index */
   pointer-events: none !important;
   width: 100vw !important;
   height: 100vh !important;
   transform: translateZ(0) !important;
-  background: rgba(255, 0, 0, 0.05) !important; /* TEMP: Red tint to see the layer */
+  /* REMOVED: All temporary test styling */
 }
 
-/* FIX #1: Force particles to be mega-visible for testing */
-.crystal-layer > div {
-  background: rgba(0, 255, 255, 0.8) !important; /* TEMP: Cyan background */
-  border: 2px solid yellow !important; /* TEMP: Yellow border */
-  width: 40px !important; /* TEMP: Bigger size */
-  height: 40px !important; /* TEMP: Bigger size */
-  opacity: 1 !important; /* TEMP: Full opacity */
-  z-index: inherit !important;
-}
+/* REMOVED: All temporary test particle styling */
+/* Normal particle styling restored via ParticleRoot component */
 
 /* Ensure main content stays on top */
 main {
@@ -1881,5 +1874,57 @@ header {
   .animate-prism {
     animation: none !important;
     opacity: 0.2;
+  }
+}
+
+/* GPU Layer Promotion for Performance */
+.particle-root {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  transform: translateZ(0) !important; /* GPU acceleration */
+}
+
+/* Promote nebula and horizon to GPU layers */
+.crystal-void-volumetric,
+.void-layer {
+  transform: translateZ(0); /* GPU acceleration */
+  will-change: transform; /* Hint for browser optimization */
+}
+
+/* Accessibility: Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all particle animations */
+  .particle-root {
+    display: none !important;
+  }
+  
+  /* Disable crystal animations */
+  .animate-prism,
+  .crystal-prism-particle {
+    animation: none !important;
+    transform: none !important;
+  }
+  
+  /* Disable all keyframe animations */
+  .floating-luxury,
+  .shimmer-gold,
+  .champagne-celebration::after {
+    animation: none !important;
+  }
+  
+  /* Disable volumetric layer animations */
+  .void-layer {
+    animation: none !important;
+  }
+  
+  /* Keep essential transforms but remove animation */
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

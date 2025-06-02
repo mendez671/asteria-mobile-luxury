@@ -25,6 +25,7 @@ let rafId: number | null = null;
 export const ParticleRoot = () => {
   const [mounted, setMounted] = useState(false);
   const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const particleRefs = useRef<HTMLDivElement[]>([]);
   const scrollY = useRef(0);
   const mousePos = useRef({ x: 0, y: 0 });
@@ -44,6 +45,24 @@ export const ParticleRoot = () => {
       }
     }));
   });
+
+  // Check for reduced motion preference
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReducedMotion(mediaQuery.matches);
+    
+    const handleChange = (e: MediaQueryListEvent) => {
+      setReducedMotion(e.matches);
+    };
+    
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  // Don't render particles if reduced motion is preferred
+  if (reducedMotion) {
+    return null;
+  }
 
   // Unified RAF loop for all animations
   const animate = useCallback(() => {
