@@ -202,7 +202,7 @@ const particles = document.querySelectorAll('.crystal-layer > div');
 
 console.log('✓ Crystal layer exists:', !!crystalLayer);
 console.log('✓ Particle count:', particles.length);
-
+  
 if (crystalLayer) {
   const layerStyles = window.getComputedStyle(crystalLayer);
   console.log('✓ Crystal layer z-index:', layerStyles.zIndex);
@@ -274,7 +274,7 @@ elementsWithBg.forEach(selector => {
 });
 
 console.log('\n🎉 VERIFICATION COMPLETE!');
-console.log('========================');
+  console.log('========================');
 console.log('If particles are now visible across the full viewport with cyan/yellow test styling,');
 console.log('and all background-attachment values are "scroll", the fixes are working!');
 

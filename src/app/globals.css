@@ -1928,3 +1928,59 @@ header {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ENHANCED: Float animation for crystal particles */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.7;
+  }
+  33% {
+    transform: translateY(-10px) rotate(120deg);
+    opacity: 0.9;
+  }
+  66% {
+    transform: translateY(5px) rotate(240deg);
+    opacity: 0.8;
+  }
+}
+
+/* ENHANCED: Pulse animation variations */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+/* PERFORMANCE: GPU acceleration for particle system */
+.particle-root,
+.crystal-void-volumetric,
+.void-layer {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* ACCESSIBILITY: Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .particle-root,
+  .prismFloat,
+  .float,
+  .pulse {
+    animation: none !important;
+    transform: none !important;
+  }
+  
+  .crystal-void-volumetric {
+    opacity: 0.3;
+  }
+  
+  /* Hide interactive crystal effects for reduced motion */
+  .interactive-crystal-hero {
+    display: none !important;
+  }
+}

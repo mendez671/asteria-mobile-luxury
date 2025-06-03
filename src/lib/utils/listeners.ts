@@ -30,5 +30,14 @@ export function addPassiveScroll(handler: (ev: Event) => void) {
 }
 
 export function addPassiveVisibilityChange(handler: (ev: Event) => void) {
-  return addPassive('visibilitychange', handler);
+  const passiveOptions: AddEventListenerOptions = {
+    passive: true
+  };
+  
+  document.addEventListener('visibilitychange', handler, passiveOptions);
+  
+  // Return cleanup function
+  return () => {
+    document.removeEventListener('visibilitychange', handler);
+  };
 } 

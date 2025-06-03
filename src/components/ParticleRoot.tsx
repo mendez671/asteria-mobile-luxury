@@ -32,16 +32,18 @@ export const ParticleRoot = () => {
   
   // Generate optimized particle data
   const [particles] = useState<ParticleData[]>(() => {
-    const count = 8; // Reduced for performance
+    const count = 8; // 8 particles for good performance
+    console.log('🎆 Generating particles:', count); // Debug log
+    
     return Array.from({ length: count }, (_, i) => ({
       id: i,
-      x: 15 + (i * 12) % 70,
-      y: 20 + (i * 13) % 60,
-      delay: i * 150,
+      x: 10 + (i * 15) % 80, // Spread across viewport width
+      y: 15 + (i * 17) % 70, // Spread across viewport height
+      delay: i * 200,
       includePurple: i % 3 === 0,
       velocity: {
-        x: (Math.random() - 0.5) * 0.5,
-        y: (Math.random() - 0.5) * 0.3
+        x: (Math.random() - 0.5) * 0.8,
+        y: (Math.random() - 0.5) * 0.5
       }
     }));
   });
@@ -72,22 +74,26 @@ export const ParticleRoot = () => {
       if (!element) return;
       
       const particle = particles[index];
-      const scrollOffset = scrollY.current * 0.1; // Subtle parallax
+      const scrollOffset = scrollY.current * 0.08; // Subtle parallax
       const mouseInfluence = {
-        x: (mousePos.current.x - window.innerWidth / 2) * 0.0001,
-        y: (mousePos.current.y - window.innerHeight / 2) * 0.0001
+        x: (mousePos.current.x - window.innerWidth / 2) * 0.0002,
+        y: (mousePos.current.y - window.innerHeight / 2) * 0.0002
       };
       
+      // Convert percentage to actual pixels
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
       // Smooth organic movement
-      const baseX = particle.x + Math.sin(time * 0.001 + particle.delay) * 30;
-      const baseY = particle.y + Math.cos(time * 0.0008 + particle.delay) * 20 - scrollOffset;
+      const baseX = (particle.x / 100) * viewportWidth + Math.sin(time * 0.0008 + particle.delay * 0.001) * 50;
+      const baseY = (particle.y / 100) * viewportHeight + Math.cos(time * 0.0006 + particle.delay * 0.001) * 30 - scrollOffset;
       
       // Apply mouse influence
       const finalX = baseX + mouseInfluence.x * 100;
       const finalY = baseY + mouseInfluence.y * 100;
       
       // Use transform for GPU acceleration
-      element.style.transform = `translate3d(${finalX}px, ${finalY}px, 0) rotate(${time * 0.01 + particle.delay}deg)`;
+      element.style.transform = `translate3d(${finalX}px, ${finalY}px, 0) rotate(${time * 0.008 + particle.delay * 0.001}deg)`;
     });
     
     rafId = requestAnimationFrame(animate);
@@ -103,13 +109,8 @@ export const ParticleRoot = () => {
   }, []);
 
   const handleResize = useCallback(() => {
-    // Update any size-dependent calculations here
-    particles.forEach((particle, index) => {
-      if (particleRefs.current[index]) {
-        // Recalculate positions if needed
-      }
-    });
-  }, [particles]);
+    // Particles will automatically adjust on next animation frame
+  }, []);
 
   useEffect(() => {
     if (particleSystemInitialized) return;
@@ -123,6 +124,7 @@ export const ParticleRoot = () => {
       z-index: 2;
       pointer-events: none;
       transform: translateZ(0);
+      overflow: hidden;
     `;
     
     document.body.appendChild(portalDiv);
@@ -157,31 +159,37 @@ export const ParticleRoot = () => {
     };
   }, [animate, handleScroll, handleResize, handleMouseMove]);
 
-  const ParticleSystem = () => (
-    <div className="w-full h-full">
-      {particles.map((particle, index) => (
-        <div
-          key={particle.id}
-          ref={el => {
-            if (el) particleRefs.current[index] = el;
-          }}
-          className="absolute will-change-transform"
-          style={{
-            left: 0,
-            top: 0,
-            transform: 'translate3d(0, 0, 0)', // Initial GPU layer
-          }}
-        >
-          <PrismStreak 
-            index={particle.id}
-            position={{ x: '0', y: '0' }}
-            delay={particle.delay / 1000}
-            includePurple={particle.includePurple}
-          />
-        </div>
-      ))}
-    </div>
-  );
+  const ParticleSystem = () => {
+    console.log('🎨 Rendering particles:', particles.length); // Debug log
+    
+    return (
+      <div className="w-full h-full">
+        {particles.map((particle, index) => (
+          <div
+            key={`particle-${particle.id}`}
+            ref={el => {
+              if (el) particleRefs.current[index] = el;
+            }}
+            className="absolute will-change-transform"
+            style={{
+              left: 0,
+              top: 0,
+              width: '160px',
+              height: '16px',
+              transform: 'translate3d(0, 0, 0)', // Initial GPU layer
+            }}
+          >
+            <PrismStreak 
+              index={particle.id}
+              position={{ x: '0', y: '0' }}
+              delay={particle.delay / 1000}
+              includePurple={particle.includePurple}
+            />
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   if (!mounted || !portalRoot) return null;
   

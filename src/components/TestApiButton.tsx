@@ -93,36 +93,40 @@ export default function TestApiButton() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 bg-tag-dark-purple/90 backdrop-blur-sm p-4 rounded-lg border border-tag-gold/30 max-w-sm">
-      <h3 className="text-tag-gold font-medium mb-3">API Test Console</h3>
-      
-      <div className="space-y-2 mb-4">
-        <button
-          onClick={runDiagnostics}
-          disabled={testing}
-          className="w-full bg-gradient-to-r from-tag-gold to-tag-gold-light text-tag-dark-purple px-4 py-2 rounded font-medium disabled:opacity-50"
-        >
-          {testing ? 'Testing...' : 'Run Full Diagnostics'}
-        </button>
-        
-        <button
-          onClick={testSimpleMessage}
-          disabled={testing}
-          className="w-full bg-tag-dark-purple border border-tag-gold/30 text-tag-gold px-4 py-2 rounded font-medium disabled:opacity-50"
-        >
-          {testing ? 'Testing...' : 'Test Simple Message'}
-        </button>
-      </div>
-      
-      {results && (
-        <div className="bg-black/50 p-3 rounded text-xs text-tag-cream max-h-40 overflow-y-auto">
-          <pre>{JSON.stringify(results, null, 2)}</pre>
+    <>
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed bottom-4 right-4 z-50 bg-tag-dark-purple/90 backdrop-blur-sm p-4 rounded-lg border border-tag-gold/30 max-w-sm">
+          <h3 className="text-tag-gold font-medium mb-3">API Test Console</h3>
+          
+          <div className="space-y-2 mb-4">
+            <button
+              onClick={runDiagnostics}
+              disabled={testing}
+              className="w-full bg-gradient-to-r from-tag-gold to-tag-gold-light text-tag-dark-purple px-4 py-2 rounded font-medium disabled:opacity-50"
+            >
+              {testing ? 'Testing...' : 'Run Full Diagnostics'}
+            </button>
+            
+            <button
+              onClick={testSimpleMessage}
+              disabled={testing}
+              className="w-full bg-tag-dark-purple border border-tag-gold/30 text-tag-gold px-4 py-2 rounded font-medium disabled:opacity-50"
+            >
+              {testing ? 'Testing...' : 'Test Simple Message'}
+            </button>
+          </div>
+          
+          {results && (
+            <div className="bg-black/50 p-3 rounded text-xs text-tag-cream max-h-40 overflow-y-auto">
+              <pre>{JSON.stringify(results, null, 2)}</pre>
+            </div>
+          )}
+          
+          <div className="text-xs text-tag-gold/60 mt-2">
+            Check browser console for detailed logs
+          </div>
         </div>
       )}
-      
-      <div className="text-xs text-tag-gold/60 mt-2">
-        Check browser console for detailed logs
-      </div>
-    </div>
+    </>
   );
 } 

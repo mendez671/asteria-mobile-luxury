@@ -7,28 +7,6 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   
-  // CRITICAL: Safelist for particle system classes
-  safelist: [
-    'animate-prism',
-    'prismFloat',
-    'crystal-layer',
-    'crystal-prism-particle',
-    'crystal-transition-overlay',
-    'crystal-fade-layer',
-    'night-exclusive',
-    'glass-card',
-    'crystal-void-volumetric',
-    'void-layer',
-    'void-layer-1',
-    'void-layer-2',
-    'void-layer-3',
-    'crystal-void-default',
-    'crystal-void-midnight',
-    'crystal-void-dawn',
-    'crystal-void-day',
-    'crystal-void-twilight'
-  ],
-  
   theme: {
     extend: {
       // Comprehensive Mobile-First Breakpoints
