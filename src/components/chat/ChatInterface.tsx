@@ -348,32 +348,32 @@ export default function ChatInterface({ className = '', initialPrompt }: ChatInt
   };
 
   return (
-    <div className={`flex flex-col h-full bg-gradient-to-b from-tag-purple-deep to-tag-purple rounded-2xl overflow-hidden ${className}`}>
+    <div className={`flex flex-col h-full bg-transparent rounded-2xl overflow-hidden ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 sm:p-6 border-b border-tag-purple-light/20">
+      <div className="flex items-center justify-between p-4 sm:p-6 border-b border-cyan-500/20">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-tag-gold rounded-full flex items-center justify-center">
-            <span className="text-tag-purple-deep font-bold text-sm">A</span>
+          <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center">
+            <span className="text-white font-bold text-sm">A</span>
           </div>
           <div>
-            <h2 className="text-tag-cream font-medium">Asteria</h2>
-            <p className="text-tag-gray text-sm">Your Personal Concierge</p>
+            <h2 className="text-white font-medium">Asteria</h2>
+            <p className="text-slate-400 text-sm">Your Personal Concierge</p>
           </div>
         </div>
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setVoiceEnabled(!voiceEnabled)}
-            className="p-2 rounded-full hover:bg-tag-purple-light/20 transition-colors"
+            className="p-2 rounded-full hover:bg-cyan-500/20 transition-colors"
             title={voiceEnabled ? "Disable voice" : "Enable voice"}
           >
             {voiceEnabled ? (
-              <Volume2 className="w-5 h-5 text-tag-gold" />
+              <Volume2 className="w-5 h-5 text-cyan-400" />
             ) : (
-              <VolumeX className="w-5 h-5 text-tag-gray" />
+              <VolumeX className="w-5 h-5 text-slate-400" />
             )}
           </button>
-          <div className="px-3 py-1 bg-tag-gold/20 rounded-full">
-            <span className="text-tag-gold text-xs font-medium">Elite Member</span>
+          <div className="px-3 py-1 bg-cyan-500/20 rounded-full border border-cyan-500/30">
+            <span className="text-cyan-400 text-xs font-medium">Elite Member</span>
           </div>
         </div>
       </div>
@@ -388,13 +388,13 @@ export default function ChatInterface({ className = '', initialPrompt }: ChatInt
             <div
               className={`max-w-[85%] sm:max-w-[80%] rounded-2xl px-4 py-3 ${
                 message.role === 'user'
-                  ? 'bg-tag-gold text-tag-purple-deep'
-                  : 'bg-tag-purple-light/30 text-tag-cream border border-tag-purple-light/20'
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
+                  : 'bg-slate-800/40 text-slate-200 border border-cyan-500/20 backdrop-blur-sm'
               }`}
             >
               <p className="text-sm leading-relaxed">{message.content}</p>
               <p className={`text-xs mt-2 ${
-                message.role === 'user' ? 'text-tag-purple-deep/70' : 'text-tag-gray'
+                message.role === 'user' ? 'text-cyan-100' : 'text-slate-400'
               }`}>
                 {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </p>
@@ -405,11 +405,11 @@ export default function ChatInterface({ className = '', initialPrompt }: ChatInt
         {/* Loading indicator */}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-tag-purple-light/30 rounded-2xl px-4 py-3 border border-tag-purple-light/20">
+            <div className="bg-slate-800/40 rounded-2xl px-4 py-3 border border-cyan-500/20 backdrop-blur-sm">
               <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-tag-gold rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-tag-gold rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                <div className="w-2 h-2 bg-tag-gold rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
               </div>
             </div>
           </div>
@@ -424,7 +424,7 @@ export default function ChatInterface({ className = '', initialPrompt }: ChatInt
           <div className="flex justify-center">
             <button
               onClick={handleBookItClick}
-              className="relative overflow-hidden bg-gradient-to-r from-tag-gold via-tag-gold-light to-tag-gold hover:from-tag-gold-light hover:via-tag-gold hover:to-tag-gold-light text-tag-purple-deep px-8 py-4 rounded-2xl font-bold text-lg flex items-center space-x-3 transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:scale-105 hover:-translate-y-1 border-2 border-tag-gold-light/30 hover:border-tag-gold group"
+              className="relative overflow-hidden bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-400 hover:from-cyan-400 hover:via-blue-400 hover:to-cyan-300 text-white px-8 py-4 rounded-2xl font-bold text-lg flex items-center space-x-3 transition-all duration-300 shadow-2xl hover:shadow-cyan-500/25 transform hover:scale-105 hover:-translate-y-1 border-2 border-cyan-400/30 hover:border-cyan-300 group"
               disabled={isLoading}
             >
               {/* Elegant glow effect */}
@@ -446,7 +446,7 @@ export default function ChatInterface({ className = '', initialPrompt }: ChatInt
       )}
 
       {/* Input */}
-      <div className="p-4 sm:p-6 border-t border-tag-purple-light/20">
+      <div className="p-4 sm:p-6 border-t border-cyan-500/20">
         <div className="flex items-center space-x-3">
           <div className="flex-1 relative">
             <input
@@ -456,7 +456,7 @@ export default function ChatInterface({ className = '', initialPrompt }: ChatInt
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Describe your luxury experience..."
-              className="w-full bg-tag-purple-light/20 border border-tag-purple-light/30 rounded-xl px-4 py-3 text-tag-cream placeholder-tag-gray focus:outline-none focus:ring-2 focus:ring-tag-gold focus:border-transparent resize-none"
+              className="w-full bg-slate-800/40 border border-cyan-500/30 rounded-xl px-4 py-3 text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent resize-none backdrop-blur-sm"
               disabled={isLoading}
             />
           </div>
@@ -468,7 +468,7 @@ export default function ChatInterface({ className = '', initialPrompt }: ChatInt
               className={`p-3 rounded-xl transition-all duration-200 ${
                 isListening
                   ? 'bg-red-500 hover:bg-red-600 text-white'
-                  : 'bg-tag-purple-light/30 hover:bg-tag-purple-light/50 text-tag-gold border border-tag-purple-light/30'
+                  : 'bg-slate-800/40 hover:bg-slate-700/50 text-cyan-400 border border-cyan-500/30 backdrop-blur-sm'
               }`}
               title={isListening ? "Stop recording" : "Start voice input"}
             >
@@ -484,7 +484,7 @@ export default function ChatInterface({ className = '', initialPrompt }: ChatInt
           <button
             onClick={handleSendMessage}
             disabled={!inputValue.trim() || isLoading}
-            className="p-3 bg-tag-gold hover:bg-tag-gold-light text-tag-purple-deep rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-cyan-500/25"
           >
             <Send className="w-5 h-5" />
           </button>
