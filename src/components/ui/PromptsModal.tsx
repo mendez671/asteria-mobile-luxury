@@ -39,7 +39,7 @@ export default function PromptsModal({
         <>
           {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -48,13 +48,13 @@ export default function PromptsModal({
           
           {/* Modal */}
           <motion.div
-            className="fixed inset-0 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 flex items-center justify-center z-[101] p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="glass-card max-w-lg w-full max-h-[80vh] overflow-hidden relative"
+              className="bg-slate-900/95 border border-cyan-500/30 rounded-xl backdrop-blur-md max-w-lg w-full max-h-[80vh] overflow-hidden relative shadow-2xl"
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
@@ -64,19 +64,19 @@ export default function PromptsModal({
               <button
                 onClick={onClose}
                 className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center
-                           rounded-full bg-white/10 hover:bg-white/20 transition-colors z-10"
+                           rounded-full bg-slate-800/80 hover:bg-slate-700/80 transition-colors z-10 text-cyan-400 hover:text-white"
               >
-                <svg className="w-4 h-4 text-tag-cream" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
               
               {/* Header */}
-              <div className="p-6 border-b border-white/10">
-                <h3 className="text-xl font-medium text-tag-cream">
+              <div className="p-6 border-b border-cyan-500/20 bg-gradient-to-r from-slate-800/50 to-slate-900/50">
+                <h3 className="text-xl font-medium text-white">
                   {serviceTitle}
                 </h3>
-                <p className="text-sm text-tag-cream/60 mt-1">
+                <p className="text-sm text-slate-400 mt-1">
                   Select your preferred experience
                 </p>
               </div>
@@ -86,8 +86,8 @@ export default function PromptsModal({
                 {prompts.map((prompt, index) => (
                   <motion.button
                     key={index}
-                    className="w-full text-left p-4 bg-white/5 hover:bg-white/10 
-                               border border-white/10 hover:border-tag-gold/30 
+                    className="w-full text-left p-4 bg-slate-800/40 hover:bg-slate-700/60 
+                               border border-slate-600/30 hover:border-cyan-500/50 
                                rounded-lg transition-all duration-200 group"
                     whileHover={{ x: 4 }}
                     whileTap={{ scale: 0.98 }}
@@ -96,7 +96,7 @@ export default function PromptsModal({
                       onClose();
                     }}
                   >
-                    <span className="text-tag-cream/90 group-hover:text-tag-cream">
+                    <span className="text-slate-300 group-hover:text-white">
                       "{prompt}"
                     </span>
                   </motion.button>

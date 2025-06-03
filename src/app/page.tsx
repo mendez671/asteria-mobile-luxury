@@ -17,6 +17,7 @@ import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import { PrismStreak } from '@/components/effects/PrismStreak';
 import { ParticleRoot } from '@/components/ParticleRoot';
 import { InteractiveCrystalHero, CrystalLines, PulseCrystal } from '@/components/effects/InteractiveCrystalHero';
+import { SapphireCutStatus } from '@/components/effects/SapphireCutStatus';
 
 type ViewportType = 'mobile' | 'desktop';
 
@@ -181,6 +182,9 @@ export default function Home() {
       {/* UPGRADE 2: Particle System */}
       <ParticleRoot />
       
+      {/* SAPPHIRE CUT STATUS Panel */}
+      <SapphireCutStatus />
+      
       {/* Desktop Video Intro */}
       {viewport.isDesktop && showVideo && !isVideoComplete && (
         <VideoIntro 
@@ -209,14 +213,16 @@ export default function Home() {
                   {/* RESTORED: Test Background Change Button */}
                   <button
                     onClick={cycleBackground}
-                    className="px-4 py-2 bg-blue-600/20 border border-blue-500/30 rounded-lg 
+                    className="px-3 py-1 bg-blue-600/20 border border-blue-500/30 rounded 
                                text-blue-300 hover:bg-blue-600/30 transition-all duration-200
-                               text-sm font-medium backdrop-blur-sm"
+                               text-xs font-medium backdrop-blur-sm"
                     title="Test background changes"
                   >
-                    🌅 Change BG
+                    🌅 BG
                   </button>
-                  <TestApiButton />
+                  <div className="scale-75">
+                    <TestApiButton />
+                  </div>
                 </div>
               </div>
             </header>
@@ -235,21 +241,31 @@ export default function Home() {
                   transition={{ duration: 0.8, delay: 0.2 }}
                   className="mb-8"
                 >
-                  <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent mb-6">
-                    Welcome to Asteria
+                  {/* ENHANCED: "Where Energy Meets Experience" as primary hero */}
+                  <h1 className="text-6xl md:text-8xl font-bold mb-4">
+                    <span className="block text-white mb-2">Asteria</span>
+                    <span className="block text-4xl md:text-5xl bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent animate-pulse">
+                      Where Energy Meets Experience
+                    </span>
                   </h1>
+                  
                   <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-                    Your intelligent business companion that evolves with your needs. 
-                    Experience seamless automation, intelligent insights, and premium support 
-                    through natural conversation.
+                    True luxury transcends possessions—it's the energy that arises when meaning, beauty, 
+                    and purpose converge. For those who understand that luxury isn't what you have, but 
+                    how you move.
                   </p>
                   
-                  {/* RESTORED: Time display */}
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800/40 rounded-full text-sm text-slate-400 mb-8">
-                    <span>🕒</span>
-                    <span>{currentTime.toLocaleTimeString()}</span>
-                    <span className="text-yellow-400">•</span>
-                    <span className="capitalize">{backgroundClass.replace('crystal-void-', '')}</span>
+                  {/* ENHANCED: Time-based luxury messaging */}
+                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800/40 rounded-full text-sm text-slate-400 mb-8 border border-cyan-500/20">
+                    <span>✨</span>
+                    <span>
+                      {currentTime.getHours() >= 0 && currentTime.getHours() < 6 && "Midnight Concierge"}
+                      {currentTime.getHours() >= 6 && currentTime.getHours() < 12 && "Morning Excellence"}
+                      {currentTime.getHours() >= 12 && currentTime.getHours() < 18 && "Afternoon Luxury"}
+                      {currentTime.getHours() >= 18 && "Exclusive Night Service"}
+                    </span>
+                    <span className="text-cyan-400">•</span>
+                    <span>{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                   </div>
                 </motion.div>
 
@@ -257,9 +273,14 @@ export default function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.4 }}
-                  className="mb-12"
+                  className="mb-12 flex flex-col sm:flex-row gap-4 justify-center items-center"
                 >
-                  <ServiceBadges />
+                  <button className="px-8 py-4 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-xl font-medium hover:from-cyan-500 hover:to-blue-500 transition-all duration-200 border border-cyan-500/30">
+                    Curate Your Experience
+                  </button>
+                  <button className="px-8 py-4 bg-slate-800/40 text-cyan-300 rounded-xl font-medium border border-cyan-500/30 hover:bg-slate-800/60 transition-all duration-200">
+                    Discover Your Energy
+                  </button>
                 </motion.div>
               </div>
             </section>
@@ -273,11 +294,25 @@ export default function Home() {
                   transition={{ duration: 0.8, delay: 0.6 }}
                   className="mb-12 text-center"
                 >
-                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                    Start Your Journey
+                  <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                    Access the Asteria Network Now.
                   </h2>
-                  <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-                    Describe what you need, and Asteria will guide you through the perfect solution.
+                  <div className="flex justify-center items-center gap-8 mb-8">
+                    <div className="text-center">
+                      <span className="text-2xl font-bold text-cyan-400">1.</span>
+                      <p className="text-slate-400">Request.</p>
+                    </div>
+                    <div className="text-center">
+                      <span className="text-2xl font-bold text-blue-400">2.</span>
+                      <p className="text-slate-400">Book.</p>
+                    </div>
+                    <div className="text-center">
+                      <span className="text-2xl font-bold text-cyan-400">3.</span>
+                      <p className="text-slate-400">Relax.</p>
+                    </div>
+                  </div>
+                  <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-8">
+                    Luxury, Simplified.
                   </p>
                 </motion.div>
 
@@ -292,9 +327,14 @@ export default function Home() {
               </div>
             </section>
 
-            {/* How It Works */}
+            {/* How It Works THIRD - Collapsible */}
             <section className="relative py-20 px-6">
               <HowItWorksSection />
+            </section>
+
+            {/* Service Cards FOURTH - Final section */}
+            <section className="relative py-20 px-6">
+              <ServiceBadges />
             </section>
 
             {/* Footer */}

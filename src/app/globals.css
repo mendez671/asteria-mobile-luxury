@@ -4,19 +4,49 @@
 @import url('https://fonts.googleapis.com/css2?family=TT+Firs+Neue:wght@500;700;800&display=swap');
 
 :root {
-  /* TAG Brand Luxury Palette */
+  --background: 0 0% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 0 0% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --popover: 0 0% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 0 0% 9%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 14.9%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 0 0% 14.9%;
+  --muted-foreground: 0 0% 63.9%;
+  --accent: 0 0% 14.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 14.9%;
+  --input: 0 0% 14.9%;
+  --ring: 0 0% 83.1%;
+  --chart-1: 12 76% 61%;
+  --chart-2: 173 58% 39%;
+  --chart-3: 197 37% 24%;
+  --chart-4: 43 74% 66%;
+  --chart-5: 27 87% 67%;
+  --radius: 0.5rem;
+  
+  /* TAG Luxury Colors */
+  --tag-gold: #D4AF37;
+  --tag-gold-light: #FFD700;
+  --tag-gold-dark: #B8860B;
+  --tag-cream: #F5F5DC;
   --tag-dark-purple: #0D0016;
-  --tag-gold: #DBBB44;
-  --tag-cream: #FCFAF7;
-  --tag-light-purple: #964DE0;
-  --tag-neutral-gray: #8E9196;
+  --tag-light-purple: #2D1B69;
+  --tag-neutral-gray: #8B8B8B;
+  
+  /* Enhanced Purple Accents */
+  --tag-purple-accent: #4C0080;
+  --tag-purple-glow: #6A0DAD;
+  --tag-midnight-purple: #1A0033;
+  
+  /* TAG Brand Luxury Palette */
   --tag-tertiary-purple: #6E59A5;
   --tag-secondary-purple: #7E69AB;
-  
-  /* Enhanced Luxury Variations */
-  --tag-gold-light: #E8C547;
-  --tag-gold-dark: #C8A63C;
-  --tag-purple-deep: #05000A;
   
   /* CRYSTAL EVOLUTION: Design Tokens from Original Plan */
   /* Preserve TAG essence (subtle presence) */
@@ -39,10 +69,6 @@
   --crystal-glass-3: rgba(13, 20, 34, 0.7);
   --crystal-glass-border: rgba(255, 255, 255, 0.06);
   --crystal-glass-shimmer: rgba(255, 255, 255, 0.02);
-  
-  /* System Variables */
-  --background: var(--crystal-void);  /* EVOLVED: Crystal void instead of TAG purple */
-  --foreground: var(--crystal-prism-white);
   
   /* UPGRADE 1: Enhanced font system with TT Firs Neue */
   --font-primary: 'TT Firs Neue', 'SF Pro Display', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -1054,13 +1080,23 @@ body {
 }
 
 .crystal-void-midnight { 
-  background: 
-    radial-gradient(circle at 50% 40%, var(--crystal-deep) 0%, var(--crystal-void) 60%, #000000 100%),
-    radial-gradient(circle at 20% 80%, var(--crystal-prism-blue) 0%, transparent 20%);
-  background-blend-mode: normal, screen;
-  animation: elegantFadeIn 1.2s ease-out forwards;
+  background: linear-gradient(135deg, 
+    #0a0a0a 0%,
+    #1a0033 25%,
+    #0D0016 50%,
+    #000614 75%,
+    #000000 100%
+  );
   position: relative;
-  background-attachment: scroll !important;
+}
+
+.crystal-void-midnight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 70%, rgba(77, 0, 128, 0.15) 0%, transparent 50%),
+              radial-gradient(circle at 70% 30%, rgba(106, 13, 173, 0.1) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 .crystal-void-dawn { 
