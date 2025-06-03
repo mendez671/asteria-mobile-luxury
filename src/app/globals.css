@@ -1575,49 +1575,167 @@ body {
   }
 }
 
-/* Enhanced Service Cards Styles */
+/* ENHANCED: Service Card Crystal Glass Morphism */
 .service-card {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .service-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    0 8px 24px rgba(125, 211, 252, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
-/* Custom scrollbar for service prompts */
-.service-prompts::-webkit-scrollbar {
-  width: 4px;
+/* Enhanced Glass Card for Service Cards */
+.glass-card {
+  position: relative;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  overflow: hidden;
 }
 
-.service-prompts::-webkit-scrollbar-track {
-  background: rgba(219, 187, 68, 0.1);
-  border-radius: 2px;
+/* Glass card depth effect */
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.02) 50%,
+    transparent 100%
+  );
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.service-prompts::-webkit-scrollbar-thumb {
-  background: rgba(219, 187, 68, 0.3);
-  border-radius: 2px;
+.glass-card:hover::before {
+  opacity: 1;
 }
 
-.service-prompts::-webkit-scrollbar-thumb:hover {
-  background: rgba(219, 187, 68, 0.5);
+/* Service card specific enhancements for all background themes */
+.crystal-void-midnight .glass-card {
+  background: linear-gradient(
+    135deg,
+    rgba(77, 0, 128, 0.12) 0%,
+    rgba(13, 0, 22, 0.35) 50%,
+    rgba(106, 13, 173, 0.08) 100%
+  );
+  border-color: rgba(125, 211, 252, 0.15);
 }
 
-/* Smooth scrolling for the entire page */
-html {
-  scroll-behavior: smooth;
+.crystal-void-dawn .glass-card {
+  background: linear-gradient(
+    135deg,
+    rgba(11, 18, 32, 0.4) 0%,
+    rgba(0, 3, 8, 0.35) 50%,
+    rgba(74, 158, 255, 0.08) 100%
+  );
+  border-color: rgba(125, 211, 252, 0.15);
 }
 
-/* Mobile responsiveness for service cards */
+.crystal-void-day .glass-card {
+  background: linear-gradient(
+    135deg,
+    rgba(14, 22, 40, 0.4) 0%,
+    rgba(0, 3, 8, 0.35) 50%,
+    rgba(74, 158, 255, 0.08) 100%
+  );
+  border-color: rgba(125, 211, 252, 0.15);
+}
+
+.crystal-void-twilight .glass-card {
+  background: linear-gradient(
+    135deg,
+    rgba(13, 20, 34, 0.4) 0%,
+    rgba(0, 3, 8, 0.35) 50%,
+    rgba(147, 51, 234, 0.08) 100%
+  );
+  border-color: rgba(147, 51, 234, 0.2);
+}
+
+/* Hover enhancements for all themes */
+.crystal-void-midnight .glass-card:hover {
+  border-color: rgba(125, 211, 252, 0.3);
+  box-shadow: 
+    0 20px 40px rgba(77, 0, 128, 0.2),
+    0 8px 24px rgba(125, 211, 252, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.crystal-void-dawn .glass-card:hover,
+.crystal-void-day .glass-card:hover {
+  border-color: rgba(125, 211, 252, 0.3);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 8px 24px rgba(125, 211, 252, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.crystal-void-twilight .glass-card:hover {
+  border-color: rgba(147, 51, 234, 0.4);
+  box-shadow: 
+    0 20px 40px rgba(147, 51, 234, 0.15),
+    0 8px 24px rgba(125, 211, 252, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Enhanced service card animations */
+@keyframes serviceCardFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-2px) scale(1.01);
+  }
+}
+
+.glass-card:hover {
+  animation: serviceCardFloat 3s ease-in-out infinite;
+}
+
+/* Tier badge enhancements */
+.tier-badge-glow {
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(125, 211, 252, 0.2);
+}
+
+/* Service card content visibility enhancements */
+.glass-card h3 {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.glass-card p {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive enhancements for mobile */
 @media (max-width: 768px) {
-  .service-card {
-    transform: none;
+  .glass-card {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
   }
   
-  .service-card:hover {
-    transform: none;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  .glass-card:hover {
+    transform: scale(1.02);
+    animation: none;
   }
 }
 
