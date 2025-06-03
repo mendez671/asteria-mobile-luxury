@@ -228,7 +228,7 @@ export default function Home() {
             </header>
 
             {/* Hero Section FIRST */}
-            <section className="relative min-h-screen flex items-center justify-center px-6">
+            <section className="relative min-h-[80vh] flex items-center justify-center px-6">
               {/* Interactive blue crystal background */}
               <InteractiveCrystalHero />
               <CrystalLines />
@@ -242,21 +242,21 @@ export default function Home() {
                   className="mb-8"
                 >
                   {/* ENHANCED: "Where Energy Meets Experience" as primary hero */}
-                  <h1 className="text-6xl md:text-8xl font-bold mb-4">
+                  <h1 className="text-5xl md:text-7xl font-bold mb-4">
                     <span className="block text-white mb-2">Asteria</span>
-                    <span className="block text-4xl md:text-5xl bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent animate-pulse">
+                    <span className="block text-3xl md:text-4xl bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent animate-pulse">
                       Where Energy Meets Experience
                     </span>
                   </h1>
                   
-                  <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+                  <p className="text-lg md:text-xl text-slate-300 mb-6 max-w-2xl mx-auto leading-relaxed">
                     True luxury transcends possessions—it's the energy that arises when meaning, beauty, 
                     and purpose converge. For those who understand that luxury isn't what you have, but 
                     how you move.
                   </p>
                   
                   {/* ENHANCED: Time-based luxury messaging */}
-                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800/40 rounded-full text-sm text-slate-400 mb-8 border border-cyan-500/20">
+                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800/40 rounded-full text-sm text-slate-400 mb-6 border border-cyan-500/20">
                     <span>✨</span>
                     <span>
                       {currentTime.getHours() >= 0 && currentTime.getHours() < 6 && "Midnight Concierge"}
@@ -273,7 +273,7 @@ export default function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.4 }}
-                  className="mb-12 flex flex-col sm:flex-row gap-4 justify-center items-center"
+                  className="mb-8 flex flex-col sm:flex-row gap-4 justify-center items-center"
                 >
                   <button className="px-8 py-4 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-xl font-medium hover:from-cyan-500 hover:to-blue-500 transition-all duration-200 border border-cyan-500/30">
                     Curate Your Experience
@@ -282,11 +282,26 @@ export default function Home() {
                     Discover Your Energy
                   </button>
                 </motion.div>
+                
+                {/* Scroll indicator to show there's more content below */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1, delay: 1.5 }}
+                  className="mt-8"
+                >
+                  <div className="flex flex-col items-center text-slate-400">
+                    <span className="text-sm mb-2">Scroll to access the network</span>
+                    <div className="w-6 h-10 border-2 border-cyan-500/30 rounded-full flex justify-center">
+                      <div className="w-1 h-3 bg-cyan-400 rounded-full mt-2 animate-bounce"></div>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
             </section>
 
             {/* Chat Interface SECOND (separate section) */}
-            <section className="relative min-h-[600px] py-20 px-6">
+            <section className="relative min-h-[600px] py-20 px-6 bg-gradient-to-b from-transparent via-slate-900/20 to-transparent">
               <div className="max-w-4xl mx-auto">
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
@@ -295,7 +310,9 @@ export default function Home() {
                   className="mb-12 text-center"
                 >
                   <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                    Access the Asteria Network Now.
+                    <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                      Access the Asteria Network Now.
+                    </span>
                   </h2>
                   <div className="flex justify-center items-center gap-8 mb-8">
                     <div className="text-center">
@@ -320,7 +337,7 @@ export default function Home() {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.6, delay: 0.8 }}
-                  className="min-h-[400px]"
+                  className="min-h-[400px] glass-card p-6 rounded-2xl"
                 >
                   <ChatInterface />
                 </motion.div>
