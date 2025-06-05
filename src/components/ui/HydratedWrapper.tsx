@@ -1,13 +1,39 @@
 'use client';
 
 import React, { ReactNode, useEffect, useState } from 'react';
-import { useHydrationGuard, useInteractiveState } from '@/lib/utils/hydration';
 
 interface HydratedWrapperProps {
   children: ReactNode;
   fallback?: ReactNode;
   className?: string;
   enableLogging?: boolean;
+}
+
+// Simple hydration guard hook
+function useHydrationGuard() {
+  const [isMounted, setIsMounted] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    // Small delay to ensure hydration is complete
+    const timer = setTimeout(() => setIsHydrated(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return { isMounted, isHydrated };
+}
+
+// Simple interactive state hook
+function useInteractiveState() {
+  const registerInteraction = (type: string) => {
+    // Simple interaction logging
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Interaction: ${type}`);
+    }
+  };
+
+  return { registerInteraction };
 }
 
 /**
