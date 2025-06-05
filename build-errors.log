@@ -1,0 +1,24 @@
+
+> asteria-mvp@1.0.0-mvp build
+> next build
+
+   ▲ Next.js 15.3.3
+   - Environments: .env.local, .env.production
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 2000ms
+   Skipping linting
+   Checking validity of types ...
+Failed to compile.
+
+./src/components/ui/VideoIntro.tsx:261:48
+Type error: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+[0m [90m 259 |[39m [32m          isMobile ? 'p-6 pb-12' : 'p-8 pb-16'[39m[0m
+[0m [90m 260 |[39m [32m        } bg-gradient-to-t from-black/60 via-black/30 to-transparent`[39m}[33m>[39m[0m
+[0m[31m[1m>[22m[39m[90m 261 |[39m           {[90m/*           {/* Progress Bar */[39m} [33m*[39m[33m/[39m}[0m
+[0m [90m     |[39m                                                [31m[1m^[22m[39m[0m
+[0m [90m 262 |[39m           [33m<[39m[33mdiv[39m className[33m=[39m[32m"text-center"[39m[33m>[39m[0m
+[0m [90m 263 |[39m             [33m<[39m[33mmotion[39m[33m.[39mdiv[0m
+[0m [90m 264 |[39m               className[33m=[39m[32m"inline-flex items-center gap-2 text-white/90 bg-black/30 backdrop-blur-sm px-4 py-2 rounded-full"[39m[0m
+Next.js build worker exited with code: 1 and signal: null

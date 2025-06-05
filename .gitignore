@@ -1,0 +1,5 @@
+.env.local
+.env.*.backup
+.env.*.bak
+.env.*.bak2
+node_modules/

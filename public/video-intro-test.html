@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteria Video Intro Debug Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #1a1a2e;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #d4af37;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .diagnostic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .diagnostic-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .diagnostic-card h3 {
+            color: #d4af37;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #666;
+        }
+        
+        .status-indicator.success { background: #4CAF50; }
+        .status-indicator.warning { background: #FF9800; }
+        .status-indicator.error { background: #F44336; }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .info-label {
+            color: #ccc;
+        }
+        
+        .info-value {
+            color: #d4af37;
+            font-weight: 500;
+        }
+        
+        .video-test-container {
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .video-controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #d4af37;
+            color: #1a1a2e;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+        
+        .video-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .test-video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .log-container {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+        
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .log-timestamp {
+            color: #888;
+            margin-right: 10px;
+        }
+        
+        .log-info { color: #4CAF50; }
+        .log-warning { color: #FF9800; }
+        .log-error { color: #F44336; }
+        
+        .recommendations {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .recommendations h3 {
+            color: #d4af37;
+            margin-bottom: 15px;
+        }
+        
+        .recommendation-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+        
+        .recommendation-icon {
+            color: #d4af37;
+            font-weight: bold;
+            min-width: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .diagnostic-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .video-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                min-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 Asteria Video Intro Diagnostics</h1>
+            <p>Comprehensive testing tool for video intro functionality</p>
+        </div>
+
+        <div class="diagnostic-grid">
+            <!-- Device Capabilities -->
+            <div class="diagnostic-card">
+                <h3>
+                    <span class="status-indicator" id="device-status"></span>
+                    Device Capabilities
+                </h3>
+                <div class="info-grid" id="device-info">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Network Information -->
+            <div class="diagnostic-card">
+                <h3>
+                    <span class="status-indicator" id="network-status"></span>
+                    Network Information
+                </h3>
+                <div class="info-grid" id="network-info">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Browser Compatibility -->
+            <div class="diagnostic-card">
+                <h3>
+                    <span class="status-indicator" id="browser-status"></span>
+                    Browser Compatibility
+                </h3>
+                <div class="info-grid" id="browser-info">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Video Format Support -->
+            <div class="diagnostic-card">
+                <h3>
+                    <span class="status-indicator" id="video-status"></span>
+                    Video Format Support
+                </h3>
+                <div class="info-grid" id="video-support-info">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div class="video-test-container">
+            <h2>🎥 Video Loading Test</h2>
+            <p>Test the actual video files used in production</p>
+            
+            <div class="video-controls">
+                <button class="btn btn-primary" onclick="testMobileVideo()">Test Mobile Video</button>
+                <button class="btn btn-primary" onclick="testDesktopVideo()">Test Desktop Video</button>
+                <button class="btn btn-secondary" onclick="testAutoplay()">Test Autoplay</button>
+                <button class="btn btn-secondary" onclick="clearLogs()">Clear Logs</button>
+            </div>
+
+            <div class="video-container">
+                <video 
+                    id="test-video" 
+                    class="test-video" 
+                    muted 
+                    playsInline 
+                    preload="metadata"
+                    onloadstart="logEvent('Load started')"
+                    onloadedmetadata="logEvent('Metadata loaded')"
+                    onloadeddata="logEvent('Data loaded')"
+                    oncanplay="logEvent('Can play')"
+                    oncanplaythrough="logEvent('Can play through')"
+                    onplay="logEvent('Play started')"
+                    onplaying="logEvent('Playing')"
+                    onpause="logEvent('Paused')"
+                    onended="logEvent('Ended')"
+                    onerror="logEvent('Error: ' + event.target.error?.message, 'error')"
+                    onprogress="updateProgress()"
+                    ontimeupdate="updateTimeProgress()"
+                >
+                    <p>Your browser does not support video playback.</p>
+                </video>
+            </div>
+
+            <div class="video-controls">
+                <button class="btn btn-secondary" onclick="document.getElementById('test-video').play()">▶ Play</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('test-video').pause()">⏸ Pause</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('test-video').currentTime = 0">⏮ Reset</button>
+            </div>
+        </div>
+
+        <div class="log-container">
+            <h3>📋 Test Logs</h3>
+            <div id="logs">
+                <!-- Logs will be populated here -->
+            </div>
+        </div>
+
+        <div class="recommendations" id="recommendations">
+            <h3>💡 Recommendations</h3>
+            <div id="recommendation-list">
+                <!-- Recommendations will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let startTime = Date.now();
+        let logs = [];
+
+        function logEvent(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+            
+            logs.push({
+                timestamp,
+                elapsed,
+                message,
+                type
+            });
+
+            updateLogsDisplay();
+            console.log(`[${elapsed}s] ${message}`);
+        }
+
+        function updateLogsDisplay() {
+            const logsContainer = document.getElementById('logs');
+            logsContainer.innerHTML = logs.map(log => 
+                `<div class="log-entry">
+                    <span class="log-timestamp">[${log.elapsed}s]</span>
+                    <span class="log-${log.type}">${log.message}</span>
+                </div>`
+            ).join('');
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+
+        function clearLogs() {
+            logs = [];
+            startTime = Date.now();
+            updateLogsDisplay();
+            logEvent('Logs cleared');
+        }
+
+        function updateProgress() {
+            const video = document.getElementById('test-video');
+            if (video.buffered.length > 0) {
+                const buffered = (video.buffered.end(0) / video.duration * 100).toFixed(1);
+                logEvent(`Buffer: ${buffered}%`);
+            }
+        }
+
+        function updateTimeProgress() {
+            const video = document.getElementById('test-video');
+            if (video.duration) {
+                const progress = (video.currentTime / video.duration * 100).toFixed(1);
+                if (progress % 25 === 0 && progress > 0) {
+                    logEvent(`Playback: ${progress}%`);
+                }
+            }
+        }
+
+        function testMobileVideo() {
+            const video = document.getElementById('test-video');
+            video.src = '/videos/asteria_intro_mobile.mp4';
+            logEvent('Testing mobile video (768KB)', 'info');
+            video.load();
+        }
+
+        function testDesktopVideo() {
+            const video = document.getElementById('test-video');
+            video.src = '/videos/intro_web.mp4';
+            logEvent('Testing desktop web video', 'info');
+            video.load();
+        }
+
+        async function testAutoplay() {
+            const video = document.getElementById('test-video');
+            try {
+                await video.play();
+                logEvent('Autoplay succeeded', 'info');
+            } catch (error) {
+                logEvent(`Autoplay failed: ${error.message}`, 'error');
+            }
+        }
+
+        function detectCapabilities() {
+            // Device Detection
+            const deviceInfo = {
+                'User Agent': navigator.userAgent,
+                'Platform': navigator.platform,
+                'Touch Support': ('ontouchstart' in window || navigator.maxTouchPoints > 0) ? 'Yes' : 'No',
+                'Screen Size': `${screen.width}×${screen.height}`,
+                'Viewport': `${window.innerWidth}×${window.innerHeight}`,
+                'Device Pixel Ratio': window.devicePixelRatio || 1,
+                'Orientation': screen.orientation?.type || 'Unknown'
+            };
+
+            // Network Detection
+            const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            const networkInfo = {
+                'Connection Type': connection?.effectiveType || 'Unknown',
+                'Downlink': connection?.downlink ? `${connection.downlink} Mbps` : 'Unknown',
+                'RTT': connection?.rtt ? `${connection.rtt} ms` : 'Unknown',
+                'Data Saver': connection?.saveData ? 'Enabled' : 'Disabled'
+            };
+
+            // Browser Detection
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
+            const isChrome = /Chrome/.test(navigator.userAgent);
+            const isFirefox = /Firefox/.test(navigator.userAgent);
+
+            const browserInfo = {
+                'Browser': isChrome ? 'Chrome' : isSafari ? 'Safari' : isFirefox ? 'Firefox' : 'Other',
+                'iOS Device': isIOS ? 'Yes' : 'No',
+                'Android Device': isAndroid ? 'Yes' : 'No',
+                'Cookies Enabled': navigator.cookieEnabled ? 'Yes' : 'No',
+                'JavaScript Enabled': 'Yes',
+                'Local Storage': typeof(Storage) !== 'undefined' ? 'Yes' : 'No'
+            };
+
+            // Video Support
+            const video = document.createElement('video');
+            const videoInfo = {
+                'HTML5 Video': video.canPlayType ? 'Supported' : 'Not Supported',
+                'MP4 Support': video.canPlayType('video/mp4') ? 'Yes' : 'No',
+                'WebM Support': video.canPlayType('video/webm') ? 'Yes' : 'No',
+                'Autoplay Policy': 'Testing...',
+                'Controls': 'Available',
+                'Fullscreen API': document.fullscreenEnabled ? 'Supported' : 'Not Supported'
+            };
+
+            return { deviceInfo, networkInfo, browserInfo, videoInfo };
+        }
+
+        function populateInfo() {
+            const { deviceInfo, networkInfo, browserInfo, videoInfo } = detectCapabilities();
+
+            function createInfoGrid(info, containerId) {
+                const container = document.getElementById(containerId);
+                container.innerHTML = Object.entries(info).map(([key, value]) => 
+                    `<div class="info-item">
+                        <span class="info-label">${key}:</span>
+                        <span class="info-value">${value}</span>
+                    </div>`
+                ).join('');
+            }
+
+            createInfoGrid(deviceInfo, 'device-info');
+            createInfoGrid(networkInfo, 'network-info');
+            createInfoGrid(browserInfo, 'browser-info');
+            createInfoGrid(videoInfo, 'video-support-info');
+
+            // Set status indicators
+            document.getElementById('device-status').className = 'status-indicator success';
+            document.getElementById('network-status').className = 'status-indicator ' + 
+                (networkInfo['Connection Type'] === 'Unknown' ? 'warning' : 'success');
+            document.getElementById('browser-status').className = 'status-indicator success';
+            document.getElementById('video-status').className = 'status-indicator ' + 
+                (videoInfo['MP4 Support'] === 'Yes' ? 'success' : 'error');
+        }
+
+        function generateRecommendations() {
+            const { deviceInfo, networkInfo, browserInfo, videoInfo } = detectCapabilities();
+            const recommendations = [];
+
+            if (browserInfo['iOS Device'] === 'Yes') {
+                recommendations.push({
+                    icon: '📱',
+                    text: 'iOS detected: Video autoplay requires user interaction. Show manual play button.'
+                });
+            }
+
+            if (browserInfo['Browser'] === 'Safari') {
+                recommendations.push({
+                    icon: '🌐',
+                    text: 'Safari detected: Use playsInline attribute and optimize for Safari autoplay policies.'
+                });
+            }
+
+            if (networkInfo['Connection Type'] === '2g' || networkInfo['Connection Type'] === 'slow-2g') {
+                recommendations.push({
+                    icon: '🐌',
+                    text: 'Slow connection detected: Use mobile-optimized video and longer timeout.'
+                });
+            }
+
+            if (deviceInfo['Touch Support'] === 'Yes') {
+                recommendations.push({
+                    icon: '👆',
+                    text: 'Touch device: Optimize button sizes and touch interactions.'
+                });
+            }
+
+            if (videoInfo['MP4 Support'] === 'No') {
+                recommendations.push({
+                    icon: '❌',
+                    text: 'MP4 not supported: Provide alternative video formats or fallback content.'
+                });
+            }
+
+            const container = document.getElementById('recommendation-list');
+            container.innerHTML = recommendations.map(rec => 
+                `<div class="recommendation-item">
+                    <span class="recommendation-icon">${rec.icon}</span>
+                    <span>${rec.text}</span>
+                </div>`
+            ).join('');
+
+            if (recommendations.length === 0) {
+                container.innerHTML = '<div class="recommendation-item"><span class="recommendation-icon">✅</span><span>No issues detected! Your browser should handle video playback well.</span></div>';
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            logEvent('Diagnostics page loaded');
+            populateInfo();
+            generateRecommendations();
+            
+            // Default to mobile video for testing
+            setTimeout(() => testMobileVideo(), 1000);
+        });
+    </script>
+</body>
+</html> 

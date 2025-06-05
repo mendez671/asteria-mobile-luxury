@@ -1,0 +1,44 @@
+
+> asteria-mvp@1.0.0-mvp build
+> next build
+
+   ▲ Next.js 15.3.3
+   - Environments: .env.local, .env.production
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 1000ms
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/17) ...
+   Generating static pages (4/17) 
+   Generating static pages (8/17) 
+   Generating static pages (12/17) 
+ ✓ Generating static pages (17/17)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                    50.4 kB         151 kB
+├ ○ /_not-found                            978 B         102 kB
+├ ƒ /api/chat                              162 B         101 kB
+├ ƒ /api/delivery-status                   162 B         101 kB
+├ ƒ /api/diagnose                          162 B         101 kB
+├ ƒ /api/enhance-request                   162 B         101 kB
+├ ƒ /api/health                            162 B         101 kB
+├ ƒ /api/search                            162 B         101 kB
+├ ƒ /api/sms-webhook                       162 B         101 kB
+├ ƒ /api/test-chat                         162 B         101 kB
+├ ƒ /api/test-webhooks                     162 B         101 kB
+├ ƒ /api/transcribe                        162 B         101 kB
+├ ƒ /api/tts                               162 B         101 kB
+└ ƒ /api/voice/elevenlabs                  162 B         101 kB
++ First Load JS shared by all             101 kB
+  ├ chunks/4bd1b696-299743f5624cdabe.js  53.2 kB
+  ├ chunks/684-2fe4c2c19e255a7b.js         46 kB
+  └ other shared chunks (total)          1.88 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

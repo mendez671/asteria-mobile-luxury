@@ -1,0 +1,55 @@
+{
+  "name": "asteria-mvp",
+  "version": "1.0.0-mvp",
+  "description": "Asteria - Luxury AI Concierge MVP for TAG's elite members",
+  "private": true,
+  "keywords": [
+    "luxury",
+    "concierge",
+    "AI",
+    "TAG",
+    "MVP",
+    "voice",
+    "OpenAI"
+  ],
+  "author": "TAG Development Team",
+  "scripts": {
+    "dev": "next dev",
+    "dev:turbo": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "setup": "./setup.sh"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@radix-ui/react-dialog": "^1.1.14",
+    "@vercel/analytics": "^1.5.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.15.0",
+    "lucide-react": "^0.511.0",
+    "next": "15.3.3",
+    "openai": "^5.0.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "twilio": "^5.7.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4.1.8",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.3",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}
