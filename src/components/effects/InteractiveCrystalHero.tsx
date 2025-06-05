@@ -73,35 +73,52 @@ export const InteractiveCrystalHero: React.FC<InteractiveCrystalHeroProps> = ({
 
 export const CrystalLines: React.FC = () => {
   return (
-    <div className="absolute inset-0 overflow-hidden opacity-40">
-      {[...Array(6)].map((_, i) => (
+    <div className="absolute inset-0 overflow-hidden opacity-60 pointer-events-none">
+      {/* ENHANCED: Directional Crystal Prism Lines - No more horizontal lines! */}
+      {[...Array(8)].map((_, i) => (
         <div
-          key={i}
-          className="absolute h-px bg-gradient-to-r from-transparent via-cyan-400 to-transparent"
+          key={`prism-line-${i}`}
+          className={`crystal-prism-particle direction-${i + 1}`}
           style={{
-            top: `${15 + i * 12}%`,
-            left: '-20%',
-            right: '-20%',
-            transform: `rotate(${-20 + i * 6}deg)`,
-            animation: `pulse ${4 + i * 0.5}s ease-in-out infinite`,
-            animationDelay: `${i * 0.3}s`,
-            opacity: 0.6 - (i * 0.08)
+            position: 'absolute',
+            top: `${10 + (i * 11)}%`,
+            left: `${5 + (i * 10)}%`,
+            zIndex: 1,
+            animationDelay: `${i * 0.8}s`,
           }}
         />
       ))}
       
-      {/* Floating crystal particles */}
+      {/* Additional scattered directional lines for organic feel */}
+      {[...Array(5)].map((_, i) => (
+        <div
+          key={`scattered-${i}`}
+          className={`crystal-prism-particle direction-${((i + 3) % 8) + 1}`}
+          style={{
+            position: 'absolute',
+            top: `${60 + (i * 8)}%`,
+            left: `${15 + (i * 15)}%`,
+            zIndex: 1,
+            animationDelay: `${2 + (i * 1.2)}s`,
+            opacity: 0.8 - (i * 0.1)
+          }}
+        />
+      ))}
+      
+      {/* Floating crystal particles with enhanced movement */}
       {[...Array(4)].map((_, i) => (
         <div
           key={`crystal-${i}`}
-          className="absolute w-2 h-2 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full"
+          className="absolute w-1.5 h-1.5 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full animate-prism"
           style={{
             left: `${20 + i * 25}%`,
             top: `${30 + i * 15}%`,
-            animation: `float ${6 + i}s ease-in-out infinite`,
-            animationDelay: `${i * 0.8}s`,
-            filter: 'blur(1px)',
-            opacity: 0.7
+            animation: `directionalFloat ${8 + i}s ease-in-out infinite`,
+            animationDelay: `${i * 1.5}s`,
+            filter: 'blur(0.5px)',
+            opacity: 0.6,
+            zIndex: 2,
+            transform: `rotate(${i * 45}deg)`
           }}
         />
       ))}

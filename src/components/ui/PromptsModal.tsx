@@ -16,6 +16,8 @@ export default function PromptsModal({
   onPromptSelect,
   serviceTitle 
 }: PromptsModalProps) {
+  const [scrollY, setScrollY] = useState(0);
+
   useEffect(() => {
     // Close on escape key
     const handleEscape = (e: KeyboardEvent) => {
@@ -23,13 +25,31 @@ export default function PromptsModal({
     };
     
     if (isOpen) {
+      // ENHANCED: Store current scroll position before locking
+      const currentScrollY = window.scrollY;
+      setScrollY(currentScrollY);
+      
       document.addEventListener('keydown', handleEscape);
+      
+      // ENHANCED: Prevent body scroll while modal is open
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${currentScrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.height = '100%';
     }
     
     return () => {
       document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      if (isOpen) {
+        // ENHANCED: Restore scroll position when modal closes
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.height = '';
+        window.scrollTo(0, scrollY);
+      }
     };
   }, [isOpen, onClose]);
 
@@ -37,27 +57,58 @@ export default function PromptsModal({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
+          {/* ENHANCED: Backdrop with highest z-index for service cards */}
           <motion.div
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+            style={{ 
+              position: 'fixed', 
+              top: 0, 
+              left: 0, 
+              right: 0, 
+              bottom: 0,
+              zIndex: 150 // Higher than service cards (z-50)
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
           />
           
-          {/* Modal */}
-          <motion.div
-            className="fixed inset-0 flex items-center justify-center z-[101] p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          {/* ENHANCED: Modal Container with Perfect Viewport Centering */}
+          <div
+            className="fixed inset-0"
+            style={{ 
+              position: 'fixed', 
+              top: 0, 
+              left: 0, 
+              right: 0, 
+              bottom: 0,
+              zIndex: 151, // Above backdrop
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1rem',
+              pointerEvents: 'none' // Allow backdrop clicks to pass through
+            }}
           >
             <motion.div
-              className="bg-slate-900/95 border border-cyan-500/30 rounded-xl backdrop-blur-md max-w-lg w-full max-h-[80vh] overflow-hidden relative shadow-2xl"
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
+              className="bg-slate-900/95 border border-cyan-500/30 rounded-xl backdrop-blur-md relative shadow-2xl"
+              style={{
+                width: '100%',
+                maxWidth: '32rem', // 512px
+                maxHeight: '90vh',
+                pointerEvents: 'auto', // Re-enable pointer events for modal content
+                transform: 'none', // Reset any transform issues
+                position: 'relative'
+              }}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 300, 
+                damping: 30 
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close button */}
@@ -81,8 +132,11 @@ export default function PromptsModal({
                 </p>
               </div>
               
-              {/* Prompts */}
-              <div className="p-6 space-y-3 max-h-[60vh] overflow-y-auto">
+              {/* ENHANCED: Prompts with improved scrolling */}
+              <div 
+                className="p-6 space-y-3 overflow-y-auto" 
+                style={{ maxHeight: 'calc(90vh - 180px)' }}
+              >
                 {prompts.map((prompt, index) => (
                   <motion.button
                     key={index}
@@ -102,8 +156,15 @@ export default function PromptsModal({
                   </motion.button>
                 ))}
               </div>
+
+              {/* ENHANCED: Additional mobile optimization */}
+              <div className="md:hidden p-4 border-t border-slate-700/50 text-center">
+                <p className="text-xs text-slate-500">
+                  Tap outside to close or select an option above
+                </p>
+              </div>
             </motion.div>
-          </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>

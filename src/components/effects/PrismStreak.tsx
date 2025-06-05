@@ -19,10 +19,10 @@ export const PrismStreak: React.FC<PrismStreakProps> = ({
       style={{
         left: position.x,
         top: position.y,
-        transform: `rotate(${-15 + index * 5}deg)`,
+        '--rotate': `${-15 + index * 5}deg`,
         animation: `prismFloat ${20 + index * 3}s ease-in-out infinite`,
         animationDelay: `${delay}s`
-      }}
+      } as React.CSSProperties}
       width="160" 
       height="16" 
       viewBox="0 0 160 16" 

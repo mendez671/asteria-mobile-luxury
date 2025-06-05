@@ -167,54 +167,71 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   }, [isMobile, videoSpecs.performance]);
   
   const handleSkip = useCallback(() => {
-    console.log('🎬 Video intro skipped - will show again next refresh');
-    isPlayingRef.current = false;
+    console.log('🎬 User skipped video intro');
+    
+    // CRITICAL: Force scroll to top immediately
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    
+    localStorage.setItem('asteria-video-intro-skipped', Date.now().toString());
+    
     if (animationIdRef.current) {
       cancelAnimationFrame(animationIdRef.current);
     }
-    onComplete();
+    
+    isPlayingRef.current = false;
+    setIsExiting(true);
+    
+    // CRITICAL: Additional scroll reset after state changes
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 50);
+    
+    // Complete with final scroll reset
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      onComplete();
+    }, 200);
   }, [onComplete]);
   
   const handleComplete = useCallback(() => {
-    console.log('🎬 VideoIntro completed naturally - starting crystal transition');
-    isPlayingRef.current = false;
+    console.log('🎬 Video intro completion handler called');
     
-    // NEW: Start crystal expansion transition
-    setIsExiting(true);
+    // CRITICAL: Multiple scroll resets for maximum reliability
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
     
+    // Clean up animation
     if (animationIdRef.current) {
       cancelAnimationFrame(animationIdRef.current);
       animationIdRef.current = null;
     }
     
-    // Apply crystal sphere expansion effect to canvas
-    if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        try {
-          // Add crystal sphere glow effect
-          canvas.style.filter = 'blur(0px) brightness(1.2) contrast(1.1)';
-          canvas.style.transition = 'filter 800ms cubic-bezier(0.4, 0, 0.2, 1)';
-          
-          setTimeout(() => {
-            canvas.style.filter = 'blur(20px) brightness(1.5) contrast(1.3)';
-          }, 50);
-          
-          // Clean up after transition
-          setTimeout(() => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-          }, 750);
-        } catch (error) {
-          // Silent cleanup
-        }
-      }
-    }
+    isPlayingRef.current = false;
+    setIsExiting(true);
     
-    // Complete transition after crystal expansion
-    setTimeout(() => {
-      onComplete();
-    }, 800);
+    // CRITICAL: Use requestAnimationFrame to ensure scroll happens after any DOM updates
+    requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      
+      // Double-check with another frame
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        
+        // Final completion call
+        onComplete();
+      });
+    });
   }, [onComplete]);
   
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -233,12 +250,27 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
   const handleVideoEnd = useCallback(() => {
     console.log('🎬 Video sequence completed - starting crystal transition');
     
+    // CRITICAL: Force scroll to top immediately
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    
     // Start crystal fade early to hide white frames
     setFadeOut(true);
     setIsExiting(true);
     
-    // Complete transition after fade
+    // CRITICAL: Additional scroll reset after state changes
     setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 50);
+    
+    // Complete transition after fade with final scroll reset
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
       onComplete();
     }, 600);
   }, [onComplete]);
@@ -580,7 +612,7 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
     };
   }, [isMounted, handleSkip]);
 
-  // SSR guard
+  // SSR guard - ENHANCED: Immediate black coverage with proper styling
   if (!isMounted) {
     return (
       <div style={{
@@ -589,9 +621,29 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
         left: 0,
         width: '100vw',
         height: '100vh',
-        background: '#000',
-        zIndex: 9999
-      }} />
+        background: '#000000', // Pure black for immediate coverage
+        zIndex: 9999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        {/* ENHANCED: Immediate luxury branding to prevent flash */}
+        <div style={{
+          width: '80px',
+          height: '80px',
+          borderRadius: '50%',
+          background: 'linear-gradient(45deg, #d4af37, #f7dc6f)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '32px',
+          fontWeight: 'bold',
+          color: '#000000',
+          animation: 'pulse 2s ease-in-out infinite'
+        }}>
+          ✨
+        </div>
+      </div>
     );
   }
 
@@ -657,10 +709,10 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
     );
   }
   
-  // Main render
+  // ENHANCED: Main render with immediate black background
   return (
     <motion.div
-      initial={{ opacity: 0 }}
+      initial={{ opacity: 1 }} // Start fully visible to prevent flash
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onTouchStart={handleTouchStart}
@@ -672,14 +724,87 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
         left: 0,
         width: '100%',
         height: '100%',
-        background: 'black',
+        background: '#000000', // CRITICAL: Immediate black background
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 9999
       }}
     >
-      {/* Canvas for frame animation */}
+      {/* ENHANCED: Immediate loading state overlay - shown until first frame loads */}
+      {loadingProgress < 100 && !fadeOut && (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          background: '#000000', // Ensure full coverage
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1
+        }}>
+          {/* ENHANCED: Luxury loading indicator */}
+          <div style={{
+            width: '100px',
+            height: '100px',
+            borderRadius: '50%',
+            background: 'linear-gradient(45deg, #d4af37, #f7dc6f)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '40px',
+            fontWeight: 'bold',
+            color: '#000000',
+            marginBottom: '32px',
+            animation: 'pulse 2s ease-in-out infinite'
+          }}>
+            ✨
+          </div>
+          
+          <div style={{
+            color: tagBrandTokens.colors.primary,
+            fontSize: isMobile ? '16px' : '18px',
+            textAlign: 'center',
+            marginBottom: '24px',
+            fontWeight: '300',
+            letterSpacing: '1px'
+          }}>
+            PREPARING YOUR LUXURY EXPERIENCE
+          </div>
+          
+          <div style={{
+            color: 'rgba(212, 175, 55, 0.8)',
+            fontSize: isMobile ? '14px' : '16px',
+            textAlign: 'center',
+            marginBottom: '24px'
+          }}>
+            {Math.round(loadingProgress)}% LOADED
+          </div>
+          
+          {/* Progress bar */}
+          <div style={{
+            width: isMobile ? '250px' : '350px',
+            height: '3px',
+            background: 'rgba(212, 175, 55, 0.2)',
+            borderRadius: '2px',
+            overflow: 'hidden',
+            border: '1px solid rgba(212, 175, 55, 0.3)'
+          }}>
+            <div style={{
+              width: `${loadingProgress}%`,
+              height: '100%',
+              background: 'linear-gradient(90deg, #d4af37, #f7dc6f)',
+              transition: 'width 0.3s ease',
+              borderRadius: '2px'
+            }} />
+          </div>
+        </div>
+      )}
+
+      {/* Canvas for frame animation - only visible when loading complete */}
       <canvas
         ref={canvasRef}
         width={videoSpecs.canvasWidth}
@@ -689,8 +814,9 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
           height: '100%',
           objectFit: isMobile ? 'cover' : 'contain',
           objectPosition: 'center',
-          opacity: fadeOut ? 0 : 1,
-          transition: 'opacity 0.4s ease-out'
+          opacity: (loadingProgress >= 100 && !fadeOut) ? 1 : 0, // ENHANCED: Only show when loaded
+          transition: 'opacity 0.5s ease-in',
+          zIndex: 2
         }}
       />
       
@@ -703,37 +829,6 @@ export default function VideoIntro({ onComplete, onError, isMobile: propIsMobile
             console.log('🎬 Crystal transition overlay completed');
           }}
         />
-      )}
-
-      {/* Loading progress */}
-      {loadingProgress < 100 && !fadeOut && (
-        <div style={{
-          position: 'absolute',
-          bottom: '80px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          color: tagBrandTokens.colors.primary,
-          fontSize: isMobile ? '14px' : '16px',
-          textAlign: 'center'
-        }}>
-          <div style={{ marginBottom: '8px' }}>
-            Loading luxury experience... {Math.round(loadingProgress)}%
-          </div>
-          <div style={{
-            width: isMobile ? '200px' : '300px',
-            height: '2px',
-            background: 'rgba(212, 175, 55, 0.3)',
-            borderRadius: '1px',
-            overflow: 'hidden'
-          }}>
-            <div style={{
-              width: `${loadingProgress}%`,
-              height: '100%',
-              background: tagBrandTokens.colors.primary,
-              transition: 'width 0.3s ease'
-            }} />
-          </div>
-        </div>
       )}
 
       {/* Mobile swipe hint */}

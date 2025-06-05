@@ -5,6 +5,7 @@ import { useState } from 'react';
 export default function TestApiButton() {
   const [testing, setTesting] = useState(false);
   const [results, setResults] = useState<any>(null);
+  const [isMinimized, setIsMinimized] = useState(true);
 
   const runDiagnostics = async () => {
     setTesting(true);
@@ -92,41 +93,64 @@ export default function TestApiButton() {
     }
   };
 
+  // Only render in development mode
+  if (process.env.NODE_ENV !== 'development') {
+    return null;
+  }
+
   return (
-    <>
-      {process.env.NODE_ENV === 'development' && (
-        <div className="fixed bottom-4 right-4 z-50 bg-tag-dark-purple/90 backdrop-blur-sm p-4 rounded-lg border border-tag-gold/30 max-w-sm">
-          <h3 className="text-tag-gold font-medium mb-3">API Test Console</h3>
+    <div className={`fixed bottom-4 right-4 z-40 bg-slate-900/95 backdrop-blur-sm border border-cyan-500/30 rounded-lg transition-all duration-300 ${isMinimized ? 'w-12 h-12' : 'w-80 max-w-sm'}`}>
+      {isMinimized ? (
+        // Minimized state - just a small button
+        <button
+          onClick={() => setIsMinimized(false)}
+          className="w-full h-full flex items-center justify-center text-cyan-400 hover:text-cyan-300 transition-colors"
+          title="Open API Test Console"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+        </button>
+      ) : (
+        // Expanded state - full console
+        <div className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-cyan-400 font-medium text-sm">API Console</h3>
+            <button
+              onClick={() => setIsMinimized(true)}
+              className="text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+              </svg>
+            </button>
+          </div>
           
           <div className="space-y-2 mb-4">
             <button
               onClick={runDiagnostics}
               disabled={testing}
-              className="w-full bg-gradient-to-r from-tag-gold to-tag-gold-light text-tag-dark-purple px-4 py-2 rounded font-medium disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white px-3 py-2 rounded text-xs font-medium disabled:opacity-50 hover:from-cyan-500 hover:to-blue-500 transition-all duration-200"
             >
-              {testing ? 'Testing...' : 'Run Full Diagnostics'}
+              {testing ? 'Testing...' : 'Full Diagnostics'}
             </button>
             
             <button
               onClick={testSimpleMessage}
               disabled={testing}
-              className="w-full bg-tag-dark-purple border border-tag-gold/30 text-tag-gold px-4 py-2 rounded font-medium disabled:opacity-50"
+              className="w-full bg-slate-800 border border-cyan-500/30 text-cyan-300 px-3 py-2 rounded text-xs font-medium disabled:opacity-50 hover:bg-slate-700 transition-all duration-200"
             >
-              {testing ? 'Testing...' : 'Test Simple Message'}
+              {testing ? 'Testing...' : 'Simple Test'}
             </button>
           </div>
           
           {results && (
-            <div className="bg-black/50 p-3 rounded text-xs text-tag-cream max-h-40 overflow-y-auto">
+            <div className="bg-black/50 p-3 rounded text-xs text-slate-300 max-h-32 overflow-y-auto">
               <pre>{JSON.stringify(results, null, 2)}</pre>
             </div>
           )}
-          
-          <div className="text-xs text-tag-gold/60 mt-2">
-            Check browser console for detailed logs
-          </div>
         </div>
       )}
-    </>
+    </div>
   );
 } 
