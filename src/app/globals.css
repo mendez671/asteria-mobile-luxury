@@ -1,4 +1,6 @@
-@import "tailwindcss";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 /* UPGRADE: Import TT Firs Neue for premium typography */
 @import url('https://fonts.googleapis.com/css2?family=TT+Firs+Neue:wght@500;700;800&display=swap');
