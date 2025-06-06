@@ -1916,7 +1916,7 @@ body {
     rgba(0, 3, 8, 0.95) 70%
   );
   transform: translateZ(-300px) scale(1.3);
-  animation: voidSpin 120s linear infinite reverse;
+  animation: subtleGlow 60s ease-in-out infinite alternate;
   z-index: -3; /* Deepest */
   --z: -300px;
   --scale: 1.3;
@@ -1929,7 +1929,7 @@ body {
     transparent 60%
   );
   transform: translateZ(-600px) scale(1.6);
-  animation: voidSpin 200s linear infinite;
+  animation: subtlePulse 80s ease-in-out infinite alternate-reverse;
   z-index: -2;
   --z: -600px;
   --scale: 1.6;
@@ -1942,15 +1942,48 @@ body {
     transparent 50%
   );
   transform: translateZ(-900px) scale(2);
-  animation: voidSpin 300s linear infinite reverse;
+  animation: subtleShift 100s ease-in-out infinite;
   z-index: -1; /* Still behind particles */
   --z: -900px;
   --scale: 2;
 }
 
-@keyframes voidSpin {
-  from { transform: rotate(0deg) translateZ(var(--z)) scale(var(--scale)); }
-  to { transform: rotate(360deg) translateZ(var(--z)) scale(var(--scale)); }
+/* Replace the motion-sickness inducing voidSpin with gentle animations */
+@keyframes subtleGlow {
+  0%, 100% { 
+    opacity: 0.6;
+    transform: translateZ(-300px) scale(1.3);
+  }
+  50% { 
+    opacity: 0.8;
+    transform: translateZ(-300px) scale(1.32);
+  }
+}
+
+@keyframes subtlePulse {
+  0%, 100% { 
+    opacity: 0.4;
+    transform: translateZ(-600px) scale(1.6);
+  }
+  50% { 
+    opacity: 0.6;
+    transform: translateZ(-600px) scale(1.58);
+  }
+}
+
+@keyframes subtleShift {
+  0%, 100% { 
+    opacity: 0.3;
+    transform: translateZ(-900px) scale(2) translateX(0px);
+  }
+  33% { 
+    opacity: 0.4;
+    transform: translateZ(-900px) scale(2.02) translateX(10px);
+  }
+  66% { 
+    opacity: 0.35;
+    transform: translateZ(-900px) scale(1.98) translateX(-5px);
+  }
 }
 
 /* Crystal particles layer - ABOVE volumetric but below content */
@@ -2212,4 +2245,66 @@ header {
   background: #000000 !important;
   z-index: 9999 !important;
   overflow: hidden !important;
+}
+
+/* Luxury Mouse Scroll Animation */
+@keyframes luxuryScrollFloat {
+  0%, 100% { 
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 4px 8px rgba(219, 187, 68, 0.3));
+  }
+  50% { 
+    transform: translateY(-5px) scale(1.02);
+    filter: drop-shadow(0 8px 16px rgba(219, 187, 68, 0.4));
+  }
+}
+
+@keyframes scrollWheelGlow {
+  0%, 100% { 
+    box-shadow: 0 0 0 rgba(219, 187, 68, 0);
+  }
+  50% { 
+    box-shadow: 0 0 20px rgba(219, 187, 68, 0.6);
+  }
+}
+
+.scroll-mouse-luxury {
+  animation: luxuryScrollFloat 3s ease-in-out infinite;
+}
+
+.scroll-wheel-glow {
+  animation: scrollWheelGlow 2s ease-in-out infinite;
+}
+
+/* Tag Gold Colors for Scroll Indicator */
+.text-tag-gold {
+  color: var(--tag-gold);
+}
+
+.text-tag-gold-light {
+  color: var(--tag-gold-light);
+}
+
+.bg-tag-gold\/10 {
+  background-color: rgba(219, 187, 68, 0.1);
+}
+
+.bg-tag-gold\/20 {
+  background-color: rgba(219, 187, 68, 0.2);
+}
+
+.bg-tag-gold\/60 {
+  background-color: rgba(219, 187, 68, 0.6);
+}
+
+.bg-tag-gold\/80 {
+  background-color: rgba(219, 187, 68, 0.8);
+}
+
+.border-tag-gold\/60 {
+  border-color: rgba(219, 187, 68, 0.6);
+}
+
+.border-tag-gold {
+  border-color: var(--tag-gold);
 }

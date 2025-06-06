@@ -19,6 +19,7 @@ import { PrismStreak } from '@/components/effects/PrismStreak';
 import { ParticleRoot } from '@/components/ParticleRoot';
 import { InteractiveCrystalHero, CrystalLines, PulseCrystal } from '@/components/effects/InteractiveCrystalHero';
 import { SapphireCutStatus } from '@/components/effects/SapphireCutStatus';
+import ScrollMouseIndicator from '@/components/ui/ScrollMouseIndicator';
 
 type ViewportType = 'mobile' | 'desktop';
 
@@ -331,11 +332,11 @@ export default function Home() {
                   transition={{ duration: 0.8, delay: 0.2 }}
                   className="mb-8"
                 >
-                  {/* ENHANCED: "Where Energy Meets Experience" as primary hero */}
+                  {/* ENHANCED: "Meet Asteria" with luxury concierge tagline */}
                   <h1 className="text-5xl md:text-7xl font-bold mb-4">
-                    <span className="block text-white mb-2">Asteria</span>
+                    <span className="block text-white mb-2">Meet Asteria</span>
                     <span className="block text-3xl md:text-4xl bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent animate-pulse">
-                      Where Energy Meets Experience
+                      The World's First Luxury Services AI Concierge
                     </span>
                   </h1>
                   
@@ -396,6 +397,16 @@ export default function Home() {
               </div>
             </footer>
           </>
+        )}
+        
+        {/* Luxury Scroll Mouse Indicator */}
+        {isVideoComplete && (
+          <ScrollMouseIndicator 
+            show={true}
+            onScrollStart={() => {
+              console.log('🖱️ Scroll indicator activated');
+            }}
+          />
         )}
       </main>
     </ErrorBoundary>
