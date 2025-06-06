@@ -8,7 +8,7 @@ import { addPassiveResize, addPassiveScroll, addPassiveVisibilityChange } from '
 import ChatInterface from '@/components/chat/ChatInterface';
 import ServiceBadges from '@/components/sections/ServiceBadges';
 import HowItWorksSection from '@/components/sections/HowItWorksSection';
-import Steps from '@/components/sections/Steps';
+
 import TagLogo from '@/components/ui/TagLogo';
 import TestApiButton from '@/components/TestApiButton';
 import VideoIntro from '@/components/ui/VideoIntro';
@@ -17,8 +17,9 @@ import ErrorBoundary from '@/components/ui/ErrorBoundary';
 // UPGRADE 2 & 4: New sapphire components
 import { PrismStreak } from '@/components/effects/PrismStreak';
 import { ParticleRoot } from '@/components/ParticleRoot';
-import { InteractiveCrystalHero, CrystalLines, PulseCrystal } from '@/components/effects/InteractiveCrystalHero';
 import { SapphireCutStatus } from '@/components/effects/SapphireCutStatus';
+import ScrollMouseIndicator from '@/components/ui/ScrollMouseIndicator';
+import HeroWithSteps from '@/components/sections/HeroWithSteps';
 
 type ViewportType = 'mobile' | 'desktop';
 
@@ -167,15 +168,15 @@ export default function Home() {
     setBackgroundClass(backgrounds[nextIndex]);
   }, [backgroundClass]);
 
-  // Video sequence control
+  // Video sequence control - ENHANCED: Support both mobile and desktop
   useEffect(() => {
-    if (isReady && viewport.isDesktop) {
+    if (isReady && (viewport.isDesktop || viewport.isMobile)) {
       // CRITICAL FIX: Remove delay to prevent background flash
       setShowVideo(true);
       // CRITICAL: Ensure scroll position when video starts
       forceScrollToTop('video_start');
     }
-  }, [isReady, viewport.isDesktop]);
+  }, [isReady, viewport.isDesktop, viewport.isMobile]);
 
   // CRITICAL: Enhanced video completion handler with scroll management
   const handleVideoComplete = useCallback(() => {
@@ -202,22 +203,22 @@ export default function Home() {
   const handlePromptSelect = useCallback((prompt: string) => {
     console.log('🎴 Service card prompt selected:', prompt);
     
-    // CRITICAL: Scroll to chat interface smoothly
+    // CRITICAL: Scroll to integrated chat interface in hero section
     setTimeout(() => {
-      const chatSection = document.querySelector('#chat-section') || 
-                         document.querySelector('[class*="chat"]') ||
-                         document.querySelector('main > div:last-child');
+      const chatInterface = document.querySelector('.bg-slate-900\\/20') || 
+                           document.querySelector('[class*="chat"]') ||
+                           document.querySelector('main section:first-of-type');
       
-      if (chatSection) {
-        chatSection.scrollIntoView({ 
+      if (chatInterface) {
+        chatInterface.scrollIntoView({ 
           behavior: 'smooth',
-          block: 'start',
+          block: 'center',
           inline: 'nearest'
         });
       } else {
-        // Fallback: scroll to bottom if chat section not found
+        // Fallback: scroll to middle of hero section where chat is integrated
         window.scrollTo({ 
-          top: document.body.scrollHeight,
+          top: window.innerHeight * 0.8, // Scroll to bottom of hero section
           behavior: 'smooth'
         });
       }
@@ -275,8 +276,8 @@ export default function Home() {
         <SapphireCutStatus />
       </div>
       
-      {/* Desktop Video Intro */}
-      {viewport.isDesktop && showVideo && !isVideoComplete && (
+      {/* Enhanced Video Intro - Mobile and Desktop */}
+      {(viewport.isDesktop || viewport.isMobile) && showVideo && !isVideoComplete && (
         <VideoIntro 
           onComplete={handleVideoComplete}
           isMobile={viewport.isMobile}
@@ -297,82 +298,36 @@ export default function Home() {
             
             {/* Header */}
             <header className="relative z-20 bg-black/20 backdrop-blur-sm border-b border-yellow-500/20">
-              <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+              <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
                 <TagLogo />
-                <div className="flex items-center gap-4">
+                                  <div className="flex items-center gap-2 sm:gap-4">
                   {/* RESTORED: Test Background Change Button */}
-                  <button
-                    onClick={cycleBackground}
-                    className="px-3 py-1 bg-blue-600/20 border border-blue-500/30 rounded 
-                               text-blue-300 hover:bg-blue-600/30 transition-all duration-200
-                               text-xs font-medium backdrop-blur-sm"
-                    title="Test background changes"
-                  >
-                    🌅 BG
-                  </button>
-                  <div className="scale-75">
-                    <TestApiButton />
-                  </div>
+                                      <button
+                      onClick={cycleBackground}
+                      className="px-2 sm:px-3 py-1 bg-blue-600/20 border border-blue-500/30 rounded 
+                                 text-blue-300 hover:bg-blue-600/30 transition-all duration-200
+                                 text-xs font-medium backdrop-blur-sm"
+                      title="Test background changes"
+                    >
+                      🌅 <span className="hidden sm:inline">BG</span>
+                    </button>
+                    <div className="scale-50 sm:scale-75">
+                      <TestApiButton />
+                    </div>
                 </div>
               </div>
             </header>
 
-            {/* Hero Section FIRST */}
-            <section className="relative min-h-[80vh] flex items-center justify-center px-6">
-              {/* Interactive blue crystal background */}
-              <InteractiveCrystalHero />
-              <CrystalLines />
-              <PulseCrystal />
-              
-              <div className="relative z-10 max-w-4xl mx-auto text-center">
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  className="mb-8"
-                >
-                  {/* ENHANCED: "Where Energy Meets Experience" as primary hero */}
-                  <h1 className="text-5xl md:text-7xl font-bold mb-4">
-                    <span className="block text-white mb-2">Asteria</span>
-                    <span className="block text-3xl md:text-4xl bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent animate-pulse">
-                      Where Energy Meets Experience
-                    </span>
-                  </h1>
-                  
-                  <p className="text-lg md:text-xl text-slate-300 mb-6 max-w-2xl mx-auto leading-relaxed">
-                    True luxury transcends possessions—it's the energy that arises when meaning, beauty, 
-                    and purpose converge. For those who understand that luxury isn't what you have, but 
-                    how you move.
-                  </p>
-                  
-                  {/* ENHANCED: Time-based luxury messaging */}
-                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800/40 rounded-full text-sm text-slate-400 mb-6 border border-cyan-500/20">
-                    <span>✨</span>
-                    <span>
-                      {currentTime.getHours() < 12 ? 'Good morning' : 
-                       currentTime.getHours() < 18 ? 'Good afternoon' : 'Good evening'} - 
-                      Your curated experience awaits
-                    </span>
-                  </div>
-                </motion.div>
-              </div>
-            </section>
+            {/* COMBINED: Hero + Steps Section in single full-screen component */}
+            <HeroWithSteps currentTime={currentTime} />
 
-            {/* RESTORED: Steps Section (1, 2, 3 numbered steps) */}
-            <Steps />
+
 
             {/* How It Works Section */}
             <HowItWorksSection />
             
             {/* CRITICAL: Service Badges with enhanced prompt handling */}
             <ServiceBadges onPromptSelect={handlePromptSelect} />
-            
-            {/* CRITICAL: Chat Interface with proper ID for scroll targeting */}
-            <section id="chat-section" className="relative py-20">
-              <div className="container mx-auto px-6">
-                <ChatInterface />
-              </div>
-            </section>
             
             {/* Footer with scroll to top functionality */}
             <footer className="relative z-20 py-12 border-t border-slate-700/50">
@@ -396,6 +351,16 @@ export default function Home() {
               </div>
             </footer>
           </>
+        )}
+        
+        {/* Luxury Scroll Mouse Indicator */}
+        {isVideoComplete && (
+          <ScrollMouseIndicator 
+            show={true}
+            onScrollStart={() => {
+              console.log('🖱️ Scroll indicator activated');
+            }}
+          />
         )}
       </main>
     </ErrorBoundary>
