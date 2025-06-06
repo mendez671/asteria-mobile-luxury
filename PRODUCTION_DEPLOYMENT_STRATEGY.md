@@ -47,9 +47,9 @@ SLACK_WEBHOOK_URL=https://hooks.slack.com/services/xxxxx
 **Optional Variables:**
 ```
 ELEVENLABS_API_KEY=sk_xxxxx
-TWILIO_ACCOUNT_SID=ACxxxxx
-TWILIO_AUTH_TOKEN=xxxxx
-TWILIO_PHONE_NUMBER=+1xxxxx
+TWILIO_ACCOUNT_SID=[your-account-sid]
+TWILIO_AUTH_TOKEN=[your-auth-token]
+TWILIO_PHONE_NUMBER=[your-phone-number]
 TAVILY_API_KEY=tvly-xxxxx
 ```
 
