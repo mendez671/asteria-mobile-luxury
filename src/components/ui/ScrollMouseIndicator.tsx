@@ -54,7 +54,7 @@ export default function ScrollMouseIndicator({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={controls}
-      className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-40 pointer-events-auto"
+      className="fixed bottom-16 sm:bottom-12 left-1/2 transform -translate-x-1/2 z-40 pointer-events-auto"
     >
       <motion.div
         onClick={() => {

@@ -10,6 +10,13 @@ const nextConfig = {
   // Configure webpack for better builds
   webpack: (config: any) => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
+    
+    // Exclude backup folders from compilation
+    config.module.rules.push({
+      test: /\.tsx?$/,
+      exclude: [/src-backup-.*/, /\.backup\./],
+    });
+    
     return config;
   },
 
