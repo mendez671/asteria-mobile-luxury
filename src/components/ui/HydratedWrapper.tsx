@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState, useCallback } from 'react';
 import { useHydrationGuard, useInteractiveState } from '@/lib/utils/hydration';
 
 interface HydratedWrapperProps {
@@ -20,7 +20,7 @@ export function HydratedWrapper({
   className = '',
   enableLogging = false 
 }: HydratedWrapperProps) {
-  const { isMounted, isHydrated } = useHydrationGuard();
+  const isHydrated = useHydrationGuard();
   const [renderTime, setRenderTime] = useState<number>(0);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export function HydratedWrapper({
   }, [isHydrated, enableLogging]);
 
   // Show fallback while hydrating
-  if (!isMounted || !isHydrated) {
+  if (!isHydrated) {
     return (
       <div className={`hydration-loading ${className}`} data-hydration-state="loading">
         {fallback}
@@ -74,8 +74,14 @@ export function InteractiveWrapper({
   ariaLabel,
   element = 'div'
 }: InteractiveWrapperProps) {
-  const { registerInteraction } = useInteractiveState();
+  const [interactionCount, setInteractionCount, isHydrated] = useInteractiveState(0);
   const [isPressed, setIsPressed] = useState(false);
+
+  const registerInteraction = useCallback((type: string) => {
+    if (isHydrated) {
+      setInteractionCount(interactionCount + 1);
+    }
+  }, [interactionCount, setInteractionCount, isHydrated]);
 
   const handleClick = () => {
     if (disabled) return;

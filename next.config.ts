@@ -1,39 +1,15 @@
 /** @type {import('next').NextConfig} */
-import type { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
+const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  
-  // Enable standalone mode for better serverless deployment
-  output: 'standalone',
   
   // Optimize for production builds
   productionBrowserSourceMaps: false,
   
   // Configure webpack for better builds
-  webpack: (config, { isServer }) => {
-    // Standard client-side fallbacks
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        net: false,
-        tls: false,
-        crypto: false,
-        stream: false,
-        url: false,
-        zlib: false,
-        http: false,
-        https: false,
-        assert: false,
-        os: false,
-        path: false,
-        process: false
-      };
-    }
-    
+  webpack: (config: any) => {
+    config.resolve.fallback = { fs: false, net: false, tls: false };
     return config;
   },
 
@@ -47,7 +23,10 @@ const nextConfig: NextConfig = {
     TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER || 'build-time-placeholder',
     CONCIERGE_PHONE_NUMBER: process.env.CONCIERGE_PHONE_NUMBER || 'build-time-placeholder',
     TWILIO_MESSAGING_SERVICE_SID: process.env.TWILIO_MESSAGING_SERVICE_SID || 'build-time-placeholder',
-  }
+  },
+
+  // Enable standalone mode for better serverless deployment
+  output: 'standalone',
 };
 
 export default nextConfig;

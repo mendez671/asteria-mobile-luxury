@@ -1,11 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
 import { addPassiveResize, addPassiveScroll, addPassiveVisibilityChange } from '@/lib/utils/listeners';
-
-// EMERGENCY: DIRECT IMPORTS - No dynamic loading to prevent failures
-import ChatInterface from '@/components/chat/ChatInterface';
 import ServiceBadges from '@/components/sections/ServiceBadges';
 import HowItWorksSection from '@/components/sections/HowItWorksSection';
 
@@ -71,7 +67,6 @@ export default function Home() {
   const [viewport, setViewport] = useState<ViewportInfo>(getViewportInfo());
   const [showVideo, setShowVideo] = useState(false);
   const [isVideoComplete, setIsVideoComplete] = useState(false);
-  const [isSystemReady, setIsSystemReady] = useState(false);
   
   // RESTORED: Time-based background system
   const [backgroundClass, setBackgroundClass] = useState('crystal-void-default');
@@ -89,7 +84,6 @@ export default function Home() {
     
     // SIMPLIFIED: Set ready immediately to prevent white screen
     setIsReady(true);
-    setIsSystemReady(true);
   }, []);
 
   // PERFORMANCE: Passive event listeners

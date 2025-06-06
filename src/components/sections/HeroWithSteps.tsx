@@ -12,20 +12,20 @@ interface HeroWithStepsProps {
 const steps = [
   {
     number: "01",
-    title: "Choose Service",
-    description: "Select from our curated collection of luxury experiences tailored to your aspirations.",
-    icon: "🎯"
+    title: "Make any Service Request",
+      description: "Ask Asteria to for anything you&apos;d like, even if you&apos;re not sure what you want.",
+    icon: "💬"
   },
   {
     number: "02", 
-    title: "Start Chat",
-    description: "Engage with our AI-powered concierge to refine your vision and clarify your desires.",
-    icon: "💬"
+    title: "Let's Book It!",
+      description: "Once you and Asteria agree on the details, click the &apos;Let&apos;s Book It&apos; button once it pops up.",
+    icon: "🎯"
   },
   {
     number: "03",
     title: "Get Results", 
-    description: "Receive your personalized luxury experience, crafted with precision and delivered with excellence.",
+    description: "Look for updates or your reservation details in your email, texts, and member dashboard!",
     icon: "✨"
   }
 ];
@@ -55,9 +55,7 @@ export default function HeroWithSteps({ currentTime }: HeroWithStepsProps) {
           </h1>
           
           <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-6 max-w-2xl mx-auto leading-relaxed px-4 sm:px-0">
-            True luxury transcends possessions—it's the energy that arises when meaning, beauty, 
-            and purpose converge. For those who understand that luxury isn't what you have, but 
-            how you move.
+            Luxury is no longer a product. It's a Network. 
           </p>
           
           {/* ENHANCED: Time-based luxury messaging */}
@@ -154,7 +152,7 @@ export default function HeroWithSteps({ currentTime }: HeroWithStepsProps) {
             </span>
           </h2>
           <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-8">
-            Engage with Asteria to transform your aspirations into reality.
+            Asteria will engage with you in voice mode too! Try it out now!
           </p>
         </motion.div>
 
