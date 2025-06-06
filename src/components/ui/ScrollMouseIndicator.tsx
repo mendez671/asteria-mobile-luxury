@@ -78,7 +78,7 @@ export default function ScrollMouseIndicator({
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           className="text-tag-gold/80 text-sm font-medium mb-3 group-hover:text-tag-gold transition-colors duration-300"
         >
-          Scroll to access the network
+          Scroll to start your journey
         </motion.div>
 
         {/* Mouse Container */}

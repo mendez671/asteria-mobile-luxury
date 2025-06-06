@@ -8,7 +8,7 @@ import { addPassiveResize, addPassiveScroll, addPassiveVisibilityChange } from '
 import ChatInterface from '@/components/chat/ChatInterface';
 import ServiceBadges from '@/components/sections/ServiceBadges';
 import HowItWorksSection from '@/components/sections/HowItWorksSection';
-import Steps from '@/components/sections/Steps';
+
 import TagLogo from '@/components/ui/TagLogo';
 import TestApiButton from '@/components/TestApiButton';
 import VideoIntro from '@/components/ui/VideoIntro';
@@ -17,9 +17,9 @@ import ErrorBoundary from '@/components/ui/ErrorBoundary';
 // UPGRADE 2 & 4: New sapphire components
 import { PrismStreak } from '@/components/effects/PrismStreak';
 import { ParticleRoot } from '@/components/ParticleRoot';
-import { InteractiveCrystalHero, CrystalLines, PulseCrystal } from '@/components/effects/InteractiveCrystalHero';
 import { SapphireCutStatus } from '@/components/effects/SapphireCutStatus';
 import ScrollMouseIndicator from '@/components/ui/ScrollMouseIndicator';
+import HeroWithSteps from '@/components/sections/HeroWithSteps';
 
 type ViewportType = 'mobile' | 'desktop';
 
@@ -318,62 +318,36 @@ export default function Home() {
               </div>
             </header>
 
-            {/* Hero Section FIRST */}
-            <section className="relative min-h-[80vh] flex items-center justify-center px-6">
-              {/* Interactive blue crystal background */}
-              <InteractiveCrystalHero />
-              <CrystalLines />
-              <PulseCrystal />
-              
-              <div className="relative z-10 max-w-4xl mx-auto text-center">
+            {/* COMBINED: Hero + Steps Section in single full-screen component */}
+            <HeroWithSteps currentTime={currentTime} />
+
+            {/* PRIORITY: Chat Interface - moved up for better user flow */}
+            <section id="chat-section" className="relative py-20 bg-gradient-to-b from-slate-900/50 to-transparent">
+              <div className="container mx-auto px-6">
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  className="mb-8"
+                  transition={{ duration: 0.8 }}
+                  className="text-center mb-12"
                 >
-                  {/* ENHANCED: "Meet Asteria" with luxury concierge tagline */}
-                  <h1 className="text-5xl md:text-7xl font-bold mb-4">
-                    <span className="block text-white mb-2">Meet Asteria</span>
-                    <span className="block text-3xl md:text-4xl bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent animate-pulse">
-                      The World's First Luxury Services AI Concierge
+                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                    <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                      Start Your Journey
                     </span>
-                  </h1>
-                  
-                  <p className="text-lg md:text-xl text-slate-300 mb-6 max-w-2xl mx-auto leading-relaxed">
-                    True luxury transcends possessions—it's the energy that arises when meaning, beauty, 
-                    and purpose converge. For those who understand that luxury isn't what you have, but 
-                    how you move.
+                  </h2>
+                  <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+                    Engage with Asteria to transform your aspirations into reality.
                   </p>
-                  
-                  {/* ENHANCED: Time-based luxury messaging */}
-                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800/40 rounded-full text-sm text-slate-400 mb-6 border border-cyan-500/20">
-                    <span>✨</span>
-                    <span>
-                      {currentTime.getHours() < 12 ? 'Good morning' : 
-                       currentTime.getHours() < 18 ? 'Good afternoon' : 'Good evening'} - 
-                      Your curated experience awaits
-                    </span>
-                  </div>
                 </motion.div>
+                <ChatInterface />
               </div>
             </section>
-
-            {/* RESTORED: Steps Section (1, 2, 3 numbered steps) */}
-            <Steps />
 
             {/* How It Works Section */}
             <HowItWorksSection />
             
             {/* CRITICAL: Service Badges with enhanced prompt handling */}
             <ServiceBadges onPromptSelect={handlePromptSelect} />
-            
-            {/* CRITICAL: Chat Interface with proper ID for scroll targeting */}
-            <section id="chat-section" className="relative py-20">
-              <div className="container mx-auto px-6">
-                <ChatInterface />
-              </div>
-            </section>
             
             {/* Footer with scroll to top functionality */}
             <footer className="relative z-20 py-12 border-t border-slate-700/50">
