@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { InteractiveCrystalHero, CrystalLines, PulseCrystal } from '@/components/effects/InteractiveCrystalHero';
+import ChatInterface from '@/components/chat/ChatInterface';
 
 interface HeroWithStepsProps {
   currentTime: Date;
@@ -31,14 +32,14 @@ const steps = [
 
 export default function HeroWithSteps({ currentTime }: HeroWithStepsProps) {
   return (
-    <section className="relative min-h-screen flex flex-col justify-center px-6">
+    <section className="relative min-h-screen flex flex-col px-6 pt-20 md:pt-24">
       {/* Interactive crystal background effects - shared across entire section */}
       <InteractiveCrystalHero />
       <CrystalLines />
       <PulseCrystal />
       
       {/* Hero Content - Upper portion */}
-      <div className="relative z-10 max-w-4xl mx-auto text-center mb-20">
+      <div className="relative z-10 max-w-4xl mx-auto text-center mb-12 md:mb-20 flex-1 flex flex-col justify-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -46,14 +47,14 @@ export default function HeroWithSteps({ currentTime }: HeroWithStepsProps) {
           className="mb-8"
         >
           {/* ENHANCED: "Meet Asteria" with luxury concierge tagline */}
-          <h1 className="text-5xl md:text-7xl font-bold mb-4">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4">
             <span className="block text-white mb-2">Meet Asteria</span>
-            <span className="block text-3xl md:text-4xl bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent animate-pulse">
+            <span className="block text-xl sm:text-2xl md:text-4xl bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent animate-pulse">
               The World's First Luxury Services AI Concierge
             </span>
           </h1>
           
-          <p className="text-lg md:text-xl text-slate-300 mb-6 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-6 max-w-2xl mx-auto leading-relaxed px-4 sm:px-0">
             True luxury transcends possessions—it's the energy that arises when meaning, beauty, 
             and purpose converge. For those who understand that luxury isn't what you have, but 
             how you move.
@@ -78,9 +79,9 @@ export default function HeroWithSteps({ currentTime }: HeroWithStepsProps) {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-8 sm:mb-12 md:mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">
             <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
               Three Steps to Luxury
             </span>
@@ -91,7 +92,7 @@ export default function HeroWithSteps({ currentTime }: HeroWithStepsProps) {
         </motion.div>
 
         {/* Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 px-2 sm:px-4 md:px-6 lg:px-8">
           {steps.map((step, index) => (
             <motion.div
               key={step.number}
@@ -140,27 +141,36 @@ export default function HeroWithSteps({ currentTime }: HeroWithStepsProps) {
           ))}
         </div>
 
-        {/* Call to Action - Updated to target chat interface */}
+        {/* Transition to Chat Interface - Integrated within same section */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.4 }}
-          className="text-center mt-16 mb-8"
+          className="text-center mt-12 sm:mt-16 md:mt-20 mb-8 sm:mb-12"
         >
-          <button 
-            onClick={() => {
-              const chatSection = document.querySelector('#chat-section');
-              if (chatSection) {
-                chatSection.scrollIntoView({ 
-                  behavior: 'smooth',
-                  block: 'start'
-                });
-              }
-            }}
-            className="px-8 py-4 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-xl font-semibold hover:from-cyan-500 hover:to-blue-500 transition-all duration-300 border border-cyan-500/30 hover:shadow-lg hover:shadow-cyan-500/25 hover:scale-105"
-          >
-            Start Your Journey
-          </button>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">
+            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
+              Start Your Journey
+            </span>
+          </h2>
+          <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-8">
+            Engage with Asteria to transform your aspirations into reality.
+          </p>
+        </motion.div>
+
+        {/* Integrated Chat Interface with Crystal Background */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.6 }}
+          className="max-w-4xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 pb-12 sm:pb-20"
+        >
+          <div className="relative">
+            {/* Subtle glass container to frame the chat interface against crystal background */}
+            <div className="bg-slate-900/20 backdrop-blur-sm border border-cyan-500/20 rounded-2xl p-3 sm:p-6 shadow-2xl shadow-cyan-500/10 min-h-[400px] sm:min-h-[500px]">
+              <ChatInterface />
+            </div>
+          </div>
         </motion.div>
       </div>
     </section>

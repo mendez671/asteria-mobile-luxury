@@ -168,15 +168,15 @@ export default function Home() {
     setBackgroundClass(backgrounds[nextIndex]);
   }, [backgroundClass]);
 
-  // Video sequence control
+  // Video sequence control - ENHANCED: Support both mobile and desktop
   useEffect(() => {
-    if (isReady && viewport.isDesktop) {
+    if (isReady && (viewport.isDesktop || viewport.isMobile)) {
       // CRITICAL FIX: Remove delay to prevent background flash
       setShowVideo(true);
       // CRITICAL: Ensure scroll position when video starts
       forceScrollToTop('video_start');
     }
-  }, [isReady, viewport.isDesktop]);
+  }, [isReady, viewport.isDesktop, viewport.isMobile]);
 
   // CRITICAL: Enhanced video completion handler with scroll management
   const handleVideoComplete = useCallback(() => {
@@ -203,22 +203,22 @@ export default function Home() {
   const handlePromptSelect = useCallback((prompt: string) => {
     console.log('🎴 Service card prompt selected:', prompt);
     
-    // CRITICAL: Scroll to chat interface smoothly
+    // CRITICAL: Scroll to integrated chat interface in hero section
     setTimeout(() => {
-      const chatSection = document.querySelector('#chat-section') || 
-                         document.querySelector('[class*="chat"]') ||
-                         document.querySelector('main > div:last-child');
+      const chatInterface = document.querySelector('.bg-slate-900\\/20') || 
+                           document.querySelector('[class*="chat"]') ||
+                           document.querySelector('main section:first-of-type');
       
-      if (chatSection) {
-        chatSection.scrollIntoView({ 
+      if (chatInterface) {
+        chatInterface.scrollIntoView({ 
           behavior: 'smooth',
-          block: 'start',
+          block: 'center',
           inline: 'nearest'
         });
       } else {
-        // Fallback: scroll to bottom if chat section not found
+        // Fallback: scroll to middle of hero section where chat is integrated
         window.scrollTo({ 
-          top: document.body.scrollHeight,
+          top: window.innerHeight * 0.8, // Scroll to bottom of hero section
           behavior: 'smooth'
         });
       }
@@ -276,8 +276,8 @@ export default function Home() {
         <SapphireCutStatus />
       </div>
       
-      {/* Desktop Video Intro */}
-      {viewport.isDesktop && showVideo && !isVideoComplete && (
+      {/* Enhanced Video Intro - Mobile and Desktop */}
+      {(viewport.isDesktop || viewport.isMobile) && showVideo && !isVideoComplete && (
         <VideoIntro 
           onComplete={handleVideoComplete}
           isMobile={viewport.isMobile}
@@ -298,22 +298,22 @@ export default function Home() {
             
             {/* Header */}
             <header className="relative z-20 bg-black/20 backdrop-blur-sm border-b border-yellow-500/20">
-              <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+              <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
                 <TagLogo />
-                <div className="flex items-center gap-4">
+                                  <div className="flex items-center gap-2 sm:gap-4">
                   {/* RESTORED: Test Background Change Button */}
-                  <button
-                    onClick={cycleBackground}
-                    className="px-3 py-1 bg-blue-600/20 border border-blue-500/30 rounded 
-                               text-blue-300 hover:bg-blue-600/30 transition-all duration-200
-                               text-xs font-medium backdrop-blur-sm"
-                    title="Test background changes"
-                  >
-                    🌅 BG
-                  </button>
-                  <div className="scale-75">
-                    <TestApiButton />
-                  </div>
+                                      <button
+                      onClick={cycleBackground}
+                      className="px-2 sm:px-3 py-1 bg-blue-600/20 border border-blue-500/30 rounded 
+                                 text-blue-300 hover:bg-blue-600/30 transition-all duration-200
+                                 text-xs font-medium backdrop-blur-sm"
+                      title="Test background changes"
+                    >
+                      🌅 <span className="hidden sm:inline">BG</span>
+                    </button>
+                    <div className="scale-50 sm:scale-75">
+                      <TestApiButton />
+                    </div>
                 </div>
               </div>
             </header>
@@ -321,27 +321,7 @@ export default function Home() {
             {/* COMBINED: Hero + Steps Section in single full-screen component */}
             <HeroWithSteps currentTime={currentTime} />
 
-            {/* PRIORITY: Chat Interface - moved up for better user flow */}
-            <section id="chat-section" className="relative py-20 bg-gradient-to-b from-slate-900/50 to-transparent">
-              <div className="container mx-auto px-6">
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8 }}
-                  className="text-center mb-12"
-                >
-                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                    <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
-                      Start Your Journey
-                    </span>
-                  </h2>
-                  <p className="text-lg text-slate-300 max-w-2xl mx-auto">
-                    Engage with Asteria to transform your aspirations into reality.
-                  </p>
-                </motion.div>
-                <ChatInterface />
-              </div>
-            </section>
+
 
             {/* How It Works Section */}
             <HowItWorksSection />

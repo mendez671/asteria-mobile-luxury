@@ -59,11 +59,12 @@ export default function ScrollMouseIndicator({
       <motion.div
         onClick={() => {
           onScrollStart?.();
-          const targetElement = document.querySelector('#chat-section');
+          const targetElement = document.querySelector('.bg-slate-900\\/20') || 
+                                document.querySelector('#how-it-works');
           if (targetElement) {
             targetElement.scrollIntoView({ 
               behavior: 'smooth', 
-              block: 'start' 
+              block: 'center' 
             });
           }
         }}
@@ -78,7 +79,7 @@ export default function ScrollMouseIndicator({
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           className="text-tag-gold/80 text-sm font-medium mb-3 group-hover:text-tag-gold transition-colors duration-300"
         >
-          Scroll to start your journey
+          Scroll to discover more
         </motion.div>
 
         {/* Mouse Container */}
