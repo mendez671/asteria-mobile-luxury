@@ -13,13 +13,13 @@ const steps = [
   {
     number: "01",
     title: "Make any Service Request",
-      description: "Ask Asteria to for anything you&apos;d like, even if you&apos;re not sure what you want.",
+    description: "Ask Asteria for anything you'd like, even if you're not sure what you want.",
     icon: "💬"
   },
   {
     number: "02", 
     title: "Let's Book It!",
-      description: "Once you and Asteria agree on the details, click the &apos;Let&apos;s Book It&apos; button once it pops up.",
+    description: "Once you and Asteria agree on the details, click the 'Let's Book It' button once it pops up.",
     icon: "🎯"
   },
   {
