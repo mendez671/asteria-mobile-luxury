@@ -1,0 +1,39 @@
+{
+  "id": "TAG-MBOVD80G",
+  "memberId": "guest_session_",
+  "serviceId": "luxury-ground-transport",
+  "serviceName": "Executive Ground Services",
+  "serviceBucket": "transportation",
+  "status": "pending",
+  "priority": "standard",
+  "requestDetails": {
+    "requirements": {
+      "date": "tonight",
+      "destination": "miami"
+    },
+    "preferences": [],
+    "timeline": "30 minutes"
+  },
+  "pricing": {
+    "basePrice": 500,
+    "adjustments": [],
+    "totalPrice": 500,
+    "paymentStatus": "pending"
+  },
+  "timeline": {
+    "requested": "2025-06-09T09:08:09.040Z"
+  },
+  "communications": [
+    {
+      "timestamp": "2025-06-09T09:08:09.040Z",
+      "from": "system",
+      "message": "Service request created for Executive Ground Services",
+      "type": "note"
+    }
+  ],
+  "tags": [
+    "transportation",
+    "better"
+  ],
+  "attachments": []
+}

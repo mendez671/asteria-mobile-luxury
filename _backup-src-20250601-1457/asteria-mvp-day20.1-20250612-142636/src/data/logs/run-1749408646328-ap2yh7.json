@@ -1,0 +1,235 @@
+{
+  "id": "run-1749408646328-ap2yh7",
+  "timestamp": "2025-06-08T18:50:46.328Z",
+  "memberId": "guest_session_",
+  "originalMessage": "how are you doing today let's go ahead and book an event",
+  "intentAnalysis": {
+    "primaryBucket": "events",
+    "secondaryBuckets": [],
+    "serviceType": "private venue",
+    "urgency": "urgent",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [
+        "today"
+      ],
+      "locations": [],
+      "people": [],
+      "preferences": []
+    },
+    "suggestedTier": "better"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "events",
+            "tier": "better",
+            "searchTerm": "private venue"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-08T18:50:45.483Z",
+          "result": {
+            "services": [
+              {
+                "id": "private-venue",
+                "name": "Private Venue Booking",
+                "description": "Exclusive use of premium venues for private events",
+                "tier": "better",
+                "basePrice": 5000,
+                "availability": "by-request",
+                "bookingRequirements": [
+                  "venue",
+                  "date",
+                  "duration",
+                  "guests",
+                  "eventType"
+                ],
+                "features": [
+                  "Full venue exclusivity",
+                  "Event planning",
+                  "Catering coordination",
+                  "Entertainment booking"
+                ],
+                "leadTime": "2 weeks",
+                "maxGuests": 200
+              }
+            ],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 1,
+            "searchSummary": "Found 1 services in events at better tier matching \"private venue\""
+          },
+          "executionTime": 0
+        },
+        {
+          "toolName": "create_ticket",
+          "parameters": {
+            "serviceId": "to_be_determined",
+            "requirements": {
+              "date": "today"
+            },
+            "priority": "urgent"
+          },
+          "status": "failed",
+          "timestamp": "2025-06-08T18:50:45.484Z",
+          "result": {
+            "error": "Missing required information: pickup, destination, time, passengers"
+          }
+        }
+      ],
+      "strategy": "direct_fulfillment",
+      "expectedOutcome": "Complete events service booking with confirmation",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "events",
+          "tier": "better",
+          "searchTerm": "private venue"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-08T18:50:45.483Z",
+        "result": {
+          "services": [
+            {
+              "id": "private-venue",
+              "name": "Private Venue Booking",
+              "description": "Exclusive use of premium venues for private events",
+              "tier": "better",
+              "basePrice": 5000,
+              "availability": "by-request",
+              "bookingRequirements": [
+                "venue",
+                "date",
+                "duration",
+                "guests",
+                "eventType"
+              ],
+              "features": [
+                "Full venue exclusivity",
+                "Event planning",
+                "Catering coordination",
+                "Entertainment booking"
+              ],
+              "leadTime": "2 weeks",
+              "maxGuests": 200
+            }
+          ],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 1,
+          "searchSummary": "Found 1 services in events at better tier matching \"private venue\""
+        },
+        "executionTime": 0
+      },
+      {
+        "toolName": "create_ticket",
+        "parameters": {
+          "serviceId": "to_be_determined",
+          "requirements": {
+            "date": "today"
+          },
+          "priority": "urgent"
+        },
+        "status": "failed",
+        "timestamp": "2025-06-08T18:50:45.484Z",
+        "result": {
+          "error": "Missing required information: pickup, destination, time, passengers"
+        }
+      }
+    ],
+    "finalResult": {
+      "services": [
+        {
+          "id": "private-venue",
+          "name": "Private Venue Booking",
+          "description": "Exclusive use of premium venues for private events",
+          "tier": "better",
+          "basePrice": 5000,
+          "availability": "by-request",
+          "bookingRequirements": [
+            "venue",
+            "date",
+            "duration",
+            "guests",
+            "eventType"
+          ],
+          "features": [
+            "Full venue exclusivity",
+            "Event planning",
+            "Catering coordination",
+            "Entertainment booking"
+          ],
+          "leadTime": "2 weeks",
+          "maxGuests": 200
+        }
+      ],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 1,
+      "searchSummary": "Found 1 services in events at better tier matching \"private venue\""
+    },
+    "recommendations": [
+      "Some services may require additional information - our concierge team will follow up"
+    ],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": true,
+    "workflowTriggered": false,
+    "requiresWorkflow": false
+  },
+  "outcome": "escalation",
+  "metrics": {
+    "responseTime": 848,
+    "toolsUsed": [
+      "fetch_active_services",
+      "create_ticket"
+    ],
+    "escalationTriggered": true
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 0.5,
+    "areas_for_improvement": [
+      "Tool execution reliability"
+    ],
+    "successful_patterns": [
+      "High confidence events intent recognition"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

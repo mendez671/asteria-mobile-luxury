@@ -1,0 +1,69 @@
+{
+  "id": "run-1749436341401-9xyka4",
+  "timestamp": "2025-06-09T02:32:21.401Z",
+  "memberId": "guest_session_",
+  "originalMessage": "Show me private jet options to Miami",
+  "intentAnalysis": {
+    "primaryBucket": "transportation",
+    "secondaryBuckets": [
+      "events"
+    ],
+    "serviceType": "private aviation",
+    "urgency": "standard",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [],
+      "locations": [
+        "Miami"
+      ],
+      "people": [],
+      "preferences": []
+    },
+    "suggestedTier": "extraordinary"
+  },
+  "executionResult": {
+    "success": true,
+    "workflowTriggered": true,
+    "workflowId": "wf_1749436341258_jcjfs",
+    "workflowType": "travel",
+    "requiresWorkflow": true,
+    "plan": {
+      "steps": [],
+      "strategy": "workflow_triggered",
+      "expectedOutcome": "Workflow execution in progress",
+      "fallbackOptions": []
+    },
+    "executedSteps": [],
+    "finalResult": {
+      "workflowId": "wf_1749436341258_jcjfs",
+      "message": "Your travel request is being processed via our advanced workflow system."
+    },
+    "recommendations": [
+      "Workflow wf_1749436341258_jcjfs is handling your travel request"
+    ],
+    "nextActions": [
+      "Monitor workflow progress in real-time",
+      "Await completion notifications"
+    ],
+    "escalationNeeded": false
+  },
+  "outcome": "success",
+  "metrics": {
+    "responseTime": 145,
+    "toolsUsed": [],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 0,
+    "areas_for_improvement": [
+      "Tool execution reliability"
+    ],
+    "successful_patterns": [
+      "High confidence transportation intent recognition"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

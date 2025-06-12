@@ -1,0 +1,371 @@
+{
+  "id": "run-1749430462411-eqve5k",
+  "timestamp": "2025-06-09T00:54:22.411Z",
+  "memberId": "test-member-founding",
+  "originalMessage": "I need a private jet to Paris tomorrow for 6 passengers",
+  "intentAnalysis": {
+    "primaryBucket": "transportation",
+    "secondaryBuckets": [],
+    "serviceType": "private aviation",
+    "urgency": "urgent",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [
+        "tomorrow"
+      ],
+      "locations": [
+        "Paris"
+      ],
+      "people": [
+        "6 passengers"
+      ],
+      "preferences": [
+        "a private jet to Paris tomorrow for 6 passengers"
+      ]
+    },
+    "suggestedTier": "extraordinary"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "transportation",
+            "tier": "extraordinary",
+            "searchTerm": "private aviation"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T00:54:22.410Z",
+          "result": {
+            "services": [
+              {
+                "id": "private-jet-global",
+                "name": "Global Private Aviation",
+                "description": "24/7 private jet charter worldwide with our exclusive fleet partners",
+                "tier": "extraordinary",
+                "basePrice": 15000,
+                "availability": "immediate",
+                "bookingRequirements": [
+                  "departure",
+                  "destination",
+                  "passengers",
+                  "date",
+                  "time"
+                ],
+                "features": [
+                  "Dedicated concierge",
+                  "Ground transportation included",
+                  "Catering options",
+                  "Wi-Fi & entertainment"
+                ],
+                "leadTime": "2 hours minimum",
+                "maxPassengers": 14
+              }
+            ],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 1,
+            "searchSummary": "Found 1 services in transportation at extraordinary tier matching \"private aviation\""
+          },
+          "executionTime": 0
+        },
+        {
+          "toolName": "create_ticket",
+          "parameters": {
+            "serviceId": "to_be_determined",
+            "requirements": {
+              "date": "tomorrow",
+              "destination": "Paris",
+              "passengers": "6 passengers"
+            },
+            "priority": "urgent"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T00:54:22.410Z",
+          "result": {
+            "ticket": {
+              "id": "TAG-MBODQ7YI",
+              "memberId": "test-member-founding",
+              "serviceId": "luxury-ground-transport",
+              "serviceName": "Executive Ground Services",
+              "serviceBucket": "transportation",
+              "status": "pending",
+              "priority": "urgent",
+              "requestDetails": {
+                "requirements": {
+                  "date": "tomorrow",
+                  "destination": "Paris",
+                  "passengers": "6 passengers"
+                },
+                "preferences": [],
+                "timeline": "30 minutes"
+              },
+              "pricing": {
+                "basePrice": 500,
+                "adjustments": [
+                  {
+                    "description": "Urgent Processing Fee",
+                    "amount": 125
+                  }
+                ],
+                "totalPrice": 625,
+                "paymentStatus": "pending"
+              },
+              "timeline": {
+                "requested": "2025-06-09T00:54:22.410Z"
+              },
+              "communications": [
+                {
+                  "timestamp": "2025-06-09T00:54:22.410Z",
+                  "from": "system",
+                  "message": "Service request created for Executive Ground Services",
+                  "type": "note"
+                }
+              ],
+              "tags": [
+                "transportation",
+                "better"
+              ],
+              "attachments": []
+            },
+            "confirmationCode": "TAG-MBODQ7YI-Q7YI",
+            "nextSteps": [
+              "Confirmation email sent with booking details",
+              "Service specialist will review and confirm availability",
+              "Detailed itinerary will be prepared",
+              "Fast-track processing initiated",
+              "Payment authorization will be requested once details are confirmed"
+            ],
+            "estimatedResponse": "5 minutes"
+          },
+          "executionTime": 1
+        }
+      ],
+      "strategy": "direct_fulfillment",
+      "expectedOutcome": "Complete transportation service booking with confirmation",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "transportation",
+          "tier": "extraordinary",
+          "searchTerm": "private aviation"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T00:54:22.410Z",
+        "result": {
+          "services": [
+            {
+              "id": "private-jet-global",
+              "name": "Global Private Aviation",
+              "description": "24/7 private jet charter worldwide with our exclusive fleet partners",
+              "tier": "extraordinary",
+              "basePrice": 15000,
+              "availability": "immediate",
+              "bookingRequirements": [
+                "departure",
+                "destination",
+                "passengers",
+                "date",
+                "time"
+              ],
+              "features": [
+                "Dedicated concierge",
+                "Ground transportation included",
+                "Catering options",
+                "Wi-Fi & entertainment"
+              ],
+              "leadTime": "2 hours minimum",
+              "maxPassengers": 14
+            }
+          ],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 1,
+          "searchSummary": "Found 1 services in transportation at extraordinary tier matching \"private aviation\""
+        },
+        "executionTime": 0
+      },
+      {
+        "toolName": "create_ticket",
+        "parameters": {
+          "serviceId": "to_be_determined",
+          "requirements": {
+            "date": "tomorrow",
+            "destination": "Paris",
+            "passengers": "6 passengers"
+          },
+          "priority": "urgent"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T00:54:22.410Z",
+        "result": {
+          "ticket": {
+            "id": "TAG-MBODQ7YI",
+            "memberId": "test-member-founding",
+            "serviceId": "luxury-ground-transport",
+            "serviceName": "Executive Ground Services",
+            "serviceBucket": "transportation",
+            "status": "pending",
+            "priority": "urgent",
+            "requestDetails": {
+              "requirements": {
+                "date": "tomorrow",
+                "destination": "Paris",
+                "passengers": "6 passengers"
+              },
+              "preferences": [],
+              "timeline": "30 minutes"
+            },
+            "pricing": {
+              "basePrice": 500,
+              "adjustments": [
+                {
+                  "description": "Urgent Processing Fee",
+                  "amount": 125
+                }
+              ],
+              "totalPrice": 625,
+              "paymentStatus": "pending"
+            },
+            "timeline": {
+              "requested": "2025-06-09T00:54:22.410Z"
+            },
+            "communications": [
+              {
+                "timestamp": "2025-06-09T00:54:22.410Z",
+                "from": "system",
+                "message": "Service request created for Executive Ground Services",
+                "type": "note"
+              }
+            ],
+            "tags": [
+              "transportation",
+              "better"
+            ],
+            "attachments": []
+          },
+          "confirmationCode": "TAG-MBODQ7YI-Q7YI",
+          "nextSteps": [
+            "Confirmation email sent with booking details",
+            "Service specialist will review and confirm availability",
+            "Detailed itinerary will be prepared",
+            "Fast-track processing initiated",
+            "Payment authorization will be requested once details are confirmed"
+          ],
+          "estimatedResponse": "5 minutes"
+        },
+        "executionTime": 1
+      }
+    ],
+    "finalResult": {
+      "ticket": {
+        "id": "TAG-MBODQ7YI",
+        "memberId": "test-member-founding",
+        "serviceId": "luxury-ground-transport",
+        "serviceName": "Executive Ground Services",
+        "serviceBucket": "transportation",
+        "status": "pending",
+        "priority": "urgent",
+        "requestDetails": {
+          "requirements": {
+            "date": "tomorrow",
+            "destination": "Paris",
+            "passengers": "6 passengers"
+          },
+          "preferences": [],
+          "timeline": "30 minutes"
+        },
+        "pricing": {
+          "basePrice": 500,
+          "adjustments": [
+            {
+              "description": "Urgent Processing Fee",
+              "amount": 125
+            }
+          ],
+          "totalPrice": 625,
+          "paymentStatus": "pending"
+        },
+        "timeline": {
+          "requested": "2025-06-09T00:54:22.410Z"
+        },
+        "communications": [
+          {
+            "timestamp": "2025-06-09T00:54:22.410Z",
+            "from": "system",
+            "message": "Service request created for Executive Ground Services",
+            "type": "note"
+          }
+        ],
+        "tags": [
+          "transportation",
+          "better"
+        ],
+        "attachments": []
+      },
+      "confirmationCode": "TAG-MBODQ7YI-Q7YI",
+      "nextSteps": [
+        "Confirmation email sent with booking details",
+        "Service specialist will review and confirm availability",
+        "Detailed itinerary will be prepared",
+        "Fast-track processing initiated",
+        "Payment authorization will be requested once details are confirmed"
+      ],
+      "estimatedResponse": "5 minutes"
+    },
+    "recommendations": [],
+    "nextActions": [
+      "Ticket TAG-MBODQ7YI created - confirmation email sent",
+      "Dedicated concierge will contact you within 30 minutes",
+      "You can track progress via your member portal"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": false,
+    "requiresWorkflow": false
+  },
+  "outcome": "success",
+  "metrics": {
+    "responseTime": 4,
+    "toolsUsed": [
+      "fetch_active_services",
+      "create_ticket"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 1,
+    "areas_for_improvement": [],
+    "successful_patterns": [
+      "High confidence transportation intent recognition",
+      "Perfect tool execution sequence"
+    ]
+  },
+  "followUp": {
+    "required": true,
+    "type": "confirmation",
+    "scheduledAt": "2025-06-09T01:24:22.411Z"
+  }
+}

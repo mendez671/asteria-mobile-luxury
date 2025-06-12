@@ -1,0 +1,120 @@
+{
+  "id": "run-1748652171187-cxpvw5",
+  "timestamp": "2025-05-31T00:42:51.187Z",
+  "memberId": "demo-member-001",
+  "originalMessage": "I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting",
+  "intentAnalysis": {
+    "primaryBucket": "brandDev",
+    "secondaryBuckets": [],
+    "serviceType": "media relations",
+    "urgency": "emergency",
+    "confidence": 0.05263157894736842,
+    "extractedEntities": {
+      "dates": [
+        "tomorrow"
+      ],
+      "locations": [
+        "NYC",
+        "London"
+      ],
+      "people": [
+        "3 people"
+      ],
+      "preferences": [
+        "a private jet from NYC to London tomorrow for 3 people, urgent business meeting"
+      ]
+    },
+    "suggestedTier": "extraordinary"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "notify_concierge",
+          "parameters": {
+            "message": "High priority request requiring immediate attention: I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting",
+            "urgency": "critical",
+            "category": "escalation"
+          },
+          "status": "completed",
+          "timestamp": "2025-05-31T00:42:50.916Z",
+          "result": {
+            "sent": true,
+            "channels": [
+              {
+                "type": "slack",
+                "status": "sent",
+                "messageId": "slack-1748652171186"
+              }
+            ],
+            "escalationTriggered": false,
+            "estimatedResponse": "5 minutes"
+          },
+          "executionTime": 270
+        }
+      ],
+      "strategy": "escalation",
+      "expectedOutcome": "Priority human concierge assignment for complex brandDev request",
+      "fallbackOptions": [
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "notify_concierge",
+        "parameters": {
+          "message": "High priority request requiring immediate attention: I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting",
+          "urgency": "critical",
+          "category": "escalation"
+        },
+        "status": "completed",
+        "timestamp": "2025-05-31T00:42:50.916Z",
+        "result": {
+          "sent": true,
+          "channels": [
+            {
+              "type": "slack",
+              "status": "sent",
+              "messageId": "slack-1748652171186"
+            }
+          ],
+          "escalationTriggered": false,
+          "estimatedResponse": "5 minutes"
+        },
+        "executionTime": 270
+      }
+    ],
+    "finalResult": null,
+    "recommendations": [],
+    "nextActions": [
+      "Priority escalation initiated",
+      "Senior concierge will contact you directly",
+      "Expect response within 15 minutes"
+    ],
+    "escalationNeeded": false
+  },
+  "outcome": "success",
+  "metrics": {
+    "responseTime": 272,
+    "toolsUsed": [
+      "notify_concierge"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 0.05263157894736842,
+    "executionEfficiency": 1,
+    "areas_for_improvement": [
+      "Intent recognition accuracy"
+    ],
+    "successful_patterns": [
+      "Perfect tool execution sequence"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

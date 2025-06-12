@@ -1,0 +1,380 @@
+{
+  "id": "run-1749437856335-pl3gvr",
+  "timestamp": "2025-06-09T02:57:36.335Z",
+  "memberId": "guest_session_",
+  "originalMessage": "I need a Citation Latitude for 8 passengers to Tokyo",
+  "intentAnalysis": {
+    "primaryBucket": "transportation",
+    "secondaryBuckets": [],
+    "serviceType": "general",
+    "urgency": "standard",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [],
+      "locations": [
+        "Tokyo"
+      ],
+      "people": [
+        "8 passengers"
+      ],
+      "preferences": [
+        "a Citation Latitude for 8 passengers to Tokyo"
+      ]
+    },
+    "suggestedTier": "better"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "search_luxury_knowledge",
+          "parameters": {
+            "query": "I need a Citation Latitude for 8 passengers to Tokyo",
+            "serviceCategory": "transportation",
+            "memberTier": "better",
+            "intent": "transportation"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T02:57:35.882Z",
+          "result": {
+            "success": true,
+            "result": "Found 5 luxury service knowledge sources:\n\n[1] [ALL-MEMBERS] [TRANSPORTATION] (41% match)\nGLOBAL PRIVATE AVIATION - ULTRA LUXURY CHARTER SERVICES\n\nAircraft Fleet Categories:\n- Light Jets: Citation CJ3+, Phenom 300E (2-8 passengers, $3,500-4,500/hour)\n  • Range: 1,500-2,000 nautical miles\n  • Ideal for: Regional business travel, weekend getaways\n  • Amenities: WiFi, refreshment center, leather seating\n  • Airports: Access to 5,000+ airports worldwide\n\n- Midsize Jets: Citation Latitude, Hawker 4000 (6-9 passengers, $4,500-6,500/hour)  \n  • Range: 2,500-3,500 nautical miles\n  • Ideal for: Cross-country travel, international short-haul\n  • Amenities: Full galley, enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas\n(Source: policy_doc)\n\n[2] [ALL-MEMBERS] [TRANSPORTATION] (34% match)\nuite, full kitchen, shower facilities, conference room\n  • Routes: Any city pair globally non-stop\n\nPremium Destinations & Airports:\n- Primary Hubs: LAX (Los Angeles), JFK (New York), LAS (Las Vegas), MIA (Miami)\n- European: LHR (London Heathrow), CDG (Paris Charles de Gaulle), FCO (Rome)\n- Private Jet Airports: TEB (Teterboro), VAN (Van Nuys), HPN (White Plains)\n- International Private: EGGW (Luton), LFPB (Le Bourget), RJTT (Haneda Tokyo)\n\nLuxury Service Standards:\n- 24/7 availability with notice requirements by tier\n- Dedicated flight crew briefed on member preferences\n- Ground transportation coordination (Rolls-Royce, Bentley fleet)\n- Gourmet catering from partner Michelin-starred restaurants\n(Source: policy_doc)\n\n[3] [ALL-MEMBERS] [TRANSPORTATION] (33% match)\n, enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas\n\n- Heavy Jets: Gulfstream G450, Falcon 7X (8-14 passengers, $6,500-9,500/hour)\n  • Range: 4,000-5,500 nautical miles\n  • Ideal for: International business, luxury group travel\n  • Amenities: Full cabin service, sleeping berths, satellite communications\n  • Transcontinental capability with luxury accommodations\n\n- Ultra Long Range: Gulfstream G650, Global 7500 (12-19 passengers, $9,500-15,000/hour)\n  • Range: 6,000+ nautical miles\n  • Ideal for: Non-stop international, ultimate luxury experience\n  • Amenities: Master suite, full kitchen, shower facilities, conference room\n  • Routes: Any city pair globally non-stop\n(Source: policy_doc)\n\n[4] [ALL-MEMBERS] [TRANSPORTATION] (32% match)\nlity\n- Corporate Members: Midsize and heavy jets, 8-hour advance notice, business hour coordination\n- All-Members: Light and midsize jets, 24-hour notice, standard booking procedures\n\nBooking Process Excellence:\n1. Member request with destination, passenger count, preferred departure window\n2. Concierge presents 2-3 optimal aircraft options with detailed specifications\n3. Real-time availability confirmation with aircraft tail number assignment\n4. Ground transportation arranged at departure and arrival airports\n5. Catering preferences confirmed 2 hours before departure\n6. Weather monitoring and alternative planning for safety optimization\n(Source: policy_doc)\n\n[5] [ALL-MEMBERS] [TRANSPORTATION] (30% match)\nrdination (Rolls-Royce, Bentley fleet)\n- Gourmet catering from partner Michelin-starred restaurants\n- Custom wine and champagne service with sommelier selection\n- High-speed satellite WiFi and business communications\n- Pet transportation with special climate-controlled accommodations\n- Medical equipment and trained medical staff for health emergencies\n\nMember Tier Access Levels:\n- Founding10 Members: All aircraft categories, 2-hour notice capability, priority booking during peak periods\n- Fifty-K Members: Heavy and ultra-long range access, 4-hour notice, guaranteed availability\n- Corporate Members: Midsize and heavy jets, 8-hour advance notice, business hour coordination\n(Source: policy_doc)",
+            "data": {
+              "results": [
+                {
+                  "id": "aviation-services-comprehensive_chunk_0",
+                  "content": "GLOBAL PRIVATE AVIATION - ULTRA LUXURY CHARTER SERVICES\n\nAircraft Fleet Categories:\n- Light Jets: Citation CJ3+, Phenom 300E (2-8 passengers, $3,500-4,500/hour)\n  • Range: 1,500-2,000 nautical miles\n  • Ideal for: Regional business travel, weekend getaways\n  • Amenities: WiFi, refreshment center, leather seating\n  • Airports: Access to 5,000+ airports worldwide\n\n- Midsize Jets: Citation Latitude, Hawker 4000 (6-9 passengers, $4,500-6,500/hour)  \n  • Range: 2,500-3,500 nautical miles\n  • Ideal for: Cross-country travel, international short-haul\n  • Amenities: Full galley, enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "transportation",
+                  "similarity": 0.41010676012221253,
+                  "metadata": {
+                    "chunkIndex": 0,
+                    "totalChunks": 5,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "premium_aviation",
+                    "coverage": "global",
+                    "specialization": "luxury_charter"
+                  }
+                },
+                {
+                  "id": "aviation-services-comprehensive_chunk_2",
+                  "content": "uite, full kitchen, shower facilities, conference room\n  • Routes: Any city pair globally non-stop\n\nPremium Destinations & Airports:\n- Primary Hubs: LAX (Los Angeles), JFK (New York), LAS (Las Vegas), MIA (Miami)\n- European: LHR (London Heathrow), CDG (Paris Charles de Gaulle), FCO (Rome)\n- Private Jet Airports: TEB (Teterboro), VAN (Van Nuys), HPN (White Plains)\n- International Private: EGGW (Luton), LFPB (Le Bourget), RJTT (Haneda Tokyo)\n\nLuxury Service Standards:\n- 24/7 availability with notice requirements by tier\n- Dedicated flight crew briefed on member preferences\n- Ground transportation coordination (Rolls-Royce, Bentley fleet)\n- Gourmet catering from partner Michelin-starred restaurants",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "transportation",
+                  "similarity": 0.3443114479637828,
+                  "metadata": {
+                    "chunkIndex": 2,
+                    "totalChunks": 5,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "premium_aviation",
+                    "coverage": "global",
+                    "specialization": "luxury_charter"
+                  }
+                },
+                {
+                  "id": "aviation-services-comprehensive_chunk_1",
+                  "content": ", enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas\n\n- Heavy Jets: Gulfstream G450, Falcon 7X (8-14 passengers, $6,500-9,500/hour)\n  • Range: 4,000-5,500 nautical miles\n  • Ideal for: International business, luxury group travel\n  • Amenities: Full cabin service, sleeping berths, satellite communications\n  • Transcontinental capability with luxury accommodations\n\n- Ultra Long Range: Gulfstream G650, Global 7500 (12-19 passengers, $9,500-15,000/hour)\n  • Range: 6,000+ nautical miles\n  • Ideal for: Non-stop international, ultimate luxury experience\n  • Amenities: Master suite, full kitchen, shower facilities, conference room\n  • Routes: Any city pair globally non-stop",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "transportation",
+                  "similarity": 0.32620980791998316,
+                  "metadata": {
+                    "chunkIndex": 1,
+                    "totalChunks": 5,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "premium_aviation",
+                    "coverage": "global",
+                    "specialization": "luxury_charter"
+                  }
+                },
+                {
+                  "id": "aviation-services-comprehensive_chunk_4",
+                  "content": "lity\n- Corporate Members: Midsize and heavy jets, 8-hour advance notice, business hour coordination\n- All-Members: Light and midsize jets, 24-hour notice, standard booking procedures\n\nBooking Process Excellence:\n1. Member request with destination, passenger count, preferred departure window\n2. Concierge presents 2-3 optimal aircraft options with detailed specifications\n3. Real-time availability confirmation with aircraft tail number assignment\n4. Ground transportation arranged at departure and arrival airports\n5. Catering preferences confirmed 2 hours before departure\n6. Weather monitoring and alternative planning for safety optimization",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "transportation",
+                  "similarity": 0.31793439721406846,
+                  "metadata": {
+                    "chunkIndex": 4,
+                    "totalChunks": 5,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "premium_aviation",
+                    "coverage": "global",
+                    "specialization": "luxury_charter"
+                  }
+                },
+                {
+                  "id": "aviation-services-comprehensive_chunk_3",
+                  "content": "rdination (Rolls-Royce, Bentley fleet)\n- Gourmet catering from partner Michelin-starred restaurants\n- Custom wine and champagne service with sommelier selection\n- High-speed satellite WiFi and business communications\n- Pet transportation with special climate-controlled accommodations\n- Medical equipment and trained medical staff for health emergencies\n\nMember Tier Access Levels:\n- Founding10 Members: All aircraft categories, 2-hour notice capability, priority booking during peak periods\n- Fifty-K Members: Heavy and ultra-long range access, 4-hour notice, guaranteed availability\n- Corporate Members: Midsize and heavy jets, 8-hour advance notice, business hour coordination",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "transportation",
+                  "similarity": 0.3015045197934613,
+                  "metadata": {
+                    "chunkIndex": 3,
+                    "totalChunks": 5,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "premium_aviation",
+                    "coverage": "global",
+                    "specialization": "luxury_charter"
+                  }
+                }
+              ],
+              "query": "I need a Citation Latitude for 8 passengers to Tokyo",
+              "searchOptions": {
+                "intent": "transportation",
+                "memberTier": "better",
+                "serviceCategory": "transportation",
+                "minimumSimilarity": 0.3,
+                "maxResults": 6
+              },
+              "totalFound": 5,
+              "avgSimilarity": 0.34001338660270164
+            },
+            "tool": "search_luxury_knowledge"
+          },
+          "executionTime": 452
+        },
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "transportation",
+            "tier": "better",
+            "searchTerm": "general"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T02:57:36.334Z",
+          "result": {
+            "services": [],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 0,
+            "searchSummary": "Found 0 services in transportation at better tier matching \"general\""
+          },
+          "executionTime": 1
+        }
+      ],
+      "strategy": "workflow_triggered",
+      "expectedOutcome": "Automated transportation workflow execution in progress",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "search_luxury_knowledge",
+        "parameters": {
+          "query": "I need a Citation Latitude for 8 passengers to Tokyo",
+          "serviceCategory": "transportation",
+          "memberTier": "better",
+          "intent": "transportation"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T02:57:35.882Z",
+        "result": {
+          "success": true,
+          "result": "Found 5 luxury service knowledge sources:\n\n[1] [ALL-MEMBERS] [TRANSPORTATION] (41% match)\nGLOBAL PRIVATE AVIATION - ULTRA LUXURY CHARTER SERVICES\n\nAircraft Fleet Categories:\n- Light Jets: Citation CJ3+, Phenom 300E (2-8 passengers, $3,500-4,500/hour)\n  • Range: 1,500-2,000 nautical miles\n  • Ideal for: Regional business travel, weekend getaways\n  • Amenities: WiFi, refreshment center, leather seating\n  • Airports: Access to 5,000+ airports worldwide\n\n- Midsize Jets: Citation Latitude, Hawker 4000 (6-9 passengers, $4,500-6,500/hour)  \n  • Range: 2,500-3,500 nautical miles\n  • Ideal for: Cross-country travel, international short-haul\n  • Amenities: Full galley, enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas\n(Source: policy_doc)\n\n[2] [ALL-MEMBERS] [TRANSPORTATION] (34% match)\nuite, full kitchen, shower facilities, conference room\n  • Routes: Any city pair globally non-stop\n\nPremium Destinations & Airports:\n- Primary Hubs: LAX (Los Angeles), JFK (New York), LAS (Las Vegas), MIA (Miami)\n- European: LHR (London Heathrow), CDG (Paris Charles de Gaulle), FCO (Rome)\n- Private Jet Airports: TEB (Teterboro), VAN (Van Nuys), HPN (White Plains)\n- International Private: EGGW (Luton), LFPB (Le Bourget), RJTT (Haneda Tokyo)\n\nLuxury Service Standards:\n- 24/7 availability with notice requirements by tier\n- Dedicated flight crew briefed on member preferences\n- Ground transportation coordination (Rolls-Royce, Bentley fleet)\n- Gourmet catering from partner Michelin-starred restaurants\n(Source: policy_doc)\n\n[3] [ALL-MEMBERS] [TRANSPORTATION] (33% match)\n, enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas\n\n- Heavy Jets: Gulfstream G450, Falcon 7X (8-14 passengers, $6,500-9,500/hour)\n  • Range: 4,000-5,500 nautical miles\n  • Ideal for: International business, luxury group travel\n  • Amenities: Full cabin service, sleeping berths, satellite communications\n  • Transcontinental capability with luxury accommodations\n\n- Ultra Long Range: Gulfstream G650, Global 7500 (12-19 passengers, $9,500-15,000/hour)\n  • Range: 6,000+ nautical miles\n  • Ideal for: Non-stop international, ultimate luxury experience\n  • Amenities: Master suite, full kitchen, shower facilities, conference room\n  • Routes: Any city pair globally non-stop\n(Source: policy_doc)\n\n[4] [ALL-MEMBERS] [TRANSPORTATION] (32% match)\nlity\n- Corporate Members: Midsize and heavy jets, 8-hour advance notice, business hour coordination\n- All-Members: Light and midsize jets, 24-hour notice, standard booking procedures\n\nBooking Process Excellence:\n1. Member request with destination, passenger count, preferred departure window\n2. Concierge presents 2-3 optimal aircraft options with detailed specifications\n3. Real-time availability confirmation with aircraft tail number assignment\n4. Ground transportation arranged at departure and arrival airports\n5. Catering preferences confirmed 2 hours before departure\n6. Weather monitoring and alternative planning for safety optimization\n(Source: policy_doc)\n\n[5] [ALL-MEMBERS] [TRANSPORTATION] (30% match)\nrdination (Rolls-Royce, Bentley fleet)\n- Gourmet catering from partner Michelin-starred restaurants\n- Custom wine and champagne service with sommelier selection\n- High-speed satellite WiFi and business communications\n- Pet transportation with special climate-controlled accommodations\n- Medical equipment and trained medical staff for health emergencies\n\nMember Tier Access Levels:\n- Founding10 Members: All aircraft categories, 2-hour notice capability, priority booking during peak periods\n- Fifty-K Members: Heavy and ultra-long range access, 4-hour notice, guaranteed availability\n- Corporate Members: Midsize and heavy jets, 8-hour advance notice, business hour coordination\n(Source: policy_doc)",
+          "data": {
+            "results": [
+              {
+                "id": "aviation-services-comprehensive_chunk_0",
+                "content": "GLOBAL PRIVATE AVIATION - ULTRA LUXURY CHARTER SERVICES\n\nAircraft Fleet Categories:\n- Light Jets: Citation CJ3+, Phenom 300E (2-8 passengers, $3,500-4,500/hour)\n  • Range: 1,500-2,000 nautical miles\n  • Ideal for: Regional business travel, weekend getaways\n  • Amenities: WiFi, refreshment center, leather seating\n  • Airports: Access to 5,000+ airports worldwide\n\n- Midsize Jets: Citation Latitude, Hawker 4000 (6-9 passengers, $4,500-6,500/hour)  \n  • Range: 2,500-3,500 nautical miles\n  • Ideal for: Cross-country travel, international short-haul\n  • Amenities: Full galley, enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "transportation",
+                "similarity": 0.41010676012221253,
+                "metadata": {
+                  "chunkIndex": 0,
+                  "totalChunks": 5,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "premium_aviation",
+                  "coverage": "global",
+                  "specialization": "luxury_charter"
+                }
+              },
+              {
+                "id": "aviation-services-comprehensive_chunk_2",
+                "content": "uite, full kitchen, shower facilities, conference room\n  • Routes: Any city pair globally non-stop\n\nPremium Destinations & Airports:\n- Primary Hubs: LAX (Los Angeles), JFK (New York), LAS (Las Vegas), MIA (Miami)\n- European: LHR (London Heathrow), CDG (Paris Charles de Gaulle), FCO (Rome)\n- Private Jet Airports: TEB (Teterboro), VAN (Van Nuys), HPN (White Plains)\n- International Private: EGGW (Luton), LFPB (Le Bourget), RJTT (Haneda Tokyo)\n\nLuxury Service Standards:\n- 24/7 availability with notice requirements by tier\n- Dedicated flight crew briefed on member preferences\n- Ground transportation coordination (Rolls-Royce, Bentley fleet)\n- Gourmet catering from partner Michelin-starred restaurants",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "transportation",
+                "similarity": 0.3443114479637828,
+                "metadata": {
+                  "chunkIndex": 2,
+                  "totalChunks": 5,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "premium_aviation",
+                  "coverage": "global",
+                  "specialization": "luxury_charter"
+                }
+              },
+              {
+                "id": "aviation-services-comprehensive_chunk_1",
+                "content": ", enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas\n\n- Heavy Jets: Gulfstream G450, Falcon 7X (8-14 passengers, $6,500-9,500/hour)\n  • Range: 4,000-5,500 nautical miles\n  • Ideal for: International business, luxury group travel\n  • Amenities: Full cabin service, sleeping berths, satellite communications\n  • Transcontinental capability with luxury accommodations\n\n- Ultra Long Range: Gulfstream G650, Global 7500 (12-19 passengers, $9,500-15,000/hour)\n  • Range: 6,000+ nautical miles\n  • Ideal for: Non-stop international, ultimate luxury experience\n  • Amenities: Master suite, full kitchen, shower facilities, conference room\n  • Routes: Any city pair globally non-stop",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "transportation",
+                "similarity": 0.32620980791998316,
+                "metadata": {
+                  "chunkIndex": 1,
+                  "totalChunks": 5,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "premium_aviation",
+                  "coverage": "global",
+                  "specialization": "luxury_charter"
+                }
+              },
+              {
+                "id": "aviation-services-comprehensive_chunk_4",
+                "content": "lity\n- Corporate Members: Midsize and heavy jets, 8-hour advance notice, business hour coordination\n- All-Members: Light and midsize jets, 24-hour notice, standard booking procedures\n\nBooking Process Excellence:\n1. Member request with destination, passenger count, preferred departure window\n2. Concierge presents 2-3 optimal aircraft options with detailed specifications\n3. Real-time availability confirmation with aircraft tail number assignment\n4. Ground transportation arranged at departure and arrival airports\n5. Catering preferences confirmed 2 hours before departure\n6. Weather monitoring and alternative planning for safety optimization",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "transportation",
+                "similarity": 0.31793439721406846,
+                "metadata": {
+                  "chunkIndex": 4,
+                  "totalChunks": 5,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "premium_aviation",
+                  "coverage": "global",
+                  "specialization": "luxury_charter"
+                }
+              },
+              {
+                "id": "aviation-services-comprehensive_chunk_3",
+                "content": "rdination (Rolls-Royce, Bentley fleet)\n- Gourmet catering from partner Michelin-starred restaurants\n- Custom wine and champagne service with sommelier selection\n- High-speed satellite WiFi and business communications\n- Pet transportation with special climate-controlled accommodations\n- Medical equipment and trained medical staff for health emergencies\n\nMember Tier Access Levels:\n- Founding10 Members: All aircraft categories, 2-hour notice capability, priority booking during peak periods\n- Fifty-K Members: Heavy and ultra-long range access, 4-hour notice, guaranteed availability\n- Corporate Members: Midsize and heavy jets, 8-hour advance notice, business hour coordination",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "transportation",
+                "similarity": 0.3015045197934613,
+                "metadata": {
+                  "chunkIndex": 3,
+                  "totalChunks": 5,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "premium_aviation",
+                  "coverage": "global",
+                  "specialization": "luxury_charter"
+                }
+              }
+            ],
+            "query": "I need a Citation Latitude for 8 passengers to Tokyo",
+            "searchOptions": {
+              "intent": "transportation",
+              "memberTier": "better",
+              "serviceCategory": "transportation",
+              "minimumSimilarity": 0.3,
+              "maxResults": 6
+            },
+            "totalFound": 5,
+            "avgSimilarity": 0.34001338660270164
+          },
+          "tool": "search_luxury_knowledge"
+        },
+        "executionTime": 452
+      },
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "transportation",
+          "tier": "better",
+          "searchTerm": "general"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T02:57:36.334Z",
+        "result": {
+          "services": [],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 0,
+          "searchSummary": "Found 0 services in transportation at better tier matching \"general\""
+        },
+        "executionTime": 1
+      }
+    ],
+    "finalResult": {
+      "services": [],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 0,
+      "searchSummary": "Found 0 services in transportation at better tier matching \"general\""
+    },
+    "recommendations": [
+      "Consider upgrading to our Extraordinary tier for enhanced privacy and luxury amenities"
+    ],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": true,
+    "workflowId": "wf_1749437855730_rbbx3q",
+    "workflowType": "travel",
+    "requiresWorkflow": false
+  },
+  "outcome": "success",
+  "metrics": {
+    "responseTime": 608,
+    "toolsUsed": [
+      "search_luxury_knowledge",
+      "fetch_active_services"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 1,
+    "areas_for_improvement": [],
+    "successful_patterns": [
+      "High confidence transportation intent recognition",
+      "Perfect tool execution sequence"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

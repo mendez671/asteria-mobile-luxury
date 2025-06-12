@@ -1,0 +1,243 @@
+{
+  "transportation": [
+    {
+      "id": "private-jet-global",
+      "name": "Global Private Aviation",
+      "description": "24/7 private jet charter worldwide with our exclusive fleet partners",
+      "tier": "extraordinary",
+      "basePrice": 15000,
+      "availability": "immediate",
+      "bookingRequirements": ["departure", "destination", "passengers", "date", "time"],
+      "features": ["Dedicated concierge", "Ground transportation included", "Catering options", "Wi-Fi & entertainment"],
+      "leadTime": "2 hours minimum",
+      "maxPassengers": 14
+    },
+    {
+      "id": "luxury-ground-transport",
+      "name": "Executive Ground Services",
+      "description": "Premium chauffeured vehicles and specialty transport",
+      "tier": "better",
+      "basePrice": 500,
+      "availability": "24/7",
+      "bookingRequirements": ["pickup", "destination", "date", "time", "passengers"],
+      "features": ["Professional chauffeur", "Premium vehicles", "Route optimization", "Airport services"],
+      "leadTime": "30 minutes",
+      "maxPassengers": 8
+    },
+    {
+      "id": "yacht-charter",
+      "name": "Luxury Marine Experiences",
+      "description": "Private yacht charters and maritime adventures",
+      "tier": "extraordinary",
+      "basePrice": 8000,
+      "availability": "seasonal",
+      "bookingRequirements": ["location", "duration", "passengers", "date", "activities"],
+      "features": ["Professional crew", "Gourmet catering", "Water sports equipment", "Scenic routes"],
+      "leadTime": "48 hours",
+      "maxPassengers": 20
+    }
+  ],
+  "events": [
+    {
+      "id": "exclusive-access",
+      "name": "Elite Event Access",
+      "description": "VIP access to sold-out shows, galas, and exclusive gatherings",
+      "tier": "extraordinary",
+      "basePrice": 2500,
+      "availability": "limited",
+      "bookingRequirements": ["event", "date", "guests", "accessLevel"],
+      "features": ["VIP seating", "Meet & greet opportunities", "Private reception access", "Concierge escort"],
+      "leadTime": "1 week",
+      "maxGuests": 6
+    },
+    {
+      "id": "private-venue",
+      "name": "Private Venue Booking",
+      "description": "Exclusive use of premium venues for private events",
+      "tier": "better",
+      "basePrice": 5000,
+      "availability": "by-request",
+      "bookingRequirements": ["venue", "date", "duration", "guests", "eventType"],
+      "features": ["Full venue exclusivity", "Event planning", "Catering coordination", "Entertainment booking"],
+      "leadTime": "2 weeks",
+      "maxGuests": 200
+    },
+    {
+      "id": "cultural-experiences",
+      "name": "Curated Cultural Journeys",
+      "description": "Private museum tours, art gallery previews, and cultural immersions",
+      "tier": "good",
+      "basePrice": 800,
+      "availability": "daily",
+      "bookingRequirements": ["experience", "date", "participants", "interests"],
+      "features": ["Expert guides", "Behind-the-scenes access", "Educational materials", "Photography permitted"],
+      "leadTime": "3 days",
+      "maxParticipants": 12
+    }
+  ],
+  "brandDev": [
+    {
+      "id": "personal-brand-consulting",
+      "name": "Executive Brand Strategy",
+      "description": "Comprehensive personal brand development and positioning",
+      "tier": "extraordinary",
+      "basePrice": 25000,
+      "availability": "limited",
+      "bookingRequirements": ["goals", "timeline", "currentState", "targetAudience"],
+      "features": ["Brand audit", "Strategy development", "Implementation roadmap", "Ongoing consultation"],
+      "leadTime": "1 week",
+      "duration": "3 months"
+    },
+    {
+      "id": "media-pr-services",
+      "name": "Premium Media Relations",
+      "description": "Strategic PR campaigns and media placement services",
+      "tier": "better",
+      "basePrice": 15000,
+      "availability": "ongoing",
+      "bookingRequirements": ["objectives", "timeline", "budget", "targetMedia"],
+      "features": ["Media strategy", "Press kit development", "Relationship building", "Crisis management"],
+      "leadTime": "2 weeks",
+      "duration": "6 months"
+    },
+    {
+      "id": "digital-presence",
+      "name": "Digital Excellence Optimization",
+      "description": "Professional digital presence enhancement and management",
+      "tier": "good",
+      "basePrice": 8000,
+      "availability": "immediate",
+      "bookingRequirements": ["platforms", "objectives", "timeline", "currentPresence"],
+      "features": ["Platform optimization", "Content strategy", "Profile enhancement", "Analytics tracking"],
+      "leadTime": "1 week",
+      "duration": "3 months"
+    }
+  ],
+  "investments": [
+    {
+      "id": "wealth-management",
+      "name": "Private Wealth Advisory",
+      "description": "Exclusive wealth management and investment advisory services",
+      "tier": "extraordinary",
+      "basePrice": 50000,
+      "availability": "by-invitation",
+      "bookingRequirements": ["netWorth", "objectives", "riskTolerance", "timeline"],
+      "features": ["Dedicated advisor", "Custom portfolio", "Tax optimization", "Estate planning"],
+      "leadTime": "2 weeks",
+      "minimumInvestment": 1000000
+    },
+    {
+      "id": "alternative-investments",
+      "name": "Alternative Investment Access",
+      "description": "Exclusive access to private equity, hedge funds, and unique opportunities",
+      "tier": "better",
+      "basePrice": 25000,
+      "availability": "limited",
+      "bookingRequirements": ["accreditation", "investment", "timeline", "sectors"],
+      "features": ["Due diligence", "Access to closed deals", "Portfolio integration", "Performance monitoring"],
+      "leadTime": "3 weeks",
+      "minimumInvestment": 500000
+    },
+    {
+      "id": "financial-consultation",
+      "name": "Strategic Financial Planning",
+      "description": "Comprehensive financial strategy and planning consultation",
+      "tier": "good",
+      "basePrice": 5000,
+      "availability": "weekly",
+      "bookingRequirements": ["financialGoals", "currentSituation", "timeline", "priorities"],
+      "features": ["Financial analysis", "Strategy development", "Implementation plan", "Quarterly reviews"],
+      "leadTime": "1 week",
+      "duration": "1 year"
+    }
+  ],
+  "taglades": [
+    {
+      "id": "founders-circle",
+      "name": "Founders Circle Experience",
+      "description": "Exclusive networking events for TAG's most elite members",
+      "tier": "extraordinary",
+      "basePrice": 5000,
+      "availability": "monthly",
+      "bookingRequirements": ["memberLevel", "guests", "interests", "contribution"],
+      "features": ["C-level networking", "Investment opportunities", "Knowledge sharing", "Private dining"],
+      "leadTime": "2 weeks",
+      "maxGuests": 2,
+      "membershipRequired": "Founding"
+    },
+    {
+      "id": "innovation-labs",
+      "name": "TAG Innovation Laboratory",
+      "description": "Early access to cutting-edge technologies and startup partnerships",
+      "tier": "better",
+      "basePrice": 3000,
+      "availability": "quarterly",
+      "bookingRequirements": ["interests", "investment", "participation", "timeline"],
+      "features": ["Technology previews", "Startup meetings", "Investment opportunities", "Expert panels"],
+      "leadTime": "1 month",
+      "membershipRequired": "Elite"
+    },
+    {
+      "id": "legacy-programs",
+      "name": "Legacy Building Initiatives",
+      "description": "Exclusive programs for creating lasting impact and legacy",
+      "tier": "good",
+      "basePrice": 10000,
+      "availability": "ongoing",
+      "bookingRequirements": ["vision", "timeline", "commitment", "resources"],
+      "features": ["Legacy planning", "Impact measurement", "Community building", "Mentorship programs"],
+      "leadTime": "1 month",
+      "duration": "1 year"
+    }
+  ],
+  "lifestyle": [
+    {
+      "id": "personal-shopping",
+      "name": "Elite Personal Shopping",
+      "description": "Luxury personal shopping and styling services",
+      "tier": "better",
+      "basePrice": 2000,
+      "availability": "weekly",
+      "bookingRequirements": ["style", "budget", "occasions", "preferences"],
+      "features": ["Personal stylist", "Luxury brand access", "Private appointments", "Wardrobe consultation"],
+      "leadTime": "3 days",
+      "duration": "4 hours"
+    },
+    {
+      "id": "home-design",
+      "name": "Luxury Interior Design",
+      "description": "Premium interior design and home curation services",
+      "tier": "extraordinary",
+      "basePrice": 15000,
+      "availability": "limited",
+      "bookingRequirements": ["space", "style", "timeline", "budget"],
+      "features": ["Design consultation", "Custom furniture", "Art curation", "Project management"],
+      "leadTime": "2 weeks",
+      "duration": "6 months"
+    },
+    {
+      "id": "wellness-optimization",
+      "name": "Holistic Wellness Programs",
+      "description": "Comprehensive health and wellness optimization",
+      "tier": "good",
+      "basePrice": 3000,
+      "availability": "monthly",
+      "bookingRequirements": ["goals", "health", "lifestyle", "timeline"],
+      "features": ["Health assessment", "Personalized programs", "Expert guidance", "Progress tracking"],
+      "leadTime": "1 week",
+      "duration": "3 months"
+    },
+    {
+      "id": "concierge-plus",
+      "name": "24/7 Personal Concierge",
+      "description": "Dedicated personal concierge for comprehensive lifestyle management",
+      "tier": "extraordinary",
+      "basePrice": 8000,
+      "availability": "immediate",
+      "bookingRequirements": ["needs", "schedule", "preferences", "boundaries"],
+      "features": ["24/7 availability", "Task management", "Relationship coordination", "Emergency support"],
+      "leadTime": "immediate",
+      "duration": "monthly"
+    }
+  ]
+} 

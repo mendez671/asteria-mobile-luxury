@@ -1,0 +1,71 @@
+{
+  "id": "run-1749435609630-0adubf",
+  "timestamp": "2025-06-09T02:20:09.630Z",
+  "memberId": "guest_session_",
+  "originalMessage": "I need a private jet to Paris tomorrow",
+  "intentAnalysis": {
+    "primaryBucket": "transportation",
+    "secondaryBuckets": [],
+    "serviceType": "private aviation",
+    "urgency": "urgent",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [
+        "tomorrow"
+      ],
+      "locations": [
+        "Paris"
+      ],
+      "people": [],
+      "preferences": [
+        "a private jet to Paris tomorrow"
+      ]
+    },
+    "suggestedTier": "extraordinary"
+  },
+  "executionResult": {
+    "success": true,
+    "workflowTriggered": true,
+    "workflowId": "wf_1749435608090_fpr0x",
+    "workflowType": "travel",
+    "requiresWorkflow": true,
+    "plan": {
+      "steps": [],
+      "strategy": "workflow_triggered",
+      "expectedOutcome": "Workflow execution in progress",
+      "fallbackOptions": []
+    },
+    "executedSteps": [],
+    "finalResult": {
+      "workflowId": "wf_1749435608090_fpr0x",
+      "message": "Your travel request is being processed via our advanced workflow system."
+    },
+    "recommendations": [
+      "Workflow wf_1749435608090_fpr0x is handling your travel request"
+    ],
+    "nextActions": [
+      "Monitor workflow progress in real-time",
+      "Await completion notifications"
+    ],
+    "escalationNeeded": false
+  },
+  "outcome": "success",
+  "metrics": {
+    "responseTime": 1543,
+    "toolsUsed": [],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 0,
+    "areas_for_improvement": [
+      "Tool execution reliability"
+    ],
+    "successful_patterns": [
+      "High confidence transportation intent recognition"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

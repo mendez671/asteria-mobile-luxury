@@ -1,0 +1,43 @@
+{
+  "id": "TAG-MBOVL1FP",
+  "memberId": "test-separation-member",
+  "serviceId": "luxury-ground-transport",
+  "serviceName": "Executive Ground Services",
+  "serviceBucket": "transportation",
+  "status": "pending",
+  "priority": "urgent",
+  "requestDetails": {
+    "requirements": {
+      "date": "tonight"
+    },
+    "preferences": [],
+    "timeline": "30 minutes"
+  },
+  "pricing": {
+    "basePrice": 500,
+    "adjustments": [
+      {
+        "description": "Urgent Processing Fee",
+        "amount": 125
+      }
+    ],
+    "totalPrice": 625,
+    "paymentStatus": "pending"
+  },
+  "timeline": {
+    "requested": "2025-06-09T09:14:13.765Z"
+  },
+  "communications": [
+    {
+      "timestamp": "2025-06-09T09:14:13.765Z",
+      "from": "system",
+      "message": "Service request created for Executive Ground Services",
+      "type": "note"
+    }
+  ],
+  "tags": [
+    "transportation",
+    "better"
+  ],
+  "attachments": []
+}

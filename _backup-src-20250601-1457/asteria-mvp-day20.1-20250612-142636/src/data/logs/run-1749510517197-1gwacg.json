@@ -1,0 +1,317 @@
+{
+  "id": "run-1749510517197-1gwacg",
+  "timestamp": "2025-06-09T23:08:37.197Z",
+  "originalMessage": "I need a private jet to Miami for 4 passengers",
+  "intentAnalysis": {
+    "primaryBucket": "transportation",
+    "secondaryBuckets": [],
+    "serviceType": "private aviation",
+    "urgency": "standard",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [],
+      "locations": [
+        "Miami"
+      ],
+      "people": [
+        "4 passengers"
+      ],
+      "preferences": [
+        "a private jet to Miami for 4 passengers"
+      ],
+      "budgetHints": []
+    },
+    "suggestedTier": "extraordinary"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "search_luxury_knowledge",
+          "parameters": {
+            "query": "transportation private aviation luxury services",
+            "serviceCategory": "transportation",
+            "memberTier": "extraordinary"
+          },
+          "status": "pending",
+          "timestamp": ""
+        },
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "transportation",
+            "tier": "extraordinary"
+          },
+          "status": "pending",
+          "timestamp": ""
+        }
+      ],
+      "strategy": "guided_collection",
+      "expectedOutcome": "Curated transportation service options with booking assistance",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {},
+        "result": {
+          "services": [
+            {
+              "id": "private-jet-global",
+              "name": "Global Private Aviation",
+              "description": "24/7 private jet charter worldwide with our exclusive fleet partners",
+              "tier": "extraordinary",
+              "basePrice": 15000,
+              "availability": "immediate",
+              "bookingRequirements": [
+                "departure",
+                "destination",
+                "passengers",
+                "date",
+                "time"
+              ],
+              "features": [
+                "Dedicated concierge",
+                "Ground transportation included",
+                "Catering options",
+                "Wi-Fi & entertainment"
+              ],
+              "leadTime": "2 hours minimum",
+              "maxPassengers": 14
+            },
+            {
+              "id": "yacht-charter",
+              "name": "Luxury Marine Experiences",
+              "description": "Private yacht charters and maritime adventures",
+              "tier": "extraordinary",
+              "basePrice": 8000,
+              "availability": "seasonal",
+              "bookingRequirements": [
+                "location",
+                "duration",
+                "passengers",
+                "date",
+                "activities"
+              ],
+              "features": [
+                "Professional crew",
+                "Gourmet catering",
+                "Water sports equipment",
+                "Scenic routes"
+              ],
+              "leadTime": "48 hours",
+              "maxPassengers": 20
+            }
+          ],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 2,
+          "searchSummary": "Found 2 services in transportation at extraordinary tier"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T23:08:35.442Z",
+        "executionTime": 5
+      },
+      {
+        "toolName": "search_luxury_knowledge",
+        "parameters": {},
+        "result": {
+          "success": true,
+          "result": "Found 6 luxury knowledge results for \"transportation private aviation luxury services\"",
+          "data": {
+            "results": [
+              {
+                "content": "\nCONVERSATION CONTEXT RULES for ASTERIA AI Concierge:\n\n1. CONTEXT RETENTION:\n- Always reference previous messages in the conversation\n- Build upon specific details already provided by the member\n- Never ask for information already given in the conversation\n- Maintain conversation thread continuity across multiple exchanges\n\n2. PROGRESSIVE INFORMATION GATHERING:\nWhen member says \"What's available in Las Vegas tomorrow?\":\n- Next response should include specific Las Vegas options\n- Ask for ONE missing detail at a time (departure location, time, passengers)\n- Build on their request progressively\n\nWhen member adds \"from Las Vegas, closest to Henderson, 4 of us\":\n- Acknowledge the NEW information (Henderson proximity, 4 passengers)\n- Provide SPECIFIC options based on ALL details (Vegas→?, tomorrow, 4 people, near Henderson)\n- Progress toward booking by presenting concrete choices\n\n3. CONVERSATION PROGRESSION PATTERN:\nInitial → Specific → Refined → Booking Confirmation\n- Never revert to generic responses once specific details are provided\n- Each response should be MORE specific than the previous\n- Always move toward a bookable outcome\n\nEXAMPLE PROPER FLOW:\nUser: \"What's available in Las Vegas tomorrow?\"\nAgent: \"I'll arrange luxury transportation from Las Vegas tomorrow. May I know your destination and preferred departure time?\"\n\nUser: \"from las vegas, closest to henderson, 4 of us\" \nAgent: \"Perfect - departing from Henderson area tomorrow for 4 passengers. For which destination? I have Citation Latitude aircraft ideal for your group size, with $4,500-6,500/hour luxury service including ground coordination.\"\n\nNEVER revert to: \"I understand you're seeking luxury transportation services...\" after specific details are provided.\n    ",
+                "category": "conversation_flow",
+                "memberTier": "all-members",
+                "priority": "critical",
+                "similarity": 0.95,
+                "source": "conversation_flow_knowledge"
+              },
+              {
+                "content": "\nSERVICE-SPECIFIC CONVERSATION PATTERNS:\n\nPRIVATE AVIATION FLOW:\n1. Initial: \"I need a private jet to [destination]\"\n2. Gather: departure location, time, passenger count, any preferences\n3. Present: specific aircraft options with pricing and timing\n4. Confirm: \"Perfect! Citation Latitude from [departure] to [destination]...\"\n5. Book: Create SR ticket, notify concierge, provide confirmation\n\nRequired Info for Aviation:\n- Departure airport/location ✓\n- Destination airport/location ✓\n- Date and time ✓\n- Number of passengers ✓\n- Aircraft preferences (optional)\n\nDINING RESERVATION FLOW:\n1. Initial: \"Restaurant reservation in [city]\"\n2. Gather: date, time, party size, cuisine/restaurant preferences\n3. Present: specific restaurant options with availability\n4. Confirm: \"Excellent! Table for [count] at [restaurant] on [date]...\"\n5. Book: Create reservation ticket, notify concierge\n\nRequired Info for Dining:\n- City/location ✓\n- Date and time ✓  \n- Party size ✓\n- Cuisine preference (helpful)\n- Special occasions (helpful)\n\nHOTEL ACCOMMODATION FLOW:\n1. Initial: \"Hotel in [city] for [dates]\"\n2. Gather: exact dates, room type, number of guests, preferences\n3. Present: specific hotel/suite options with amenities\n4. Confirm: \"Perfect! Presidential suite at [hotel] from [checkin] to [checkout]...\"\n5. Book: Create accommodation ticket, notify concierge\n\nCRITICAL RULE: Never lose specificity once details are provided. Each response should reference ALL previous details and add NEW information.\n    ",
+                "category": "service_flows",
+                "memberTier": "all-members",
+                "priority": "high",
+                "similarity": 0.95,
+                "source": "conversation_flow_knowledge"
+              },
+              {
+                "content": "\nCONTEXT RECOVERY WHEN CONVERSATION GOES OFF-TRACK:\n\n1. IDENTIFY CONVERSATION THREAD:\nLook through conversation history for:\n- Service type mentioned (jet, restaurant, hotel)\n- Specific locations mentioned\n- Dates or timing mentioned\n- Group size mentioned\n- Any confirmed details\n\n2. RECOVERY RESPONSE PATTERN:\n\"I see you're interested in [service type]. To build on your request for [specific details from history], I need to clarify [one missing piece].\"\n\nExample:\nIf conversation mentioned \"private jet to Miami tomorrow\" but went generic:\n\"I see you're arranging private aviation to Miami tomorrow. To present the best aircraft options, may I confirm your departure location and passenger count?\"\n\n3. NEVER START OVER:\n- Don't ask for information already provided\n- Reference specific details from earlier in conversation\n- Build forward, not backward\n\n4. CONVERSATION RESCUE PHRASES:\n\"Building on your request for...\"\n\"To complete your [service] arrangement...\"\n\"Returning to your [specific service] needs...\"\n\"Let me finalize the details for your [service]...\"\n\n5. URGENCY RESTORATION:\nIf member seems frustrated or conversation is stalling:\n\"Let me expedite this for you. Based on your requirements for [recap details], I'll have options presented within minutes.\"\n    ",
+                "category": "conversation_recovery",
+                "memberTier": "all-members",
+                "priority": "medium",
+                "similarity": 0.95,
+                "source": "conversation_flow_knowledge"
+              },
+              {
+                "id": "aviation-services-comprehensive_chunk_0",
+                "content": "GLOBAL PRIVATE AVIATION - ULTRA LUXURY CHARTER SERVICES\n\nAircraft Fleet Categories:\n- Light Jets: Citation CJ3+, Phenom 300E (2-8 passengers, $3,500-4,500/hour)\n  • Range: 1,500-2,000 nautical miles\n  • Ideal for: Regional business travel, weekend getaways\n  • Amenities: WiFi, refreshment center, leather seating\n  • Airports: Access to 5,000+ airports worldwide\n\n- Midsize Jets: Citation Latitude, Hawker 4000 (6-9 passengers, $4,500-6,500/hour)  \n  • Range: 2,500-3,500 nautical miles\n  • Ideal for: Cross-country travel, international short-haul\n  • Amenities: Full galley, enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "transportation",
+                "similarity": 0.5784504839867852,
+                "metadata": {
+                  "chunkIndex": 0,
+                  "totalChunks": 5,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "premium_aviation",
+                  "coverage": "global",
+                  "specialization": "luxury_charter"
+                }
+              },
+              {
+                "id": "aviation-services-comprehensive_chunk_2",
+                "content": "uite, full kitchen, shower facilities, conference room\n  • Routes: Any city pair globally non-stop\n\nPremium Destinations & Airports:\n- Primary Hubs: LAX (Los Angeles), JFK (New York), LAS (Las Vegas), MIA (Miami)\n- European: LHR (London Heathrow), CDG (Paris Charles de Gaulle), FCO (Rome)\n- Private Jet Airports: TEB (Teterboro), VAN (Van Nuys), HPN (White Plains)\n- International Private: EGGW (Luton), LFPB (Le Bourget), RJTT (Haneda Tokyo)\n\nLuxury Service Standards:\n- 24/7 availability with notice requirements by tier\n- Dedicated flight crew briefed on member preferences\n- Ground transportation coordination (Rolls-Royce, Bentley fleet)\n- Gourmet catering from partner Michelin-starred restaurants",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "transportation",
+                "similarity": 0.5583861309293681,
+                "metadata": {
+                  "chunkIndex": 2,
+                  "totalChunks": 5,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "premium_aviation",
+                  "coverage": "global",
+                  "specialization": "luxury_charter"
+                }
+              },
+              {
+                "id": "aviation-services-comprehensive_chunk_1",
+                "content": ", enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas\n\n- Heavy Jets: Gulfstream G450, Falcon 7X (8-14 passengers, $6,500-9,500/hour)\n  • Range: 4,000-5,500 nautical miles\n  • Ideal for: International business, luxury group travel\n  • Amenities: Full cabin service, sleeping berths, satellite communications\n  • Transcontinental capability with luxury accommodations\n\n- Ultra Long Range: Gulfstream G650, Global 7500 (12-19 passengers, $9,500-15,000/hour)\n  • Range: 6,000+ nautical miles\n  • Ideal for: Non-stop international, ultimate luxury experience\n  • Amenities: Master suite, full kitchen, shower facilities, conference room\n  • Routes: Any city pair globally non-stop",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "transportation",
+                "similarity": 0.5402649941485279,
+                "metadata": {
+                  "chunkIndex": 1,
+                  "totalChunks": 5,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "premium_aviation",
+                  "coverage": "global",
+                  "specialization": "luxury_charter"
+                }
+              }
+            ],
+            "totalFound": 6,
+            "query": "transportation private aviation luxury services",
+            "serviceCategory": "transportation",
+            "memberTier": "extraordinary",
+            "conversationAware": true
+          }
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T23:08:37.196Z",
+        "executionTime": 1760
+      }
+    ],
+    "finalResult": {
+      "services": [
+        {
+          "id": "private-jet-global",
+          "name": "Global Private Aviation",
+          "description": "24/7 private jet charter worldwide with our exclusive fleet partners",
+          "tier": "extraordinary",
+          "basePrice": 15000,
+          "availability": "immediate",
+          "bookingRequirements": [
+            "departure",
+            "destination",
+            "passengers",
+            "date",
+            "time"
+          ],
+          "features": [
+            "Dedicated concierge",
+            "Ground transportation included",
+            "Catering options",
+            "Wi-Fi & entertainment"
+          ],
+          "leadTime": "2 hours minimum",
+          "maxPassengers": 14
+        },
+        {
+          "id": "yacht-charter",
+          "name": "Luxury Marine Experiences",
+          "description": "Private yacht charters and maritime adventures",
+          "tier": "extraordinary",
+          "basePrice": 8000,
+          "availability": "seasonal",
+          "bookingRequirements": [
+            "location",
+            "duration",
+            "passengers",
+            "date",
+            "activities"
+          ],
+          "features": [
+            "Professional crew",
+            "Gourmet catering",
+            "Water sports equipment",
+            "Scenic routes"
+          ],
+          "leadTime": "48 hours",
+          "maxPassengers": 20
+        }
+      ],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 2,
+      "searchSummary": "Found 2 services in transportation at extraordinary tier"
+    },
+    "recommendations": [],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": false,
+    "requiresWorkflow": false
+  },
+  "outcome": "success",
+  "metrics": {
+    "responseTime": 1919,
+    "toolsUsed": [
+      "fetch_active_services",
+      "search_luxury_knowledge"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 1,
+    "areas_for_improvement": [],
+    "successful_patterns": [
+      "High confidence transportation intent recognition",
+      "Perfect tool execution sequence"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

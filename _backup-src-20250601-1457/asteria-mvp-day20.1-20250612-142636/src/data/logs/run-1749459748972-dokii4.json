@@ -1,0 +1,280 @@
+{
+  "id": "run-1749459748972-dokii4",
+  "timestamp": "2025-06-09T09:02:28.972Z",
+  "memberId": "test-member-123",
+  "originalMessage": "I need to book a trip to miami for tomorrow on a private jet",
+  "intentAnalysis": {
+    "primaryBucket": "transportation",
+    "secondaryBuckets": [
+      "events"
+    ],
+    "serviceType": "private aviation",
+    "urgency": "urgent",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [
+        "tomorrow"
+      ],
+      "locations": [
+        "miami"
+      ],
+      "people": [],
+      "preferences": [
+        "to book a trip to miami for tomorrow on a private jet"
+      ],
+      "budgetHints": []
+    },
+    "suggestedTier": "extraordinary"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "search_luxury_knowledge",
+          "parameters": {
+            "query": "I need to book a trip to miami for tomorrow on a private jet",
+            "serviceCategory": "transportation",
+            "memberTier": "extraordinary",
+            "intent": "transportation"
+          },
+          "status": "pending",
+          "timestamp": ""
+        },
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "transportation",
+            "tier": "extraordinary",
+            "searchTerm": "private aviation"
+          },
+          "status": "pending",
+          "timestamp": ""
+        }
+      ],
+      "strategy": "workflow_triggered",
+      "expectedOutcome": "Automated transportation workflow execution in progress",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {},
+        "result": {
+          "services": [
+            {
+              "id": "private-jet-global",
+              "name": "Global Private Aviation",
+              "description": "24/7 private jet charter worldwide with our exclusive fleet partners",
+              "tier": "extraordinary",
+              "basePrice": 15000,
+              "availability": "immediate",
+              "bookingRequirements": [
+                "departure",
+                "destination",
+                "passengers",
+                "date",
+                "time"
+              ],
+              "features": [
+                "Dedicated concierge",
+                "Ground transportation included",
+                "Catering options",
+                "Wi-Fi & entertainment"
+              ],
+              "leadTime": "2 hours minimum",
+              "maxPassengers": 14
+            }
+          ],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 1,
+          "searchSummary": "Found 1 services in transportation at extraordinary tier matching \"private aviation\""
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T09:02:27.606Z",
+        "executionTime": 1
+      },
+      {
+        "toolName": "search_luxury_knowledge",
+        "parameters": {},
+        "result": {
+          "success": true,
+          "result": "Found 6 luxury knowledge results for \"I need to book a trip to miami for tomorrow on a private jet\"",
+          "data": {
+            "results": [
+              {
+                "content": "\nCONVERSATION CONTEXT RULES for ASTERIA AI Concierge:\n\n1. CONTEXT RETENTION:\n- Always reference previous messages in the conversation\n- Build upon specific details already provided by the member\n- Never ask for information already given in the conversation\n- Maintain conversation thread continuity across multiple exchanges\n\n2. PROGRESSIVE INFORMATION GATHERING:\nWhen member says \"What's available in Las Vegas tomorrow?\":\n- Next response should include specific Las Vegas options\n- Ask for ONE missing detail at a time (departure location, time, passengers)\n- Build on their request progressively\n\nWhen member adds \"from Las Vegas, closest to Henderson, 4 of us\":\n- Acknowledge the NEW information (Henderson proximity, 4 passengers)\n- Provide SPECIFIC options based on ALL details (Vegas→?, tomorrow, 4 people, near Henderson)\n- Progress toward booking by presenting concrete choices\n\n3. CONVERSATION PROGRESSION PATTERN:\nInitial → Specific → Refined → Booking Confirmation\n- Never revert to generic responses once specific details are provided\n- Each response should be MORE specific than the previous\n- Always move toward a bookable outcome\n\nEXAMPLE PROPER FLOW:\nUser: \"What's available in Las Vegas tomorrow?\"\nAgent: \"I'll arrange luxury transportation from Las Vegas tomorrow. May I know your destination and preferred departure time?\"\n\nUser: \"from las vegas, closest to henderson, 4 of us\" \nAgent: \"Perfect - departing from Henderson area tomorrow for 4 passengers. For which destination? I have Citation Latitude aircraft ideal for your group size, with $4,500-6,500/hour luxury service including ground coordination.\"\n\nNEVER revert to: \"I understand you're seeking luxury transportation services...\" after specific details are provided.\n    ",
+                "category": "conversation_flow",
+                "memberTier": "all-members",
+                "priority": "critical",
+                "similarity": 0.95,
+                "source": "conversation_flow_knowledge"
+              },
+              {
+                "content": "\nBOOKING PROGRESSION SYSTEM for ASTERIA:\n\n1. CONFIDENCE BUILDING PATTERN:\n- Provide specific service details (aircraft types, pricing, timing)\n- Reference member's exact requirements\n- Present clear next steps\n- Create urgency when appropriate\n\n2. BOOKING TRIGGER PHRASES (Agent should recognize):\nExplicit: \"book it\", \"let's book\", \"proceed\", \"arrange this\", \"confirm\", \"yes book\"\nImplicit: \"perfect\", \"sounds good\", \"that works\", \"yes please\", \"exactly\"\nDecision: \"I'll take it\", \"that one\", \"go with that\", \"yes to that\"\nTime: \"let's do it\", \"make it happen\", \"set it up\"\n\n3. INFORMATION COMPLETION CHECK:\nBefore suggesting booking, ensure you have:\n- Departure location ✓\n- Destination ✓  \n- Date/time ✓\n- Passenger count ✓\n- Any special requirements\n\n4. BOOKING CONFIRMATION RESPONSE PATTERN:\n\"Perfect! I'll arrange your [specific service] from [departure] to [destination] on [date] for [passengers]. Your dedicated concierge team has been notified and will contact you within 2 hours with confirmation details and your service ticket number SR-XXXXXX.\"\n\nCRITICAL: Once member provides booking confirmation, NEVER ask for more information. Execute the booking immediately.\n\n5. SERVICE TICKET CREATION TRIGGERS:\n- Create SR-XXXXXX ticket when booking confirmed\n- Include ALL conversation details in ticket\n- Notify concierge team with structured summary\n- Provide member with ticket reference number\n    ",
+                "category": "booking_flow",
+                "memberTier": "all-members",
+                "priority": "critical",
+                "similarity": 0.95,
+                "source": "conversation_flow_knowledge"
+              },
+              {
+                "content": "\nSERVICE-SPECIFIC CONVERSATION PATTERNS:\n\nPRIVATE AVIATION FLOW:\n1. Initial: \"I need a private jet to [destination]\"\n2. Gather: departure location, time, passenger count, any preferences\n3. Present: specific aircraft options with pricing and timing\n4. Confirm: \"Perfect! Citation Latitude from [departure] to [destination]...\"\n5. Book: Create SR ticket, notify concierge, provide confirmation\n\nRequired Info for Aviation:\n- Departure airport/location ✓\n- Destination airport/location ✓\n- Date and time ✓\n- Number of passengers ✓\n- Aircraft preferences (optional)\n\nDINING RESERVATION FLOW:\n1. Initial: \"Restaurant reservation in [city]\"\n2. Gather: date, time, party size, cuisine/restaurant preferences\n3. Present: specific restaurant options with availability\n4. Confirm: \"Excellent! Table for [count] at [restaurant] on [date]...\"\n5. Book: Create reservation ticket, notify concierge\n\nRequired Info for Dining:\n- City/location ✓\n- Date and time ✓  \n- Party size ✓\n- Cuisine preference (helpful)\n- Special occasions (helpful)\n\nHOTEL ACCOMMODATION FLOW:\n1. Initial: \"Hotel in [city] for [dates]\"\n2. Gather: exact dates, room type, number of guests, preferences\n3. Present: specific hotel/suite options with amenities\n4. Confirm: \"Perfect! Presidential suite at [hotel] from [checkin] to [checkout]...\"\n5. Book: Create accommodation ticket, notify concierge\n\nCRITICAL RULE: Never lose specificity once details are provided. Each response should reference ALL previous details and add NEW information.\n    ",
+                "category": "service_flows",
+                "memberTier": "all-members",
+                "priority": "high",
+                "similarity": 0.95,
+                "source": "conversation_flow_knowledge"
+              },
+              {
+                "id": "aviation-services-comprehensive_chunk_4",
+                "content": "lity\n- Corporate Members: Midsize and heavy jets, 8-hour advance notice, business hour coordination\n- All-Members: Light and midsize jets, 24-hour notice, standard booking procedures\n\nBooking Process Excellence:\n1. Member request with destination, passenger count, preferred departure window\n2. Concierge presents 2-3 optimal aircraft options with detailed specifications\n3. Real-time availability confirmation with aircraft tail number assignment\n4. Ground transportation arranged at departure and arrival airports\n5. Catering preferences confirmed 2 hours before departure\n6. Weather monitoring and alternative planning for safety optimization",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "transportation",
+                "similarity": 0.39828938852670526,
+                "metadata": {
+                  "chunkIndex": 4,
+                  "totalChunks": 5,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "premium_aviation",
+                  "coverage": "global",
+                  "specialization": "luxury_charter"
+                }
+              },
+              {
+                "id": "aviation-services-comprehensive_chunk_3",
+                "content": "rdination (Rolls-Royce, Bentley fleet)\n- Gourmet catering from partner Michelin-starred restaurants\n- Custom wine and champagne service with sommelier selection\n- High-speed satellite WiFi and business communications\n- Pet transportation with special climate-controlled accommodations\n- Medical equipment and trained medical staff for health emergencies\n\nMember Tier Access Levels:\n- Founding10 Members: All aircraft categories, 2-hour notice capability, priority booking during peak periods\n- Fifty-K Members: Heavy and ultra-long range access, 4-hour notice, guaranteed availability\n- Corporate Members: Midsize and heavy jets, 8-hour advance notice, business hour coordination",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "transportation",
+                "similarity": 0.30311363137273606,
+                "metadata": {
+                  "chunkIndex": 3,
+                  "totalChunks": 5,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "premium_aviation",
+                  "coverage": "global",
+                  "specialization": "luxury_charter"
+                }
+              },
+              {
+                "id": "aviation-services-comprehensive_chunk_0",
+                "content": "GLOBAL PRIVATE AVIATION - ULTRA LUXURY CHARTER SERVICES\n\nAircraft Fleet Categories:\n- Light Jets: Citation CJ3+, Phenom 300E (2-8 passengers, $3,500-4,500/hour)\n  • Range: 1,500-2,000 nautical miles\n  • Ideal for: Regional business travel, weekend getaways\n  • Amenities: WiFi, refreshment center, leather seating\n  • Airports: Access to 5,000+ airports worldwide\n\n- Midsize Jets: Citation Latitude, Hawker 4000 (6-9 passengers, $4,500-6,500/hour)  \n  • Range: 2,500-3,500 nautical miles\n  • Ideal for: Cross-country travel, international short-haul\n  • Amenities: Full galley, enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "transportation",
+                "similarity": 0.415133856955702,
+                "metadata": {
+                  "chunkIndex": 0,
+                  "totalChunks": 5,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "premium_aviation",
+                  "coverage": "global",
+                  "specialization": "luxury_charter"
+                }
+              }
+            ],
+            "totalFound": 6,
+            "query": "I need to book a trip to miami for tomorrow on a private jet",
+            "serviceCategory": "transportation",
+            "memberTier": "extraordinary",
+            "conversationAware": true
+          }
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T09:02:28.972Z",
+        "executionTime": 1367
+      }
+    ],
+    "finalResult": {
+      "services": [
+        {
+          "id": "private-jet-global",
+          "name": "Global Private Aviation",
+          "description": "24/7 private jet charter worldwide with our exclusive fleet partners",
+          "tier": "extraordinary",
+          "basePrice": 15000,
+          "availability": "immediate",
+          "bookingRequirements": [
+            "departure",
+            "destination",
+            "passengers",
+            "date",
+            "time"
+          ],
+          "features": [
+            "Dedicated concierge",
+            "Ground transportation included",
+            "Catering options",
+            "Wi-Fi & entertainment"
+          ],
+          "leadTime": "2 hours minimum",
+          "maxPassengers": 14
+        }
+      ],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 1,
+      "searchSummary": "Found 1 services in transportation at extraordinary tier matching \"private aviation\""
+    },
+    "recommendations": [
+      "Also consider our events services for a complete experience"
+    ],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": true,
+    "workflowId": "wf_1749459747464_x0i26f",
+    "workflowType": "travel",
+    "requiresWorkflow": false
+  },
+  "outcome": "success",
+  "metrics": {
+    "responseTime": 1516,
+    "toolsUsed": [
+      "fetch_active_services",
+      "search_luxury_knowledge"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 1,
+    "areas_for_improvement": [],
+    "successful_patterns": [
+      "High confidence transportation intent recognition",
+      "Perfect tool execution sequence"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

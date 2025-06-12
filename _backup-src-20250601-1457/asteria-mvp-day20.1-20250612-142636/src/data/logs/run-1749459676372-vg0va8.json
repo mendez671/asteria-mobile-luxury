@@ -1,0 +1,368 @@
+{
+  "id": "run-1749459676372-vg0va8",
+  "timestamp": "2025-06-09T09:01:16.372Z",
+  "memberId": "test-member-123",
+  "originalMessage": "Can you book me dinner at Nobu tonight?",
+  "intentAnalysis": {
+    "primaryBucket": "events",
+    "secondaryBuckets": [],
+    "serviceType": "private venue",
+    "urgency": "urgent",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [
+        "tonight"
+      ],
+      "locations": [
+        "Nobu"
+      ],
+      "people": [],
+      "preferences": [],
+      "budgetHints": []
+    },
+    "suggestedTier": "better"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "search_luxury_knowledge",
+          "parameters": {
+            "query": "Can you book me dinner at Nobu tonight?",
+            "serviceCategory": "events",
+            "memberTier": "better",
+            "intent": "events"
+          },
+          "status": "pending",
+          "timestamp": ""
+        },
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "events",
+            "tier": "better",
+            "searchTerm": "private venue"
+          },
+          "status": "pending",
+          "timestamp": ""
+        },
+        {
+          "toolName": "create_ticket",
+          "parameters": {
+            "serviceId": "to_be_determined",
+            "requirements": {
+              "date": "tonight",
+              "destination": "Nobu"
+            },
+            "priority": "urgent"
+          },
+          "status": "pending",
+          "timestamp": ""
+        }
+      ],
+      "strategy": "direct_fulfillment",
+      "expectedOutcome": "Complete events service booking with confirmation",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {},
+        "result": {
+          "services": [
+            {
+              "id": "private-venue",
+              "name": "Private Venue Booking",
+              "description": "Exclusive use of premium venues for private events",
+              "tier": "better",
+              "basePrice": 5000,
+              "availability": "by-request",
+              "bookingRequirements": [
+                "venue",
+                "date",
+                "duration",
+                "guests",
+                "eventType"
+              ],
+              "features": [
+                "Full venue exclusivity",
+                "Event planning",
+                "Catering coordination",
+                "Entertainment booking"
+              ],
+              "leadTime": "2 weeks",
+              "maxGuests": 200
+            }
+          ],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 1,
+          "searchSummary": "Found 1 services in events at better tier matching \"private venue\""
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T09:01:14.916Z",
+        "executionTime": 0
+      },
+      {
+        "toolName": "search_luxury_knowledge",
+        "parameters": {},
+        "result": {
+          "success": true,
+          "result": "Found 6 luxury knowledge results for \"Can you book me dinner at Nobu tonight?\"",
+          "data": {
+            "results": [
+              {
+                "content": "\nCONVERSATION CONTEXT RULES for ASTERIA AI Concierge:\n\n1. CONTEXT RETENTION:\n- Always reference previous messages in the conversation\n- Build upon specific details already provided by the member\n- Never ask for information already given in the conversation\n- Maintain conversation thread continuity across multiple exchanges\n\n2. PROGRESSIVE INFORMATION GATHERING:\nWhen member says \"What's available in Las Vegas tomorrow?\":\n- Next response should include specific Las Vegas options\n- Ask for ONE missing detail at a time (departure location, time, passengers)\n- Build on their request progressively\n\nWhen member adds \"from Las Vegas, closest to Henderson, 4 of us\":\n- Acknowledge the NEW information (Henderson proximity, 4 passengers)\n- Provide SPECIFIC options based on ALL details (Vegas→?, tomorrow, 4 people, near Henderson)\n- Progress toward booking by presenting concrete choices\n\n3. CONVERSATION PROGRESSION PATTERN:\nInitial → Specific → Refined → Booking Confirmation\n- Never revert to generic responses once specific details are provided\n- Each response should be MORE specific than the previous\n- Always move toward a bookable outcome\n\nEXAMPLE PROPER FLOW:\nUser: \"What's available in Las Vegas tomorrow?\"\nAgent: \"I'll arrange luxury transportation from Las Vegas tomorrow. May I know your destination and preferred departure time?\"\n\nUser: \"from las vegas, closest to henderson, 4 of us\" \nAgent: \"Perfect - departing from Henderson area tomorrow for 4 passengers. For which destination? I have Citation Latitude aircraft ideal for your group size, with $4,500-6,500/hour luxury service including ground coordination.\"\n\nNEVER revert to: \"I understand you're seeking luxury transportation services...\" after specific details are provided.\n    ",
+                "category": "conversation_flow",
+                "memberTier": "all-members",
+                "priority": "critical",
+                "similarity": 0.95,
+                "source": "conversation_flow_knowledge"
+              },
+              {
+                "content": "\nBOOKING PROGRESSION SYSTEM for ASTERIA:\n\n1. CONFIDENCE BUILDING PATTERN:\n- Provide specific service details (aircraft types, pricing, timing)\n- Reference member's exact requirements\n- Present clear next steps\n- Create urgency when appropriate\n\n2. BOOKING TRIGGER PHRASES (Agent should recognize):\nExplicit: \"book it\", \"let's book\", \"proceed\", \"arrange this\", \"confirm\", \"yes book\"\nImplicit: \"perfect\", \"sounds good\", \"that works\", \"yes please\", \"exactly\"\nDecision: \"I'll take it\", \"that one\", \"go with that\", \"yes to that\"\nTime: \"let's do it\", \"make it happen\", \"set it up\"\n\n3. INFORMATION COMPLETION CHECK:\nBefore suggesting booking, ensure you have:\n- Departure location ✓\n- Destination ✓  \n- Date/time ✓\n- Passenger count ✓\n- Any special requirements\n\n4. BOOKING CONFIRMATION RESPONSE PATTERN:\n\"Perfect! I'll arrange your [specific service] from [departure] to [destination] on [date] for [passengers]. Your dedicated concierge team has been notified and will contact you within 2 hours with confirmation details and your service ticket number SR-XXXXXX.\"\n\nCRITICAL: Once member provides booking confirmation, NEVER ask for more information. Execute the booking immediately.\n\n5. SERVICE TICKET CREATION TRIGGERS:\n- Create SR-XXXXXX ticket when booking confirmed\n- Include ALL conversation details in ticket\n- Notify concierge team with structured summary\n- Provide member with ticket reference number\n    ",
+                "category": "booking_flow",
+                "memberTier": "all-members",
+                "priority": "critical",
+                "similarity": 0.95,
+                "source": "conversation_flow_knowledge"
+              },
+              {
+                "content": "\nSERVICE-SPECIFIC CONVERSATION PATTERNS:\n\nPRIVATE AVIATION FLOW:\n1. Initial: \"I need a private jet to [destination]\"\n2. Gather: departure location, time, passenger count, any preferences\n3. Present: specific aircraft options with pricing and timing\n4. Confirm: \"Perfect! Citation Latitude from [departure] to [destination]...\"\n5. Book: Create SR ticket, notify concierge, provide confirmation\n\nRequired Info for Aviation:\n- Departure airport/location ✓\n- Destination airport/location ✓\n- Date and time ✓\n- Number of passengers ✓\n- Aircraft preferences (optional)\n\nDINING RESERVATION FLOW:\n1. Initial: \"Restaurant reservation in [city]\"\n2. Gather: date, time, party size, cuisine/restaurant preferences\n3. Present: specific restaurant options with availability\n4. Confirm: \"Excellent! Table for [count] at [restaurant] on [date]...\"\n5. Book: Create reservation ticket, notify concierge\n\nRequired Info for Dining:\n- City/location ✓\n- Date and time ✓  \n- Party size ✓\n- Cuisine preference (helpful)\n- Special occasions (helpful)\n\nHOTEL ACCOMMODATION FLOW:\n1. Initial: \"Hotel in [city] for [dates]\"\n2. Gather: exact dates, room type, number of guests, preferences\n3. Present: specific hotel/suite options with amenities\n4. Confirm: \"Perfect! Presidential suite at [hotel] from [checkin] to [checkout]...\"\n5. Book: Create accommodation ticket, notify concierge\n\nCRITICAL RULE: Never lose specificity once details are provided. Each response should reference ALL previous details and add NEW information.\n    ",
+                "category": "service_flows",
+                "memberTier": "all-members",
+                "priority": "high",
+                "similarity": 0.95,
+                "source": "conversation_flow_knowledge"
+              },
+              {
+                "id": "dining-reservations-comprehensive_chunk_1",
+                "content": "gredients\n  • Sommelier-guided wine experiences\n  • Private dining rooms available for groups 8-20\n\n- 1 Michelin Star: Benu (SF), Le Cirque (NYC), Picasso (Las Vegas), Providence (LA)\n  • High-quality cooking worth a stop\n  • À la carte and tasting menu options\n  • Chef's special preparations for VIP guests\n  • Same-day reservations possible for premium members\n\n- Celebrity Chef Establishments: Nobu (multiple locations), Hell's Kitchen (Vegas), Cut (Beverly Hills)\n  • Signature dishes from world-renowned chefs\n  • Theatrical dining experiences\n  • Celebrity chef appearances and special events\n  • Exclusive menu items for VIP members\n\nVIP Concierge Services:\n- Same-day reservations for Founding10 and Fifty-K members at partner restaurants",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "events",
+                "similarity": 0.4608230667550158,
+                "metadata": {
+                  "chunkIndex": 1,
+                  "totalChunks": 6,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "fine_dining",
+                  "coverage": "global",
+                  "specialization": "michelin_star"
+                }
+              },
+              {
+                "id": "dining-reservations-comprehensive_chunk_3",
+                "content": "folio:\n- New York City: Daniel, Per Se, Eleven Madison Park, Le Bernardin, Jean-Georges, The Modern\n- Las Vegas: Joël Robuchon, Guy Savoy, Picasso, Twist, Restaurant Guy Savoy, L'Atelier\n- Los Angeles: Providence, n/naka, Republique, Guelaguetza, Bestia, The Bazaar\n- San Francisco: Benu, Atelier Crenn, State Bird Provisions, Gary Danko, Saison\n- London: The Fat Duck, Dinner by Heston, Sketch, Alain Ducasse at The Dorchester\n- Paris: L'Ambroisie, Arpège, L'Astrance, Guy Savoy, Alain Ducasse au Plaza Athénée\n- Tokyo: Sukiyabashi Jiro, Narisawa, Den, Florilège, L'Effervescence, Nihonryori RyuGin\n\nExclusive Experiences:\n- Chef's table with multi-course tasting menus and kitchen interaction",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "events",
+                "similarity": 0.45403942321191587,
+                "metadata": {
+                  "chunkIndex": 3,
+                  "totalChunks": 6,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "fine_dining",
+                  "coverage": "global",
+                  "specialization": "michelin_star"
+                }
+              },
+              {
+                "id": "dining-reservations-comprehensive_chunk_2",
+                "content": "ncierge Services:\n- Same-day reservations for Founding10 and Fifty-K members at partner restaurants\n- Private dining room coordination for intimate business meetings or celebrations\n- Custom menu creation with chef consultation for dietary restrictions or preferences\n- Wine pairing consultation with master sommeliers and rare vintage access\n- Transportation coordination including Rolls-Royce or Bentley service\n- Special dietary accommodations: vegan, kosher, gluten-free, allergy management\n- Chef's table experiences with kitchen tours and cooking demonstrations\n\nGlobal Dining Portfolio:\n- New York City: Daniel, Per Se, Eleven Madison Park, Le Bernardin, Jean-Georges, The Modern",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "events",
+                "similarity": 0.4454034041428919,
+                "metadata": {
+                  "chunkIndex": 2,
+                  "totalChunks": 6,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "fine_dining",
+                  "coverage": "global",
+                  "specialization": "michelin_star"
+                }
+              }
+            ],
+            "totalFound": 6,
+            "query": "Can you book me dinner at Nobu tonight?",
+            "serviceCategory": "events",
+            "memberTier": "better",
+            "conversationAware": true
+          }
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T09:01:16.370Z",
+        "executionTime": 1455
+      },
+      {
+        "toolName": "create_ticket",
+        "parameters": {},
+        "result": {
+          "ticket": {
+            "id": "TAG-MBOV4DLF",
+            "memberId": "test-member-123",
+            "serviceId": "luxury-ground-transport",
+            "serviceName": "Executive Ground Services",
+            "serviceBucket": "transportation",
+            "status": "pending",
+            "priority": "urgent",
+            "requestDetails": {
+              "requirements": {
+                "date": "tonight",
+                "destination": "Nobu"
+              },
+              "preferences": [],
+              "timeline": "30 minutes"
+            },
+            "pricing": {
+              "basePrice": 500,
+              "adjustments": [
+                {
+                  "description": "Urgent Processing Fee",
+                  "amount": 125
+                }
+              ],
+              "totalPrice": 625,
+              "paymentStatus": "pending"
+            },
+            "timeline": {
+              "requested": "2025-06-09T09:01:16.371Z"
+            },
+            "communications": [
+              {
+                "timestamp": "2025-06-09T09:01:16.371Z",
+                "from": "system",
+                "message": "Service request created for Executive Ground Services",
+                "type": "note"
+              }
+            ],
+            "tags": [
+              "transportation",
+              "better"
+            ],
+            "attachments": []
+          },
+          "confirmationCode": "TAG-MBOV4DLF-4DLF",
+          "nextSteps": [
+            "Confirmation email sent with booking details",
+            "Service specialist will review and confirm availability",
+            "Detailed itinerary will be prepared",
+            "Fast-track processing initiated",
+            "Payment authorization will be requested once details are confirmed"
+          ],
+          "estimatedResponse": "5 minutes"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T09:01:16.372Z",
+        "executionTime": 2
+      }
+    ],
+    "finalResult": {
+      "ticket": {
+        "id": "TAG-MBOV4DLF",
+        "memberId": "test-member-123",
+        "serviceId": "luxury-ground-transport",
+        "serviceName": "Executive Ground Services",
+        "serviceBucket": "transportation",
+        "status": "pending",
+        "priority": "urgent",
+        "requestDetails": {
+          "requirements": {
+            "date": "tonight",
+            "destination": "Nobu"
+          },
+          "preferences": [],
+          "timeline": "30 minutes"
+        },
+        "pricing": {
+          "basePrice": 500,
+          "adjustments": [
+            {
+              "description": "Urgent Processing Fee",
+              "amount": 125
+            }
+          ],
+          "totalPrice": 625,
+          "paymentStatus": "pending"
+        },
+        "timeline": {
+          "requested": "2025-06-09T09:01:16.371Z"
+        },
+        "communications": [
+          {
+            "timestamp": "2025-06-09T09:01:16.371Z",
+            "from": "system",
+            "message": "Service request created for Executive Ground Services",
+            "type": "note"
+          }
+        ],
+        "tags": [
+          "transportation",
+          "better"
+        ],
+        "attachments": []
+      },
+      "confirmationCode": "TAG-MBOV4DLF-4DLF",
+      "nextSteps": [
+        "Confirmation email sent with booking details",
+        "Service specialist will review and confirm availability",
+        "Detailed itinerary will be prepared",
+        "Fast-track processing initiated",
+        "Payment authorization will be requested once details are confirmed"
+      ],
+      "estimatedResponse": "5 minutes"
+    },
+    "recommendations": [],
+    "nextActions": [
+      "Ticket TAG-MBOV4DLF created - confirmation email sent",
+      "Dedicated concierge will contact you within 30 minutes",
+      "You can track progress via your member portal"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": false,
+    "requiresWorkflow": false
+  },
+  "outcome": "success",
+  "metrics": {
+    "responseTime": 1458,
+    "toolsUsed": [
+      "fetch_active_services",
+      "search_luxury_knowledge",
+      "create_ticket"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 1,
+    "areas_for_improvement": [],
+    "successful_patterns": [
+      "High confidence events intent recognition",
+      "Perfect tool execution sequence"
+    ]
+  },
+  "followUp": {
+    "required": true,
+    "type": "confirmation",
+    "scheduledAt": "2025-06-09T09:31:16.372Z"
+  }
+}

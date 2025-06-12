@@ -1,0 +1,133 @@
+{
+  "id": "run-1749449990979-j57meo",
+  "timestamp": "2025-06-09T06:19:50.979Z",
+  "memberId": "guest_session_",
+  "originalMessage": "okay",
+  "intentAnalysis": {
+    "primaryBucket": "transportation",
+    "secondaryBuckets": [],
+    "serviceType": "general",
+    "urgency": "standard",
+    "confidence": 0.1,
+    "extractedEntities": {
+      "dates": [],
+      "locations": [],
+      "people": [],
+      "preferences": []
+    },
+    "suggestedTier": "better"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "notify_concierge",
+          "parameters": {
+            "message": "High priority request requiring immediate attention: okay",
+            "urgency": "high",
+            "category": "escalation"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T06:19:50.694Z",
+          "result": {
+            "sent": true,
+            "channels": [
+              {
+                "type": "slack",
+                "status": "sent",
+                "messageId": "slack-1749449990979"
+              },
+              {
+                "type": "sms",
+                "status": "sent",
+                "messageId": "sms-1749449990979"
+              }
+            ],
+            "escalationTriggered": false,
+            "estimatedResponse": "15 minutes",
+            "throttling": {
+              "batched": false,
+              "status": "Sent immediately"
+            }
+          },
+          "executionTime": 285
+        }
+      ],
+      "strategy": "escalation",
+      "expectedOutcome": "Priority human concierge assignment for complex transportation request",
+      "fallbackOptions": [
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "notify_concierge",
+        "parameters": {
+          "message": "High priority request requiring immediate attention: okay",
+          "urgency": "high",
+          "category": "escalation"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T06:19:50.694Z",
+        "result": {
+          "sent": true,
+          "channels": [
+            {
+              "type": "slack",
+              "status": "sent",
+              "messageId": "slack-1749449990979"
+            },
+            {
+              "type": "sms",
+              "status": "sent",
+              "messageId": "sms-1749449990979"
+            }
+          ],
+          "escalationTriggered": false,
+          "estimatedResponse": "15 minutes",
+          "throttling": {
+            "batched": false,
+            "status": "Sent immediately"
+          }
+        },
+        "executionTime": 285
+      }
+    ],
+    "finalResult": null,
+    "recommendations": [
+      "Consider upgrading to our Extraordinary tier for enhanced privacy and luxury amenities"
+    ],
+    "nextActions": [
+      "Priority escalation initiated",
+      "Senior concierge will contact you directly",
+      "Expect response within 15 minutes"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": false,
+    "requiresWorkflow": false
+  },
+  "outcome": "success",
+  "metrics": {
+    "responseTime": 285,
+    "toolsUsed": [
+      "notify_concierge"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 0.1,
+    "executionEfficiency": 1,
+    "areas_for_improvement": [
+      "Intent recognition accuracy"
+    ],
+    "successful_patterns": [
+      "Perfect tool execution sequence"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

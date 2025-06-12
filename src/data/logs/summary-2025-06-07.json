@@ -1,0 +1,23 @@
+{
+  "date": "2025-06-07",
+  "runs": [
+    {
+      "id": "run-1749256198300-m9f76u",
+      "timestamp": "2025-06-07T00:29:58.300Z",
+      "outcome": "success",
+      "responseTime": 265
+    },
+    {
+      "id": "run-1749263713833-5fxcwx",
+      "timestamp": "2025-06-07T02:35:13.833Z",
+      "outcome": "success",
+      "responseTime": 1
+    },
+    {
+      "id": "run-1749340510844-dctfyf",
+      "timestamp": "2025-06-07T23:55:10.844Z",
+      "outcome": "success",
+      "responseTime": 1851
+    }
+  ]
+}

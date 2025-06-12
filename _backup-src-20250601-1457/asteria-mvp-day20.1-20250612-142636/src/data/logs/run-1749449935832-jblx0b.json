@@ -1,0 +1,268 @@
+{
+  "id": "run-1749449935832-jblx0b",
+  "timestamp": "2025-06-09T06:18:55.832Z",
+  "memberId": "guest_session_",
+  "originalMessage": "How about a flight to miami tomorrow night?",
+  "intentAnalysis": {
+    "primaryBucket": "transportation",
+    "secondaryBuckets": [],
+    "serviceType": "private aviation",
+    "urgency": "urgent",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [
+        "tomorrow"
+      ],
+      "locations": [],
+      "people": [],
+      "preferences": []
+    },
+    "suggestedTier": "better"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "search_luxury_knowledge",
+          "parameters": {
+            "query": "How about a flight to miami tomorrow night?",
+            "serviceCategory": "transportation",
+            "memberTier": "better",
+            "intent": "transportation"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T06:18:54.563Z",
+          "result": {
+            "success": true,
+            "result": "Found 2 luxury service knowledge sources:\n\n[1] [ALL-MEMBERS] [TRANSPORTATION] (33% match)\n, enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas\n\n- Heavy Jets: Gulfstream G450, Falcon 7X (8-14 passengers, $6,500-9,500/hour)\n  • Range: 4,000-5,500 nautical miles\n  • Ideal for: International business, luxury group travel\n  • Amenities: Full cabin service, sleeping berths, satellite communications\n  • Transcontinental capability with luxury accommodations\n\n- Ultra Long Range: Gulfstream G650, Global 7500 (12-19 passengers, $9,500-15,000/hour)\n  • Range: 6,000+ nautical miles\n  • Ideal for: Non-stop international, ultimate luxury experience\n  • Amenities: Master suite, full kitchen, shower facilities, conference room\n  • Routes: Any city pair globally non-stop\n(Source: policy_doc)\n\n[2] [ALL-MEMBERS] [TRANSPORTATION] (31% match)\nGLOBAL PRIVATE AVIATION - ULTRA LUXURY CHARTER SERVICES\n\nAircraft Fleet Categories:\n- Light Jets: Citation CJ3+, Phenom 300E (2-8 passengers, $3,500-4,500/hour)\n  • Range: 1,500-2,000 nautical miles\n  • Ideal for: Regional business travel, weekend getaways\n  • Amenities: WiFi, refreshment center, leather seating\n  • Airports: Access to 5,000+ airports worldwide\n\n- Midsize Jets: Citation Latitude, Hawker 4000 (6-9 passengers, $4,500-6,500/hour)  \n  • Range: 2,500-3,500 nautical miles\n  • Ideal for: Cross-country travel, international short-haul\n  • Amenities: Full galley, enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas\n(Source: policy_doc)",
+            "data": {
+              "results": [
+                {
+                  "id": "aviation-services-comprehensive_chunk_1",
+                  "content": ", enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas\n\n- Heavy Jets: Gulfstream G450, Falcon 7X (8-14 passengers, $6,500-9,500/hour)\n  • Range: 4,000-5,500 nautical miles\n  • Ideal for: International business, luxury group travel\n  • Amenities: Full cabin service, sleeping berths, satellite communications\n  • Transcontinental capability with luxury accommodations\n\n- Ultra Long Range: Gulfstream G650, Global 7500 (12-19 passengers, $9,500-15,000/hour)\n  • Range: 6,000+ nautical miles\n  • Ideal for: Non-stop international, ultimate luxury experience\n  • Amenities: Master suite, full kitchen, shower facilities, conference room\n  • Routes: Any city pair globally non-stop",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "transportation",
+                  "similarity": 0.33341299789496304,
+                  "metadata": {
+                    "chunkIndex": 1,
+                    "totalChunks": 5,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "premium_aviation",
+                    "coverage": "global",
+                    "specialization": "luxury_charter"
+                  }
+                },
+                {
+                  "id": "aviation-services-comprehensive_chunk_0",
+                  "content": "GLOBAL PRIVATE AVIATION - ULTRA LUXURY CHARTER SERVICES\n\nAircraft Fleet Categories:\n- Light Jets: Citation CJ3+, Phenom 300E (2-8 passengers, $3,500-4,500/hour)\n  • Range: 1,500-2,000 nautical miles\n  • Ideal for: Regional business travel, weekend getaways\n  • Amenities: WiFi, refreshment center, leather seating\n  • Airports: Access to 5,000+ airports worldwide\n\n- Midsize Jets: Citation Latitude, Hawker 4000 (6-9 passengers, $4,500-6,500/hour)  \n  • Range: 2,500-3,500 nautical miles\n  • Ideal for: Cross-country travel, international short-haul\n  • Amenities: Full galley, enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "transportation",
+                  "similarity": 0.30573501214193416,
+                  "metadata": {
+                    "chunkIndex": 0,
+                    "totalChunks": 5,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "premium_aviation",
+                    "coverage": "global",
+                    "specialization": "luxury_charter"
+                  }
+                }
+              ],
+              "query": "How about a flight to miami tomorrow night?",
+              "searchOptions": {
+                "intent": "transportation",
+                "memberTier": "better",
+                "serviceCategory": "transportation",
+                "minimumSimilarity": 0.3,
+                "maxResults": 6
+              },
+              "totalFound": 2,
+              "avgSimilarity": 0.31957400501844857
+            },
+            "tool": "search_luxury_knowledge"
+          },
+          "executionTime": 1268
+        },
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "transportation",
+            "tier": "better",
+            "searchTerm": "private aviation"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T06:18:55.831Z",
+          "result": {
+            "services": [],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 0,
+            "searchSummary": "Found 0 services in transportation at better tier matching \"private aviation\""
+          },
+          "executionTime": 0
+        }
+      ],
+      "strategy": "workflow_triggered",
+      "expectedOutcome": "Automated transportation workflow execution in progress",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "search_luxury_knowledge",
+        "parameters": {
+          "query": "How about a flight to miami tomorrow night?",
+          "serviceCategory": "transportation",
+          "memberTier": "better",
+          "intent": "transportation"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T06:18:54.563Z",
+        "result": {
+          "success": true,
+          "result": "Found 2 luxury service knowledge sources:\n\n[1] [ALL-MEMBERS] [TRANSPORTATION] (33% match)\n, enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas\n\n- Heavy Jets: Gulfstream G450, Falcon 7X (8-14 passengers, $6,500-9,500/hour)\n  • Range: 4,000-5,500 nautical miles\n  • Ideal for: International business, luxury group travel\n  • Amenities: Full cabin service, sleeping berths, satellite communications\n  • Transcontinental capability with luxury accommodations\n\n- Ultra Long Range: Gulfstream G650, Global 7500 (12-19 passengers, $9,500-15,000/hour)\n  • Range: 6,000+ nautical miles\n  • Ideal for: Non-stop international, ultimate luxury experience\n  • Amenities: Master suite, full kitchen, shower facilities, conference room\n  • Routes: Any city pair globally non-stop\n(Source: policy_doc)\n\n[2] [ALL-MEMBERS] [TRANSPORTATION] (31% match)\nGLOBAL PRIVATE AVIATION - ULTRA LUXURY CHARTER SERVICES\n\nAircraft Fleet Categories:\n- Light Jets: Citation CJ3+, Phenom 300E (2-8 passengers, $3,500-4,500/hour)\n  • Range: 1,500-2,000 nautical miles\n  • Ideal for: Regional business travel, weekend getaways\n  • Amenities: WiFi, refreshment center, leather seating\n  • Airports: Access to 5,000+ airports worldwide\n\n- Midsize Jets: Citation Latitude, Hawker 4000 (6-9 passengers, $4,500-6,500/hour)  \n  • Range: 2,500-3,500 nautical miles\n  • Ideal for: Cross-country travel, international short-haul\n  • Amenities: Full galley, enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas\n(Source: policy_doc)",
+          "data": {
+            "results": [
+              {
+                "id": "aviation-services-comprehensive_chunk_1",
+                "content": ", enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas\n\n- Heavy Jets: Gulfstream G450, Falcon 7X (8-14 passengers, $6,500-9,500/hour)\n  • Range: 4,000-5,500 nautical miles\n  • Ideal for: International business, luxury group travel\n  • Amenities: Full cabin service, sleeping berths, satellite communications\n  • Transcontinental capability with luxury accommodations\n\n- Ultra Long Range: Gulfstream G650, Global 7500 (12-19 passengers, $9,500-15,000/hour)\n  • Range: 6,000+ nautical miles\n  • Ideal for: Non-stop international, ultimate luxury experience\n  • Amenities: Master suite, full kitchen, shower facilities, conference room\n  • Routes: Any city pair globally non-stop",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "transportation",
+                "similarity": 0.33341299789496304,
+                "metadata": {
+                  "chunkIndex": 1,
+                  "totalChunks": 5,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "premium_aviation",
+                  "coverage": "global",
+                  "specialization": "luxury_charter"
+                }
+              },
+              {
+                "id": "aviation-services-comprehensive_chunk_0",
+                "content": "GLOBAL PRIVATE AVIATION - ULTRA LUXURY CHARTER SERVICES\n\nAircraft Fleet Categories:\n- Light Jets: Citation CJ3+, Phenom 300E (2-8 passengers, $3,500-4,500/hour)\n  • Range: 1,500-2,000 nautical miles\n  • Ideal for: Regional business travel, weekend getaways\n  • Amenities: WiFi, refreshment center, leather seating\n  • Airports: Access to 5,000+ airports worldwide\n\n- Midsize Jets: Citation Latitude, Hawker 4000 (6-9 passengers, $4,500-6,500/hour)  \n  • Range: 2,500-3,500 nautical miles\n  • Ideal for: Cross-country travel, international short-haul\n  • Amenities: Full galley, enclosed lavatory, entertainment systems\n  • Popular routes: NYC-LA, London-Paris, Miami-Bahamas",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "transportation",
+                "similarity": 0.30573501214193416,
+                "metadata": {
+                  "chunkIndex": 0,
+                  "totalChunks": 5,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "premium_aviation",
+                  "coverage": "global",
+                  "specialization": "luxury_charter"
+                }
+              }
+            ],
+            "query": "How about a flight to miami tomorrow night?",
+            "searchOptions": {
+              "intent": "transportation",
+              "memberTier": "better",
+              "serviceCategory": "transportation",
+              "minimumSimilarity": 0.3,
+              "maxResults": 6
+            },
+            "totalFound": 2,
+            "avgSimilarity": 0.31957400501844857
+          },
+          "tool": "search_luxury_knowledge"
+        },
+        "executionTime": 1268
+      },
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "transportation",
+          "tier": "better",
+          "searchTerm": "private aviation"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T06:18:55.831Z",
+        "result": {
+          "services": [],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 0,
+          "searchSummary": "Found 0 services in transportation at better tier matching \"private aviation\""
+        },
+        "executionTime": 0
+      }
+    ],
+    "finalResult": {
+      "services": [],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 0,
+      "searchSummary": "Found 0 services in transportation at better tier matching \"private aviation\""
+    },
+    "recommendations": [
+      "Consider upgrading to our Extraordinary tier for enhanced privacy and luxury amenities"
+    ],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": true,
+    "workflowId": "wf_1749449934174_224ftu",
+    "workflowType": "travel",
+    "requiresWorkflow": false
+  },
+  "outcome": "success",
+  "metrics": {
+    "responseTime": 1688,
+    "toolsUsed": [
+      "search_luxury_knowledge",
+      "fetch_active_services"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 1,
+    "areas_for_improvement": [],
+    "successful_patterns": [
+      "High confidence transportation intent recognition",
+      "Perfect tool execution sequence"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

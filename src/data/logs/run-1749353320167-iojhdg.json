@@ -1,0 +1,195 @@
+{
+  "id": "run-1749353320167-iojhdg",
+  "timestamp": "2025-06-08T03:28:40.167Z",
+  "memberId": "guest_session_",
+  "originalMessage": "Good evening! How may I assist you tonight?",
+  "intentAnalysis": {
+    "primaryBucket": "lifestyle",
+    "secondaryBuckets": [],
+    "serviceType": "general",
+    "urgency": "urgent",
+    "confidence": 0.8,
+    "extractedEntities": {
+      "dates": [
+        "tonight"
+      ],
+      "locations": [],
+      "people": [],
+      "preferences": []
+    },
+    "suggestedTier": "better"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "lifestyle",
+            "tier": "better"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-08T03:28:40.167Z",
+          "result": {
+            "services": [
+              {
+                "id": "personal-shopping",
+                "name": "Elite Personal Shopping",
+                "description": "Luxury personal shopping and styling services",
+                "tier": "better",
+                "basePrice": 2000,
+                "availability": "weekly",
+                "bookingRequirements": [
+                  "style",
+                  "budget",
+                  "occasions",
+                  "preferences"
+                ],
+                "features": [
+                  "Personal stylist",
+                  "Luxury brand access",
+                  "Private appointments",
+                  "Wardrobe consultation"
+                ],
+                "leadTime": "3 days",
+                "duration": "4 hours"
+              }
+            ],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 1,
+            "searchSummary": "Found 1 services in lifestyle at better tier"
+          },
+          "executionTime": 0
+        }
+      ],
+      "strategy": "guided_collection",
+      "expectedOutcome": "Curated lifestyle service options with booking assistance",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "lifestyle",
+          "tier": "better"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-08T03:28:40.167Z",
+        "result": {
+          "services": [
+            {
+              "id": "personal-shopping",
+              "name": "Elite Personal Shopping",
+              "description": "Luxury personal shopping and styling services",
+              "tier": "better",
+              "basePrice": 2000,
+              "availability": "weekly",
+              "bookingRequirements": [
+                "style",
+                "budget",
+                "occasions",
+                "preferences"
+              ],
+              "features": [
+                "Personal stylist",
+                "Luxury brand access",
+                "Private appointments",
+                "Wardrobe consultation"
+              ],
+              "leadTime": "3 days",
+              "duration": "4 hours"
+            }
+          ],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 1,
+          "searchSummary": "Found 1 services in lifestyle at better tier"
+        },
+        "executionTime": 0
+      }
+    ],
+    "finalResult": {
+      "services": [
+        {
+          "id": "personal-shopping",
+          "name": "Elite Personal Shopping",
+          "description": "Luxury personal shopping and styling services",
+          "tier": "better",
+          "basePrice": 2000,
+          "availability": "weekly",
+          "bookingRequirements": [
+            "style",
+            "budget",
+            "occasions",
+            "preferences"
+          ],
+          "features": [
+            "Personal stylist",
+            "Luxury brand access",
+            "Private appointments",
+            "Wardrobe consultation"
+          ],
+          "leadTime": "3 days",
+          "duration": "4 hours"
+        }
+      ],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 1,
+      "searchSummary": "Found 1 services in lifestyle at better tier"
+    },
+    "recommendations": [],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": false,
+    "requiresWorkflow": false
+  },
+  "outcome": "success",
+  "metrics": {
+    "responseTime": 2,
+    "toolsUsed": [
+      "fetch_active_services"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 0.8,
+    "executionEfficiency": 1,
+    "areas_for_improvement": [],
+    "successful_patterns": [
+      "Perfect tool execution sequence"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

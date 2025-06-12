@@ -1,0 +1,44 @@
+{
+  "id": "TAG-MBODL3XX",
+  "memberId": "test",
+  "serviceId": "luxury-ground-transport",
+  "serviceName": "Executive Ground Services",
+  "serviceBucket": "transportation",
+  "status": "pending",
+  "priority": "urgent",
+  "requestDetails": {
+    "requirements": {
+      "date": "tomorrow",
+      "destination": "Paris"
+    },
+    "preferences": [],
+    "timeline": "30 minutes"
+  },
+  "pricing": {
+    "basePrice": 500,
+    "adjustments": [
+      {
+        "description": "Urgent Processing Fee",
+        "amount": 125
+      }
+    ],
+    "totalPrice": 625,
+    "paymentStatus": "pending"
+  },
+  "timeline": {
+    "requested": "2025-06-09T00:50:23.925Z"
+  },
+  "communications": [
+    {
+      "timestamp": "2025-06-09T00:50:23.925Z",
+      "from": "system",
+      "message": "Service request created for Executive Ground Services",
+      "type": "note"
+    }
+  ],
+  "tags": [
+    "transportation",
+    "better"
+  ],
+  "attachments": []
+}

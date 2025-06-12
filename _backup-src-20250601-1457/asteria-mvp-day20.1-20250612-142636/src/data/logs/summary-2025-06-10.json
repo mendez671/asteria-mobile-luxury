@@ -1,0 +1,59 @@
+{
+  "date": "2025-06-10",
+  "runs": [
+    {
+      "id": "run-1749513906784-rwda60",
+      "timestamp": "2025-06-10T00:05:06.784Z",
+      "outcome": "success",
+      "responseTime": 1818
+    },
+    {
+      "id": "run-1749514068360-q27yxy",
+      "timestamp": "2025-06-10T00:07:48.360Z",
+      "outcome": "success",
+      "responseTime": 1733
+    },
+    {
+      "id": "run-1749514079464-dr5478",
+      "timestamp": "2025-06-10T00:07:59.464Z",
+      "outcome": "success",
+      "responseTime": 1725
+    },
+    {
+      "id": "run-1749514189570-xqt6mb",
+      "timestamp": "2025-06-10T00:09:49.570Z",
+      "outcome": "success",
+      "responseTime": 1749
+    },
+    {
+      "id": "run-1749514199521-epaw1p",
+      "timestamp": "2025-06-10T00:09:59.521Z",
+      "outcome": "success",
+      "responseTime": 1048
+    },
+    {
+      "id": "run-1749517348084-tcux1q",
+      "timestamp": "2025-06-10T01:02:28.084Z",
+      "outcome": "success",
+      "responseTime": 2970
+    },
+    {
+      "id": "run-1749517358955-vg8bt8",
+      "timestamp": "2025-06-10T01:02:38.955Z",
+      "outcome": "success",
+      "responseTime": 1682
+    },
+    {
+      "id": "run-1749517440343-t65pru",
+      "timestamp": "2025-06-10T01:04:00.343Z",
+      "outcome": "success",
+      "responseTime": 1723
+    },
+    {
+      "id": "run-1749517449723-xgimqa",
+      "timestamp": "2025-06-10T01:04:09.723Z",
+      "outcome": "success",
+      "responseTime": 1565
+    }
+  ]
+}

@@ -1,0 +1,242 @@
+{
+  "id": "run-1749377996169-8wwyuf",
+  "timestamp": "2025-06-08T10:19:56.169Z",
+  "memberId": "guest_session_",
+  "originalMessage": "I need a private jet from NYC to London tomorrow",
+  "intentAnalysis": {
+    "primaryBucket": "transportation",
+    "secondaryBuckets": [],
+    "serviceType": "private aviation",
+    "urgency": "urgent",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [
+        "tomorrow"
+      ],
+      "locations": [
+        "NYC",
+        "London"
+      ],
+      "people": [],
+      "preferences": [
+        "a private jet from NYC to London tomorrow"
+      ]
+    },
+    "suggestedTier": "extraordinary"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "transportation",
+            "tier": "extraordinary",
+            "searchTerm": "private aviation"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-08T10:19:55.831Z",
+          "result": {
+            "services": [
+              {
+                "id": "private-jet-global",
+                "name": "Global Private Aviation",
+                "description": "24/7 private jet charter worldwide with our exclusive fleet partners",
+                "tier": "extraordinary",
+                "basePrice": 15000,
+                "availability": "immediate",
+                "bookingRequirements": [
+                  "departure",
+                  "destination",
+                  "passengers",
+                  "date",
+                  "time"
+                ],
+                "features": [
+                  "Dedicated concierge",
+                  "Ground transportation included",
+                  "Catering options",
+                  "Wi-Fi & entertainment"
+                ],
+                "leadTime": "2 hours minimum",
+                "maxPassengers": 14
+              }
+            ],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 1,
+            "searchSummary": "Found 1 services in transportation at extraordinary tier matching \"private aviation\""
+          },
+          "executionTime": 0
+        },
+        {
+          "toolName": "create_ticket",
+          "parameters": {
+            "serviceId": "to_be_determined",
+            "requirements": {
+              "date": "tomorrow",
+              "destination": "NYC"
+            },
+            "priority": "urgent"
+          },
+          "status": "failed",
+          "timestamp": "2025-06-08T10:19:55.831Z",
+          "result": {
+            "error": "Missing required information: pickup, time, passengers"
+          }
+        }
+      ],
+      "strategy": "direct_fulfillment",
+      "expectedOutcome": "Complete transportation service booking with confirmation",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "transportation",
+          "tier": "extraordinary",
+          "searchTerm": "private aviation"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-08T10:19:55.831Z",
+        "result": {
+          "services": [
+            {
+              "id": "private-jet-global",
+              "name": "Global Private Aviation",
+              "description": "24/7 private jet charter worldwide with our exclusive fleet partners",
+              "tier": "extraordinary",
+              "basePrice": 15000,
+              "availability": "immediate",
+              "bookingRequirements": [
+                "departure",
+                "destination",
+                "passengers",
+                "date",
+                "time"
+              ],
+              "features": [
+                "Dedicated concierge",
+                "Ground transportation included",
+                "Catering options",
+                "Wi-Fi & entertainment"
+              ],
+              "leadTime": "2 hours minimum",
+              "maxPassengers": 14
+            }
+          ],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 1,
+          "searchSummary": "Found 1 services in transportation at extraordinary tier matching \"private aviation\""
+        },
+        "executionTime": 0
+      },
+      {
+        "toolName": "create_ticket",
+        "parameters": {
+          "serviceId": "to_be_determined",
+          "requirements": {
+            "date": "tomorrow",
+            "destination": "NYC"
+          },
+          "priority": "urgent"
+        },
+        "status": "failed",
+        "timestamp": "2025-06-08T10:19:55.831Z",
+        "result": {
+          "error": "Missing required information: pickup, time, passengers"
+        }
+      }
+    ],
+    "finalResult": {
+      "services": [
+        {
+          "id": "private-jet-global",
+          "name": "Global Private Aviation",
+          "description": "24/7 private jet charter worldwide with our exclusive fleet partners",
+          "tier": "extraordinary",
+          "basePrice": 15000,
+          "availability": "immediate",
+          "bookingRequirements": [
+            "departure",
+            "destination",
+            "passengers",
+            "date",
+            "time"
+          ],
+          "features": [
+            "Dedicated concierge",
+            "Ground transportation included",
+            "Catering options",
+            "Wi-Fi & entertainment"
+          ],
+          "leadTime": "2 hours minimum",
+          "maxPassengers": 14
+        }
+      ],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 1,
+      "searchSummary": "Found 1 services in transportation at extraordinary tier matching \"private aviation\""
+    },
+    "recommendations": [
+      "Some services may require additional information - our concierge team will follow up"
+    ],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": true,
+    "workflowTriggered": false,
+    "requiresWorkflow": false
+  },
+  "outcome": "escalation",
+  "metrics": {
+    "responseTime": 343,
+    "toolsUsed": [
+      "fetch_active_services",
+      "create_ticket"
+    ],
+    "escalationTriggered": true
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 0.5,
+    "areas_for_improvement": [
+      "Tool execution reliability"
+    ],
+    "successful_patterns": [
+      "High confidence transportation intent recognition"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

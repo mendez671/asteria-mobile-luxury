@@ -1,0 +1,472 @@
+{
+  "id": "run-1749437807311-7ze8i4",
+  "timestamp": "2025-06-09T02:56:47.311Z",
+  "memberId": "guest_session_",
+  "originalMessage": "lets book it!",
+  "intentAnalysis": {
+    "primaryBucket": "events",
+    "secondaryBuckets": [],
+    "serviceType": "private venue",
+    "urgency": "standard",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [],
+      "locations": [],
+      "people": [],
+      "preferences": []
+    },
+    "suggestedTier": "better"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "search_luxury_knowledge",
+          "parameters": {
+            "query": "events private venue luxury services",
+            "serviceCategory": "events",
+            "memberTier": "better"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T02:56:46.819Z",
+          "result": {
+            "success": true,
+            "result": "Found 6 luxury service knowledge sources:\n\n[1] [ALL-MEMBERS] [EVENTS] (52% match)\nff-menu items and wine selections\n- Advance notice of special culinary events and new menu launches\n- Private dining coordinator for special occasions and business entertainment\n(Source: policy_doc)\n\n[2] [ALL-MEMBERS] [EVENTS] (50% match)\nncierge Services:\n- Same-day reservations for Founding10 and Fifty-K members at partner restaurants\n- Private dining room coordination for intimate business meetings or celebrations\n- Custom menu creation with chef consultation for dietary restrictions or preferences\n- Wine pairing consultation with master sommeliers and rare vintage access\n- Transportation coordination including Rolls-Royce or Bentley service\n- Special dietary accommodations: vegan, kosher, gluten-free, allergy management\n- Chef's table experiences with kitchen tours and cooking demonstrations\n\nGlobal Dining Portfolio:\n- New York City: Daniel, Per Se, Eleven Madison Park, Le Bernardin, Jean-Georges, The Modern\n(Source: policy_doc)\n\n[3] [ALL-MEMBERS] [EVENTS] (49% match)\nuGin\n\nExclusive Experiences:\n- Chef's table with multi-course tasting menus and kitchen interaction\n- Private wine cellar dinners with century-old vintage tastings\n- Cooking masterclasses with Michelin-starred chefs\n- Private yacht dining with celebrity chefs\n- Rooftop and private terrace dining with city views\n- Seasonal truffle and caviar tastings with expert guidance\n\nMember Benefits by Tier:\n- Priority seating during peak dining periods and special culinary events\n- Complimentary champagne service and luxury appetizer selections\n- Personalized recognition and custom service preferences\n- Access to exclusive off-menu items and wine selections\n- Advance notice of special culinary events and new menu launches\n(Source: policy_doc)\n\n[4] [ALL-MEMBERS] [EVENTS] (46% match)\ngredients\n  • Sommelier-guided wine experiences\n  • Private dining rooms available for groups 8-20\n\n- 1 Michelin Star: Benu (SF), Le Cirque (NYC), Picasso (Las Vegas), Providence (LA)\n  • High-quality cooking worth a stop\n  • À la carte and tasting menu options\n  • Chef's special preparations for VIP guests\n  • Same-day reservations possible for premium members\n\n- Celebrity Chef Establishments: Nobu (multiple locations), Hell's Kitchen (Vegas), Cut (Beverly Hills)\n  • Signature dishes from world-renowned chefs\n  • Theatrical dining experiences\n  • Celebrity chef appearances and special events\n  • Exclusive menu items for VIP members\n\nVIP Concierge Services:\n- Same-day reservations for Founding10 and Fifty-K members at partner restaurants\n(Source: policy_doc)\n\n[5] [ALL-MEMBERS] [EVENTS] (40% match)\nfolio:\n- New York City: Daniel, Per Se, Eleven Madison Park, Le Bernardin, Jean-Georges, The Modern\n- Las Vegas: Joël Robuchon, Guy Savoy, Picasso, Twist, Restaurant Guy Savoy, L'Atelier\n- Los Angeles: Providence, n/naka, Republique, Guelaguetza, Bestia, The Bazaar\n- San Francisco: Benu, Atelier Crenn, State Bird Provisions, Gary Danko, Saison\n- London: The Fat Duck, Dinner by Heston, Sketch, Alain Ducasse at The Dorchester\n- Paris: L'Ambroisie, Arpège, L'Astrance, Guy Savoy, Alain Ducasse au Plaza Athénée\n- Tokyo: Sukiyabashi Jiro, Narisawa, Den, Florilège, L'Effervescence, Nihonryori RyuGin\n\nExclusive Experiences:\n- Chef's table with multi-course tasting menus and kitchen interaction\n(Source: policy_doc)\n\n[6] [ALL-MEMBERS] [EVENTS] (38% match)\nEXCLUSIVE DINING RESERVATIONS - MICHELIN STAR & CELEBRITY CHEF EXPERIENCES\n\nRestaurant Classifications:\n- 3 Michelin Stars: The French Laundry (Napa Valley), Le Bernardin (NYC), Guy Savoy (Las Vegas)\n  • Exceptional cuisine worth a special journey\n  • Chef's table experiences with multi-course tasting menus\n  • Wine pairings with rare vintage selections from world-class cellars\n  • Advance reservations required, sometimes months ahead\n\n- 2 Michelin Stars: Eleven Madison Park (NYC), Atelier Crenn (San Francisco), Joël Robuchon (Las Vegas)\n  • Excellent cooking worth a detour\n  • Innovative tasting menus with seasonal ingredients\n  • Sommelier-guided wine experiences\n  • Private dining rooms available for groups 8-20\n(Source: policy_doc)",
+            "data": {
+              "results": [
+                {
+                  "id": "dining-reservations-comprehensive_chunk_5",
+                  "content": "ff-menu items and wine selections\n- Advance notice of special culinary events and new menu launches\n- Private dining coordinator for special occasions and business entertainment",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "events",
+                  "similarity": 0.5225723340849172,
+                  "metadata": {
+                    "chunkIndex": 5,
+                    "totalChunks": 6,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "fine_dining",
+                    "coverage": "global",
+                    "specialization": "michelin_star"
+                  }
+                },
+                {
+                  "id": "dining-reservations-comprehensive_chunk_2",
+                  "content": "ncierge Services:\n- Same-day reservations for Founding10 and Fifty-K members at partner restaurants\n- Private dining room coordination for intimate business meetings or celebrations\n- Custom menu creation with chef consultation for dietary restrictions or preferences\n- Wine pairing consultation with master sommeliers and rare vintage access\n- Transportation coordination including Rolls-Royce or Bentley service\n- Special dietary accommodations: vegan, kosher, gluten-free, allergy management\n- Chef's table experiences with kitchen tours and cooking demonstrations\n\nGlobal Dining Portfolio:\n- New York City: Daniel, Per Se, Eleven Madison Park, Le Bernardin, Jean-Georges, The Modern",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "events",
+                  "similarity": 0.49684853975874377,
+                  "metadata": {
+                    "chunkIndex": 2,
+                    "totalChunks": 6,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "fine_dining",
+                    "coverage": "global",
+                    "specialization": "michelin_star"
+                  }
+                },
+                {
+                  "id": "dining-reservations-comprehensive_chunk_4",
+                  "content": "uGin\n\nExclusive Experiences:\n- Chef's table with multi-course tasting menus and kitchen interaction\n- Private wine cellar dinners with century-old vintage tastings\n- Cooking masterclasses with Michelin-starred chefs\n- Private yacht dining with celebrity chefs\n- Rooftop and private terrace dining with city views\n- Seasonal truffle and caviar tastings with expert guidance\n\nMember Benefits by Tier:\n- Priority seating during peak dining periods and special culinary events\n- Complimentary champagne service and luxury appetizer selections\n- Personalized recognition and custom service preferences\n- Access to exclusive off-menu items and wine selections\n- Advance notice of special culinary events and new menu launches",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "events",
+                  "similarity": 0.4876966611124555,
+                  "metadata": {
+                    "chunkIndex": 4,
+                    "totalChunks": 6,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "fine_dining",
+                    "coverage": "global",
+                    "specialization": "michelin_star"
+                  }
+                },
+                {
+                  "id": "dining-reservations-comprehensive_chunk_1",
+                  "content": "gredients\n  • Sommelier-guided wine experiences\n  • Private dining rooms available for groups 8-20\n\n- 1 Michelin Star: Benu (SF), Le Cirque (NYC), Picasso (Las Vegas), Providence (LA)\n  • High-quality cooking worth a stop\n  • À la carte and tasting menu options\n  • Chef's special preparations for VIP guests\n  • Same-day reservations possible for premium members\n\n- Celebrity Chef Establishments: Nobu (multiple locations), Hell's Kitchen (Vegas), Cut (Beverly Hills)\n  • Signature dishes from world-renowned chefs\n  • Theatrical dining experiences\n  • Celebrity chef appearances and special events\n  • Exclusive menu items for VIP members\n\nVIP Concierge Services:\n- Same-day reservations for Founding10 and Fifty-K members at partner restaurants",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "events",
+                  "similarity": 0.4649774469537352,
+                  "metadata": {
+                    "chunkIndex": 1,
+                    "totalChunks": 6,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "fine_dining",
+                    "coverage": "global",
+                    "specialization": "michelin_star"
+                  }
+                },
+                {
+                  "id": "dining-reservations-comprehensive_chunk_3",
+                  "content": "folio:\n- New York City: Daniel, Per Se, Eleven Madison Park, Le Bernardin, Jean-Georges, The Modern\n- Las Vegas: Joël Robuchon, Guy Savoy, Picasso, Twist, Restaurant Guy Savoy, L'Atelier\n- Los Angeles: Providence, n/naka, Republique, Guelaguetza, Bestia, The Bazaar\n- San Francisco: Benu, Atelier Crenn, State Bird Provisions, Gary Danko, Saison\n- London: The Fat Duck, Dinner by Heston, Sketch, Alain Ducasse at The Dorchester\n- Paris: L'Ambroisie, Arpège, L'Astrance, Guy Savoy, Alain Ducasse au Plaza Athénée\n- Tokyo: Sukiyabashi Jiro, Narisawa, Den, Florilège, L'Effervescence, Nihonryori RyuGin\n\nExclusive Experiences:\n- Chef's table with multi-course tasting menus and kitchen interaction",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "events",
+                  "similarity": 0.40245271802943205,
+                  "metadata": {
+                    "chunkIndex": 3,
+                    "totalChunks": 6,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "fine_dining",
+                    "coverage": "global",
+                    "specialization": "michelin_star"
+                  }
+                },
+                {
+                  "id": "dining-reservations-comprehensive_chunk_0",
+                  "content": "EXCLUSIVE DINING RESERVATIONS - MICHELIN STAR & CELEBRITY CHEF EXPERIENCES\n\nRestaurant Classifications:\n- 3 Michelin Stars: The French Laundry (Napa Valley), Le Bernardin (NYC), Guy Savoy (Las Vegas)\n  • Exceptional cuisine worth a special journey\n  • Chef's table experiences with multi-course tasting menus\n  • Wine pairings with rare vintage selections from world-class cellars\n  • Advance reservations required, sometimes months ahead\n\n- 2 Michelin Stars: Eleven Madison Park (NYC), Atelier Crenn (San Francisco), Joël Robuchon (Las Vegas)\n  • Excellent cooking worth a detour\n  • Innovative tasting menus with seasonal ingredients\n  • Sommelier-guided wine experiences\n  • Private dining rooms available for groups 8-20",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "events",
+                  "similarity": 0.3771649202281406,
+                  "metadata": {
+                    "chunkIndex": 0,
+                    "totalChunks": 6,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "fine_dining",
+                    "coverage": "global",
+                    "specialization": "michelin_star"
+                  }
+                }
+              ],
+              "query": "events private venue luxury services",
+              "searchOptions": {
+                "memberTier": "better",
+                "serviceCategory": "events",
+                "minimumSimilarity": 0.3,
+                "maxResults": 6
+              },
+              "totalFound": 6,
+              "avgSimilarity": 0.4586187700279041
+            },
+            "tool": "search_luxury_knowledge"
+          },
+          "executionTime": 492
+        },
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "events",
+            "tier": "better"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T02:56:47.311Z",
+          "result": {
+            "services": [
+              {
+                "id": "private-venue",
+                "name": "Private Venue Booking",
+                "description": "Exclusive use of premium venues for private events",
+                "tier": "better",
+                "basePrice": 5000,
+                "availability": "by-request",
+                "bookingRequirements": [
+                  "venue",
+                  "date",
+                  "duration",
+                  "guests",
+                  "eventType"
+                ],
+                "features": [
+                  "Full venue exclusivity",
+                  "Event planning",
+                  "Catering coordination",
+                  "Entertainment booking"
+                ],
+                "leadTime": "2 weeks",
+                "maxGuests": 200
+              }
+            ],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 1,
+            "searchSummary": "Found 1 services in events at better tier"
+          },
+          "executionTime": 0
+        }
+      ],
+      "strategy": "guided_collection",
+      "expectedOutcome": "Curated events service options with booking assistance",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "search_luxury_knowledge",
+        "parameters": {
+          "query": "events private venue luxury services",
+          "serviceCategory": "events",
+          "memberTier": "better"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T02:56:46.819Z",
+        "result": {
+          "success": true,
+          "result": "Found 6 luxury service knowledge sources:\n\n[1] [ALL-MEMBERS] [EVENTS] (52% match)\nff-menu items and wine selections\n- Advance notice of special culinary events and new menu launches\n- Private dining coordinator for special occasions and business entertainment\n(Source: policy_doc)\n\n[2] [ALL-MEMBERS] [EVENTS] (50% match)\nncierge Services:\n- Same-day reservations for Founding10 and Fifty-K members at partner restaurants\n- Private dining room coordination for intimate business meetings or celebrations\n- Custom menu creation with chef consultation for dietary restrictions or preferences\n- Wine pairing consultation with master sommeliers and rare vintage access\n- Transportation coordination including Rolls-Royce or Bentley service\n- Special dietary accommodations: vegan, kosher, gluten-free, allergy management\n- Chef's table experiences with kitchen tours and cooking demonstrations\n\nGlobal Dining Portfolio:\n- New York City: Daniel, Per Se, Eleven Madison Park, Le Bernardin, Jean-Georges, The Modern\n(Source: policy_doc)\n\n[3] [ALL-MEMBERS] [EVENTS] (49% match)\nuGin\n\nExclusive Experiences:\n- Chef's table with multi-course tasting menus and kitchen interaction\n- Private wine cellar dinners with century-old vintage tastings\n- Cooking masterclasses with Michelin-starred chefs\n- Private yacht dining with celebrity chefs\n- Rooftop and private terrace dining with city views\n- Seasonal truffle and caviar tastings with expert guidance\n\nMember Benefits by Tier:\n- Priority seating during peak dining periods and special culinary events\n- Complimentary champagne service and luxury appetizer selections\n- Personalized recognition and custom service preferences\n- Access to exclusive off-menu items and wine selections\n- Advance notice of special culinary events and new menu launches\n(Source: policy_doc)\n\n[4] [ALL-MEMBERS] [EVENTS] (46% match)\ngredients\n  • Sommelier-guided wine experiences\n  • Private dining rooms available for groups 8-20\n\n- 1 Michelin Star: Benu (SF), Le Cirque (NYC), Picasso (Las Vegas), Providence (LA)\n  • High-quality cooking worth a stop\n  • À la carte and tasting menu options\n  • Chef's special preparations for VIP guests\n  • Same-day reservations possible for premium members\n\n- Celebrity Chef Establishments: Nobu (multiple locations), Hell's Kitchen (Vegas), Cut (Beverly Hills)\n  • Signature dishes from world-renowned chefs\n  • Theatrical dining experiences\n  • Celebrity chef appearances and special events\n  • Exclusive menu items for VIP members\n\nVIP Concierge Services:\n- Same-day reservations for Founding10 and Fifty-K members at partner restaurants\n(Source: policy_doc)\n\n[5] [ALL-MEMBERS] [EVENTS] (40% match)\nfolio:\n- New York City: Daniel, Per Se, Eleven Madison Park, Le Bernardin, Jean-Georges, The Modern\n- Las Vegas: Joël Robuchon, Guy Savoy, Picasso, Twist, Restaurant Guy Savoy, L'Atelier\n- Los Angeles: Providence, n/naka, Republique, Guelaguetza, Bestia, The Bazaar\n- San Francisco: Benu, Atelier Crenn, State Bird Provisions, Gary Danko, Saison\n- London: The Fat Duck, Dinner by Heston, Sketch, Alain Ducasse at The Dorchester\n- Paris: L'Ambroisie, Arpège, L'Astrance, Guy Savoy, Alain Ducasse au Plaza Athénée\n- Tokyo: Sukiyabashi Jiro, Narisawa, Den, Florilège, L'Effervescence, Nihonryori RyuGin\n\nExclusive Experiences:\n- Chef's table with multi-course tasting menus and kitchen interaction\n(Source: policy_doc)\n\n[6] [ALL-MEMBERS] [EVENTS] (38% match)\nEXCLUSIVE DINING RESERVATIONS - MICHELIN STAR & CELEBRITY CHEF EXPERIENCES\n\nRestaurant Classifications:\n- 3 Michelin Stars: The French Laundry (Napa Valley), Le Bernardin (NYC), Guy Savoy (Las Vegas)\n  • Exceptional cuisine worth a special journey\n  • Chef's table experiences with multi-course tasting menus\n  • Wine pairings with rare vintage selections from world-class cellars\n  • Advance reservations required, sometimes months ahead\n\n- 2 Michelin Stars: Eleven Madison Park (NYC), Atelier Crenn (San Francisco), Joël Robuchon (Las Vegas)\n  • Excellent cooking worth a detour\n  • Innovative tasting menus with seasonal ingredients\n  • Sommelier-guided wine experiences\n  • Private dining rooms available for groups 8-20\n(Source: policy_doc)",
+          "data": {
+            "results": [
+              {
+                "id": "dining-reservations-comprehensive_chunk_5",
+                "content": "ff-menu items and wine selections\n- Advance notice of special culinary events and new menu launches\n- Private dining coordinator for special occasions and business entertainment",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "events",
+                "similarity": 0.5225723340849172,
+                "metadata": {
+                  "chunkIndex": 5,
+                  "totalChunks": 6,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "fine_dining",
+                  "coverage": "global",
+                  "specialization": "michelin_star"
+                }
+              },
+              {
+                "id": "dining-reservations-comprehensive_chunk_2",
+                "content": "ncierge Services:\n- Same-day reservations for Founding10 and Fifty-K members at partner restaurants\n- Private dining room coordination for intimate business meetings or celebrations\n- Custom menu creation with chef consultation for dietary restrictions or preferences\n- Wine pairing consultation with master sommeliers and rare vintage access\n- Transportation coordination including Rolls-Royce or Bentley service\n- Special dietary accommodations: vegan, kosher, gluten-free, allergy management\n- Chef's table experiences with kitchen tours and cooking demonstrations\n\nGlobal Dining Portfolio:\n- New York City: Daniel, Per Se, Eleven Madison Park, Le Bernardin, Jean-Georges, The Modern",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "events",
+                "similarity": 0.49684853975874377,
+                "metadata": {
+                  "chunkIndex": 2,
+                  "totalChunks": 6,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "fine_dining",
+                  "coverage": "global",
+                  "specialization": "michelin_star"
+                }
+              },
+              {
+                "id": "dining-reservations-comprehensive_chunk_4",
+                "content": "uGin\n\nExclusive Experiences:\n- Chef's table with multi-course tasting menus and kitchen interaction\n- Private wine cellar dinners with century-old vintage tastings\n- Cooking masterclasses with Michelin-starred chefs\n- Private yacht dining with celebrity chefs\n- Rooftop and private terrace dining with city views\n- Seasonal truffle and caviar tastings with expert guidance\n\nMember Benefits by Tier:\n- Priority seating during peak dining periods and special culinary events\n- Complimentary champagne service and luxury appetizer selections\n- Personalized recognition and custom service preferences\n- Access to exclusive off-menu items and wine selections\n- Advance notice of special culinary events and new menu launches",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "events",
+                "similarity": 0.4876966611124555,
+                "metadata": {
+                  "chunkIndex": 4,
+                  "totalChunks": 6,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "fine_dining",
+                  "coverage": "global",
+                  "specialization": "michelin_star"
+                }
+              },
+              {
+                "id": "dining-reservations-comprehensive_chunk_1",
+                "content": "gredients\n  • Sommelier-guided wine experiences\n  • Private dining rooms available for groups 8-20\n\n- 1 Michelin Star: Benu (SF), Le Cirque (NYC), Picasso (Las Vegas), Providence (LA)\n  • High-quality cooking worth a stop\n  • À la carte and tasting menu options\n  • Chef's special preparations for VIP guests\n  • Same-day reservations possible for premium members\n\n- Celebrity Chef Establishments: Nobu (multiple locations), Hell's Kitchen (Vegas), Cut (Beverly Hills)\n  • Signature dishes from world-renowned chefs\n  • Theatrical dining experiences\n  • Celebrity chef appearances and special events\n  • Exclusive menu items for VIP members\n\nVIP Concierge Services:\n- Same-day reservations for Founding10 and Fifty-K members at partner restaurants",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "events",
+                "similarity": 0.4649774469537352,
+                "metadata": {
+                  "chunkIndex": 1,
+                  "totalChunks": 6,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "fine_dining",
+                  "coverage": "global",
+                  "specialization": "michelin_star"
+                }
+              },
+              {
+                "id": "dining-reservations-comprehensive_chunk_3",
+                "content": "folio:\n- New York City: Daniel, Per Se, Eleven Madison Park, Le Bernardin, Jean-Georges, The Modern\n- Las Vegas: Joël Robuchon, Guy Savoy, Picasso, Twist, Restaurant Guy Savoy, L'Atelier\n- Los Angeles: Providence, n/naka, Republique, Guelaguetza, Bestia, The Bazaar\n- San Francisco: Benu, Atelier Crenn, State Bird Provisions, Gary Danko, Saison\n- London: The Fat Duck, Dinner by Heston, Sketch, Alain Ducasse at The Dorchester\n- Paris: L'Ambroisie, Arpège, L'Astrance, Guy Savoy, Alain Ducasse au Plaza Athénée\n- Tokyo: Sukiyabashi Jiro, Narisawa, Den, Florilège, L'Effervescence, Nihonryori RyuGin\n\nExclusive Experiences:\n- Chef's table with multi-course tasting menus and kitchen interaction",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "events",
+                "similarity": 0.40245271802943205,
+                "metadata": {
+                  "chunkIndex": 3,
+                  "totalChunks": 6,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "fine_dining",
+                  "coverage": "global",
+                  "specialization": "michelin_star"
+                }
+              },
+              {
+                "id": "dining-reservations-comprehensive_chunk_0",
+                "content": "EXCLUSIVE DINING RESERVATIONS - MICHELIN STAR & CELEBRITY CHEF EXPERIENCES\n\nRestaurant Classifications:\n- 3 Michelin Stars: The French Laundry (Napa Valley), Le Bernardin (NYC), Guy Savoy (Las Vegas)\n  • Exceptional cuisine worth a special journey\n  • Chef's table experiences with multi-course tasting menus\n  • Wine pairings with rare vintage selections from world-class cellars\n  • Advance reservations required, sometimes months ahead\n\n- 2 Michelin Stars: Eleven Madison Park (NYC), Atelier Crenn (San Francisco), Joël Robuchon (Las Vegas)\n  • Excellent cooking worth a detour\n  • Innovative tasting menus with seasonal ingredients\n  • Sommelier-guided wine experiences\n  • Private dining rooms available for groups 8-20",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "events",
+                "similarity": 0.3771649202281406,
+                "metadata": {
+                  "chunkIndex": 0,
+                  "totalChunks": 6,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "fine_dining",
+                  "coverage": "global",
+                  "specialization": "michelin_star"
+                }
+              }
+            ],
+            "query": "events private venue luxury services",
+            "searchOptions": {
+              "memberTier": "better",
+              "serviceCategory": "events",
+              "minimumSimilarity": 0.3,
+              "maxResults": 6
+            },
+            "totalFound": 6,
+            "avgSimilarity": 0.4586187700279041
+          },
+          "tool": "search_luxury_knowledge"
+        },
+        "executionTime": 492
+      },
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "events",
+          "tier": "better"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T02:56:47.311Z",
+        "result": {
+          "services": [
+            {
+              "id": "private-venue",
+              "name": "Private Venue Booking",
+              "description": "Exclusive use of premium venues for private events",
+              "tier": "better",
+              "basePrice": 5000,
+              "availability": "by-request",
+              "bookingRequirements": [
+                "venue",
+                "date",
+                "duration",
+                "guests",
+                "eventType"
+              ],
+              "features": [
+                "Full venue exclusivity",
+                "Event planning",
+                "Catering coordination",
+                "Entertainment booking"
+              ],
+              "leadTime": "2 weeks",
+              "maxGuests": 200
+            }
+          ],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 1,
+          "searchSummary": "Found 1 services in events at better tier"
+        },
+        "executionTime": 0
+      }
+    ],
+    "finalResult": {
+      "services": [
+        {
+          "id": "private-venue",
+          "name": "Private Venue Booking",
+          "description": "Exclusive use of premium venues for private events",
+          "tier": "better",
+          "basePrice": 5000,
+          "availability": "by-request",
+          "bookingRequirements": [
+            "venue",
+            "date",
+            "duration",
+            "guests",
+            "eventType"
+          ],
+          "features": [
+            "Full venue exclusivity",
+            "Event planning",
+            "Catering coordination",
+            "Entertainment booking"
+          ],
+          "leadTime": "2 weeks",
+          "maxGuests": 200
+        }
+      ],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 1,
+      "searchSummary": "Found 1 services in events at better tier"
+    },
+    "recommendations": [],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": false,
+    "requiresWorkflow": false
+  },
+  "outcome": "success",
+  "metrics": {
+    "responseTime": 496,
+    "toolsUsed": [
+      "search_luxury_knowledge",
+      "fetch_active_services"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 1,
+    "areas_for_improvement": [],
+    "successful_patterns": [
+      "High confidence events intent recognition",
+      "Perfect tool execution sequence"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

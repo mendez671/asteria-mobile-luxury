@@ -1,0 +1,229 @@
+{
+  "id": "run-1749427928512-93eskl",
+  "timestamp": "2025-06-09T00:12:08.512Z",
+  "memberId": "test-member-0",
+  "originalMessage": "Perfect, please book it for me",
+  "intentAnalysis": {
+    "primaryBucket": "events",
+    "secondaryBuckets": [],
+    "serviceType": "private venue",
+    "urgency": "standard",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [],
+      "locations": [],
+      "people": [],
+      "preferences": []
+    },
+    "suggestedTier": "better"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "search_luxury_knowledge",
+          "parameters": {
+            "query": "events private venue luxury services",
+            "serviceCategory": "events",
+            "memberTier": "better"
+          },
+          "status": "failed",
+          "timestamp": "2025-06-09T00:12:08.449Z",
+          "result": {
+            "error": "ENOENT: no such file or directory, open './test/data/05-versions-space.pdf'"
+          }
+        },
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "events",
+            "tier": "better"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T00:12:08.512Z",
+          "result": {
+            "services": [
+              {
+                "id": "private-venue",
+                "name": "Private Venue Booking",
+                "description": "Exclusive use of premium venues for private events",
+                "tier": "better",
+                "basePrice": 5000,
+                "availability": "by-request",
+                "bookingRequirements": [
+                  "venue",
+                  "date",
+                  "duration",
+                  "guests",
+                  "eventType"
+                ],
+                "features": [
+                  "Full venue exclusivity",
+                  "Event planning",
+                  "Catering coordination",
+                  "Entertainment booking"
+                ],
+                "leadTime": "2 weeks",
+                "maxGuests": 200
+              }
+            ],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 1,
+            "searchSummary": "Found 1 services in events at better tier"
+          },
+          "executionTime": 0
+        }
+      ],
+      "strategy": "guided_collection",
+      "expectedOutcome": "Curated events service options with booking assistance",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "search_luxury_knowledge",
+        "parameters": {
+          "query": "events private venue luxury services",
+          "serviceCategory": "events",
+          "memberTier": "better"
+        },
+        "status": "failed",
+        "timestamp": "2025-06-09T00:12:08.449Z",
+        "result": {
+          "error": "ENOENT: no such file or directory, open './test/data/05-versions-space.pdf'"
+        }
+      },
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "events",
+          "tier": "better"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T00:12:08.512Z",
+        "result": {
+          "services": [
+            {
+              "id": "private-venue",
+              "name": "Private Venue Booking",
+              "description": "Exclusive use of premium venues for private events",
+              "tier": "better",
+              "basePrice": 5000,
+              "availability": "by-request",
+              "bookingRequirements": [
+                "venue",
+                "date",
+                "duration",
+                "guests",
+                "eventType"
+              ],
+              "features": [
+                "Full venue exclusivity",
+                "Event planning",
+                "Catering coordination",
+                "Entertainment booking"
+              ],
+              "leadTime": "2 weeks",
+              "maxGuests": 200
+            }
+          ],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 1,
+          "searchSummary": "Found 1 services in events at better tier"
+        },
+        "executionTime": 0
+      }
+    ],
+    "finalResult": {
+      "services": [
+        {
+          "id": "private-venue",
+          "name": "Private Venue Booking",
+          "description": "Exclusive use of premium venues for private events",
+          "tier": "better",
+          "basePrice": 5000,
+          "availability": "by-request",
+          "bookingRequirements": [
+            "venue",
+            "date",
+            "duration",
+            "guests",
+            "eventType"
+          ],
+          "features": [
+            "Full venue exclusivity",
+            "Event planning",
+            "Catering coordination",
+            "Entertainment booking"
+          ],
+          "leadTime": "2 weeks",
+          "maxGuests": 200
+        }
+      ],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 1,
+      "searchSummary": "Found 1 services in events at better tier"
+    },
+    "recommendations": [
+      "Some services may require additional information - our concierge team will follow up"
+    ],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": false,
+    "requiresWorkflow": false
+  },
+  "outcome": "partial_success",
+  "metrics": {
+    "responseTime": 64,
+    "toolsUsed": [
+      "search_luxury_knowledge",
+      "fetch_active_services"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 0.5,
+    "areas_for_improvement": [
+      "Tool execution reliability"
+    ],
+    "successful_patterns": [
+      "High confidence events intent recognition"
+    ]
+  },
+  "followUp": {
+    "required": true,
+    "type": "additional_info",
+    "scheduledAt": "2025-06-09T00:27:08.512Z"
+  }
+}

@@ -1,0 +1,204 @@
+{
+  "id": "run-1749378295032-b6ddqn",
+  "timestamp": "2025-06-08T10:24:55.032Z",
+  "memberId": "guest_session_",
+  "originalMessage": "Arrange helicopter transport to Hamptons for weekend retreat",
+  "intentAnalysis": {
+    "primaryBucket": "transportation",
+    "secondaryBuckets": [
+      "lifestyle"
+    ],
+    "serviceType": "general",
+    "urgency": "standard",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [],
+      "locations": [
+        "Hamptons"
+      ],
+      "people": [],
+      "preferences": []
+    },
+    "suggestedTier": "better"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "transportation",
+            "tier": "better"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-08T10:24:55.032Z",
+          "result": {
+            "services": [
+              {
+                "id": "luxury-ground-transport",
+                "name": "Executive Ground Services",
+                "description": "Premium chauffeured vehicles and specialty transport",
+                "tier": "better",
+                "basePrice": 500,
+                "availability": "24/7",
+                "bookingRequirements": [
+                  "pickup",
+                  "destination",
+                  "date",
+                  "time",
+                  "passengers"
+                ],
+                "features": [
+                  "Professional chauffeur",
+                  "Premium vehicles",
+                  "Route optimization",
+                  "Airport services"
+                ],
+                "leadTime": "30 minutes",
+                "maxPassengers": 8
+              }
+            ],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 1,
+            "searchSummary": "Found 1 services in transportation at better tier"
+          },
+          "executionTime": 0
+        }
+      ],
+      "strategy": "guided_collection",
+      "expectedOutcome": "Curated transportation service options with booking assistance",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "transportation",
+          "tier": "better"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-08T10:24:55.032Z",
+        "result": {
+          "services": [
+            {
+              "id": "luxury-ground-transport",
+              "name": "Executive Ground Services",
+              "description": "Premium chauffeured vehicles and specialty transport",
+              "tier": "better",
+              "basePrice": 500,
+              "availability": "24/7",
+              "bookingRequirements": [
+                "pickup",
+                "destination",
+                "date",
+                "time",
+                "passengers"
+              ],
+              "features": [
+                "Professional chauffeur",
+                "Premium vehicles",
+                "Route optimization",
+                "Airport services"
+              ],
+              "leadTime": "30 minutes",
+              "maxPassengers": 8
+            }
+          ],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 1,
+          "searchSummary": "Found 1 services in transportation at better tier"
+        },
+        "executionTime": 0
+      }
+    ],
+    "finalResult": {
+      "services": [
+        {
+          "id": "luxury-ground-transport",
+          "name": "Executive Ground Services",
+          "description": "Premium chauffeured vehicles and specialty transport",
+          "tier": "better",
+          "basePrice": 500,
+          "availability": "24/7",
+          "bookingRequirements": [
+            "pickup",
+            "destination",
+            "date",
+            "time",
+            "passengers"
+          ],
+          "features": [
+            "Professional chauffeur",
+            "Premium vehicles",
+            "Route optimization",
+            "Airport services"
+          ],
+          "leadTime": "30 minutes",
+          "maxPassengers": 8
+        }
+      ],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 1,
+      "searchSummary": "Found 1 services in transportation at better tier"
+    },
+    "recommendations": [
+      "Consider upgrading to our Extraordinary tier for enhanced privacy and luxury amenities",
+      "Also consider our lifestyle services for a complete experience"
+    ],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": false,
+    "requiresWorkflow": false
+  },
+  "outcome": "success",
+  "metrics": {
+    "responseTime": 2,
+    "toolsUsed": [
+      "fetch_active_services"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 1,
+    "areas_for_improvement": [],
+    "successful_patterns": [
+      "High confidence transportation intent recognition",
+      "Perfect tool execution sequence"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

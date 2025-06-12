@@ -1,0 +1,571 @@
+{
+  "id": "run-1749437862927-w63ae7",
+  "timestamp": "2025-06-09T02:57:42.927Z",
+  "memberId": "guest_session_",
+  "originalMessage": "I need dining reservations at Michelin star restaurants in Paris",
+  "intentAnalysis": {
+    "primaryBucket": "lifestyle",
+    "secondaryBuckets": [],
+    "serviceType": "general",
+    "urgency": "standard",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [],
+      "locations": [
+        "Michelin",
+        "Paris"
+      ],
+      "people": [],
+      "preferences": [
+        "dining reservations at Michelin star restaurants in Paris"
+      ]
+    },
+    "suggestedTier": "better"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "search_luxury_knowledge",
+          "parameters": {
+            "query": "I need dining reservations at Michelin star restaurants in Paris",
+            "serviceCategory": "lifestyle",
+            "memberTier": "better",
+            "intent": "lifestyle"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T02:57:42.224Z",
+          "result": {
+            "success": true,
+            "result": "Found 6 luxury service knowledge sources:\n\n[1] [ALL-MEMBERS] [LIFESTYLE] (46% match)\norchester\n- Paris: The Ritz, Four Seasons George V, Le Meurice, Mandarin Oriental, Hotel de Crillon\n- Tokyo: Mandarin Oriental, The Peninsula, The Ritz-Carlton, Park Hyatt, Aman Tokyo\n\nPremium Amenities & Experiences:\n- Private check-in suites and dedicated elevator access\n- Rolls-Royce or Bentley fleet transportation\n- Access to exclusive members' clubs and private dining\n- Personal shopping experiences with luxury brand stylists\n- Private art gallery and museum tour coordination\n- Helicopter transfers to airports and scenic destinations\n- Personal chef services for extended stays and special dietary requirements\n\nBooking Protocols by Member Tier:\n(Source: policy_doc)\n\n[2] [ALL-MEMBERS] [LIFESTYLE] (34% match)\nxury brand partnerships\n- In-suite spa treatments with master therapists and wellness consultations\n- Private yacht and helicopter charter coordination\n- Cultural experiences including private museum tours and VIP event access\n- 24/7 butler service with personal preference management\n\nGlobal Portfolio Excellence:\n- New York: The Mark, The St. Regis, The Plaza, The Carlyle, The Lowell\n- Los Angeles: The Beverly Hills Hotel, Chateau Marmont, The Peninsula, Hotel Bel-Air\n- Las Vegas: The Wynn Tower Suites, Four Seasons, The Cosmopolitan Penthouse, ARIA Sky Suites\n- London: The Savoy, Claridge's, The Langham, The Connaught, The Dorchester\n- Paris: The Ritz, Four Seasons George V, Le Meurice, Mandarin Oriental, Hotel de Crillon\n(Source: policy_doc)\n\n[3] [ALL-MEMBERS] [LIFESTYLE] (33% match)\nULTRA-LUXURY HOTEL ACCOMMODATIONS - WORLD'S FINEST PROPERTIES\n\nHotel Property Classifications:\n- Palace Hotels: The Ritz Paris, Hotel Plaza Athénée, The Savoy London, Hotel de Crillon\n  • Historic luxury with modern amenities\n  • Royal suites with palace-level service\n  • Private butler service and dedicated concierge\n  • Access to exclusive events and cultural experiences\n\n- Resort Properties: Four Seasons Maui, The St. Regis Bora Bora, Amanzoe Greece, One&Only Dubai\n  • Destination luxury with comprehensive resort amenities\n  • Private beaches, championship golf courses, world-class spas\n  • Water sports coordination and private yacht access\n  • Cultural immersion experiences and local luxury shopping\n(Source: policy_doc)\n\n[4] [ALL-MEMBERS] [LIFESTYLE] (33% match)\nhef services for extended stays and special dietary requirements\n\nBooking Protocols by Member Tier:\n- Founding10: All properties including palace hotels, guaranteed availability with 48-hour notice\n- Fifty-K: Palace and resort properties with VIP amenities, priority booking for peak periods\n- Corporate: Urban luxury and resort properties with business amenities, advance booking recommended\n- All-Members: Luxury rooms and executive suites with standard amenities, standard booking procedures\n(Source: policy_doc)\n\n[5] [ALL-MEMBERS] [LIFESTYLE] (32% match)\nt (800+ sq ft)\n  • Separate bedroom and living areas\n  • Executive floor privileges and club access\n  • Business center and meeting room availability\n  • Complimentary breakfast and evening cocktails\n\n- Luxury Rooms: $800-3,000/night (500+ sq ft)\n  • Premium location within hotel\n  • Luxury amenities and premium linens\n  • Marble bathrooms with luxury toiletries\n  • City or landmark views where available\n\nExclusive Services Portfolio:\n- Private jet transfer coordination with helicopter airport transfers\n- Michelin-starred in-room dining with celebrity chef consultations\n- Personal shopping and styling services with luxury brand partnerships\n- In-suite spa treatments with master therapists and wellness consultations\n(Source: policy_doc)\n\n[6] [ALL-MEMBERS] [LIFESTYLE] (32% match)\ncoordination and private yacht access\n  • Cultural immersion experiences and local luxury shopping\n\n- Urban Luxury: The Mark NYC, The Beverly Hills Hotel, Mandarin Oriental Tokyo, The Peninsula Hong Kong\n  • City center locations with metropolitan sophistication\n  • Business centers with executive floors and services\n  • Rooftop dining and exclusive club access\n  • Shopping district proximity and cultural attractions\n\n- Historic Luxury: Hotel de Crillon Paris, The Gritti Palace Venice, Taj Lake Palace Udaipur\n  • Centuries of hospitality heritage combined with modern luxury\n  • UNESCO World Heritage locations\n  • Museum-quality art collections and historic architecture\n  • Royal and presidential suite availability\n(Source: policy_doc)",
+            "data": {
+              "results": [
+                {
+                  "id": "hotel-accommodations-comprehensive_chunk_5",
+                  "content": "orchester\n- Paris: The Ritz, Four Seasons George V, Le Meurice, Mandarin Oriental, Hotel de Crillon\n- Tokyo: Mandarin Oriental, The Peninsula, The Ritz-Carlton, Park Hyatt, Aman Tokyo\n\nPremium Amenities & Experiences:\n- Private check-in suites and dedicated elevator access\n- Rolls-Royce or Bentley fleet transportation\n- Access to exclusive members' clubs and private dining\n- Personal shopping experiences with luxury brand stylists\n- Private art gallery and museum tour coordination\n- Helicopter transfers to airports and scenic destinations\n- Personal chef services for extended stays and special dietary requirements\n\nBooking Protocols by Member Tier:",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "lifestyle",
+                  "similarity": 0.4599636820406462,
+                  "metadata": {
+                    "chunkIndex": 5,
+                    "totalChunks": 7,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "luxury_hospitality",
+                    "coverage": "global",
+                    "specialization": "palace_hotels"
+                  }
+                },
+                {
+                  "id": "hotel-accommodations-comprehensive_chunk_4",
+                  "content": "xury brand partnerships\n- In-suite spa treatments with master therapists and wellness consultations\n- Private yacht and helicopter charter coordination\n- Cultural experiences including private museum tours and VIP event access\n- 24/7 butler service with personal preference management\n\nGlobal Portfolio Excellence:\n- New York: The Mark, The St. Regis, The Plaza, The Carlyle, The Lowell\n- Los Angeles: The Beverly Hills Hotel, Chateau Marmont, The Peninsula, Hotel Bel-Air\n- Las Vegas: The Wynn Tower Suites, Four Seasons, The Cosmopolitan Penthouse, ARIA Sky Suites\n- London: The Savoy, Claridge's, The Langham, The Connaught, The Dorchester\n- Paris: The Ritz, Four Seasons George V, Le Meurice, Mandarin Oriental, Hotel de Crillon",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "lifestyle",
+                  "similarity": 0.33555043882984303,
+                  "metadata": {
+                    "chunkIndex": 4,
+                    "totalChunks": 7,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "luxury_hospitality",
+                    "coverage": "global",
+                    "specialization": "palace_hotels"
+                  }
+                },
+                {
+                  "id": "hotel-accommodations-comprehensive_chunk_0",
+                  "content": "ULTRA-LUXURY HOTEL ACCOMMODATIONS - WORLD'S FINEST PROPERTIES\n\nHotel Property Classifications:\n- Palace Hotels: The Ritz Paris, Hotel Plaza Athénée, The Savoy London, Hotel de Crillon\n  • Historic luxury with modern amenities\n  • Royal suites with palace-level service\n  • Private butler service and dedicated concierge\n  • Access to exclusive events and cultural experiences\n\n- Resort Properties: Four Seasons Maui, The St. Regis Bora Bora, Amanzoe Greece, One&Only Dubai\n  • Destination luxury with comprehensive resort amenities\n  • Private beaches, championship golf courses, world-class spas\n  • Water sports coordination and private yacht access\n  • Cultural immersion experiences and local luxury shopping",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "lifestyle",
+                  "similarity": 0.334778496165091,
+                  "metadata": {
+                    "chunkIndex": 0,
+                    "totalChunks": 7,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "luxury_hospitality",
+                    "coverage": "global",
+                    "specialization": "palace_hotels"
+                  }
+                },
+                {
+                  "id": "hotel-accommodations-comprehensive_chunk_6",
+                  "content": "hef services for extended stays and special dietary requirements\n\nBooking Protocols by Member Tier:\n- Founding10: All properties including palace hotels, guaranteed availability with 48-hour notice\n- Fifty-K: Palace and resort properties with VIP amenities, priority booking for peak periods\n- Corporate: Urban luxury and resort properties with business amenities, advance booking recommended\n- All-Members: Luxury rooms and executive suites with standard amenities, standard booking procedures",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "lifestyle",
+                  "similarity": 0.3263501966978855,
+                  "metadata": {
+                    "chunkIndex": 6,
+                    "totalChunks": 7,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "luxury_hospitality",
+                    "coverage": "global",
+                    "specialization": "palace_hotels"
+                  }
+                },
+                {
+                  "id": "hotel-accommodations-comprehensive_chunk_3",
+                  "content": "t (800+ sq ft)\n  • Separate bedroom and living areas\n  • Executive floor privileges and club access\n  • Business center and meeting room availability\n  • Complimentary breakfast and evening cocktails\n\n- Luxury Rooms: $800-3,000/night (500+ sq ft)\n  • Premium location within hotel\n  • Luxury amenities and premium linens\n  • Marble bathrooms with luxury toiletries\n  • City or landmark views where available\n\nExclusive Services Portfolio:\n- Private jet transfer coordination with helicopter airport transfers\n- Michelin-starred in-room dining with celebrity chef consultations\n- Personal shopping and styling services with luxury brand partnerships\n- In-suite spa treatments with master therapists and wellness consultations",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "lifestyle",
+                  "similarity": 0.32377123264671603,
+                  "metadata": {
+                    "chunkIndex": 3,
+                    "totalChunks": 7,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "luxury_hospitality",
+                    "coverage": "global",
+                    "specialization": "palace_hotels"
+                  }
+                },
+                {
+                  "id": "hotel-accommodations-comprehensive_chunk_1",
+                  "content": "coordination and private yacht access\n  • Cultural immersion experiences and local luxury shopping\n\n- Urban Luxury: The Mark NYC, The Beverly Hills Hotel, Mandarin Oriental Tokyo, The Peninsula Hong Kong\n  • City center locations with metropolitan sophistication\n  • Business centers with executive floors and services\n  • Rooftop dining and exclusive club access\n  • Shopping district proximity and cultural attractions\n\n- Historic Luxury: Hotel de Crillon Paris, The Gritti Palace Venice, Taj Lake Palace Udaipur\n  • Centuries of hospitality heritage combined with modern luxury\n  • UNESCO World Heritage locations\n  • Museum-quality art collections and historic architecture\n  • Royal and presidential suite availability",
+                  "source": "policy_doc",
+                  "sourceType": "policy_doc",
+                  "memberTier": "all-members",
+                  "serviceCategory": "lifestyle",
+                  "similarity": 0.3200349863902981,
+                  "metadata": {
+                    "chunkIndex": 1,
+                    "totalChunks": 7,
+                    "lastUpdated": "2024-01-01",
+                    "version": "2.0",
+                    "category": "luxury_hospitality",
+                    "coverage": "global",
+                    "specialization": "palace_hotels"
+                  }
+                }
+              ],
+              "query": "I need dining reservations at Michelin star restaurants in Paris",
+              "searchOptions": {
+                "intent": "lifestyle",
+                "memberTier": "better",
+                "serviceCategory": "lifestyle",
+                "minimumSimilarity": 0.3,
+                "maxResults": 6
+              },
+              "totalFound": 6,
+              "avgSimilarity": 0.35007483879508
+            },
+            "tool": "search_luxury_knowledge"
+          },
+          "executionTime": 697
+        },
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "lifestyle",
+            "tier": "better",
+            "searchTerm": "general"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T02:57:42.921Z",
+          "result": {
+            "services": [],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 0,
+            "searchSummary": "Found 0 services in lifestyle at better tier matching \"general\""
+          },
+          "executionTime": 0
+        },
+        {
+          "toolName": "create_ticket",
+          "parameters": {
+            "serviceId": "to_be_determined",
+            "requirements": {
+              "destination": "Michelin"
+            },
+            "priority": "standard"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T02:57:42.921Z",
+          "result": {
+            "ticket": {
+              "id": "TAG-MBOI4U8A",
+              "memberId": "guest_session_",
+              "serviceId": "luxury-ground-transport",
+              "serviceName": "Executive Ground Services",
+              "serviceBucket": "transportation",
+              "status": "pending",
+              "priority": "standard",
+              "requestDetails": {
+                "requirements": {
+                  "destination": "Michelin"
+                },
+                "preferences": [],
+                "timeline": "30 minutes"
+              },
+              "pricing": {
+                "basePrice": 500,
+                "adjustments": [],
+                "totalPrice": 500,
+                "paymentStatus": "pending"
+              },
+              "timeline": {
+                "requested": "2025-06-09T02:57:42.922Z"
+              },
+              "communications": [
+                {
+                  "timestamp": "2025-06-09T02:57:42.922Z",
+                  "from": "system",
+                  "message": "Service request created for Executive Ground Services",
+                  "type": "note"
+                }
+              ],
+              "tags": [
+                "transportation",
+                "better"
+              ],
+              "attachments": []
+            },
+            "confirmationCode": "TAG-MBOI4U8A-4U8A",
+            "nextSteps": [
+              "Confirmation email sent with booking details",
+              "Service specialist will review and confirm availability",
+              "Detailed itinerary will be prepared",
+              "Payment authorization will be requested once details are confirmed"
+            ],
+            "estimatedResponse": "5 minutes"
+          },
+          "executionTime": 6
+        }
+      ],
+      "strategy": "direct_fulfillment",
+      "expectedOutcome": "Complete lifestyle service booking with confirmation",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "search_luxury_knowledge",
+        "parameters": {
+          "query": "I need dining reservations at Michelin star restaurants in Paris",
+          "serviceCategory": "lifestyle",
+          "memberTier": "better",
+          "intent": "lifestyle"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T02:57:42.224Z",
+        "result": {
+          "success": true,
+          "result": "Found 6 luxury service knowledge sources:\n\n[1] [ALL-MEMBERS] [LIFESTYLE] (46% match)\norchester\n- Paris: The Ritz, Four Seasons George V, Le Meurice, Mandarin Oriental, Hotel de Crillon\n- Tokyo: Mandarin Oriental, The Peninsula, The Ritz-Carlton, Park Hyatt, Aman Tokyo\n\nPremium Amenities & Experiences:\n- Private check-in suites and dedicated elevator access\n- Rolls-Royce or Bentley fleet transportation\n- Access to exclusive members' clubs and private dining\n- Personal shopping experiences with luxury brand stylists\n- Private art gallery and museum tour coordination\n- Helicopter transfers to airports and scenic destinations\n- Personal chef services for extended stays and special dietary requirements\n\nBooking Protocols by Member Tier:\n(Source: policy_doc)\n\n[2] [ALL-MEMBERS] [LIFESTYLE] (34% match)\nxury brand partnerships\n- In-suite spa treatments with master therapists and wellness consultations\n- Private yacht and helicopter charter coordination\n- Cultural experiences including private museum tours and VIP event access\n- 24/7 butler service with personal preference management\n\nGlobal Portfolio Excellence:\n- New York: The Mark, The St. Regis, The Plaza, The Carlyle, The Lowell\n- Los Angeles: The Beverly Hills Hotel, Chateau Marmont, The Peninsula, Hotel Bel-Air\n- Las Vegas: The Wynn Tower Suites, Four Seasons, The Cosmopolitan Penthouse, ARIA Sky Suites\n- London: The Savoy, Claridge's, The Langham, The Connaught, The Dorchester\n- Paris: The Ritz, Four Seasons George V, Le Meurice, Mandarin Oriental, Hotel de Crillon\n(Source: policy_doc)\n\n[3] [ALL-MEMBERS] [LIFESTYLE] (33% match)\nULTRA-LUXURY HOTEL ACCOMMODATIONS - WORLD'S FINEST PROPERTIES\n\nHotel Property Classifications:\n- Palace Hotels: The Ritz Paris, Hotel Plaza Athénée, The Savoy London, Hotel de Crillon\n  • Historic luxury with modern amenities\n  • Royal suites with palace-level service\n  • Private butler service and dedicated concierge\n  • Access to exclusive events and cultural experiences\n\n- Resort Properties: Four Seasons Maui, The St. Regis Bora Bora, Amanzoe Greece, One&Only Dubai\n  • Destination luxury with comprehensive resort amenities\n  • Private beaches, championship golf courses, world-class spas\n  • Water sports coordination and private yacht access\n  • Cultural immersion experiences and local luxury shopping\n(Source: policy_doc)\n\n[4] [ALL-MEMBERS] [LIFESTYLE] (33% match)\nhef services for extended stays and special dietary requirements\n\nBooking Protocols by Member Tier:\n- Founding10: All properties including palace hotels, guaranteed availability with 48-hour notice\n- Fifty-K: Palace and resort properties with VIP amenities, priority booking for peak periods\n- Corporate: Urban luxury and resort properties with business amenities, advance booking recommended\n- All-Members: Luxury rooms and executive suites with standard amenities, standard booking procedures\n(Source: policy_doc)\n\n[5] [ALL-MEMBERS] [LIFESTYLE] (32% match)\nt (800+ sq ft)\n  • Separate bedroom and living areas\n  • Executive floor privileges and club access\n  • Business center and meeting room availability\n  • Complimentary breakfast and evening cocktails\n\n- Luxury Rooms: $800-3,000/night (500+ sq ft)\n  • Premium location within hotel\n  • Luxury amenities and premium linens\n  • Marble bathrooms with luxury toiletries\n  • City or landmark views where available\n\nExclusive Services Portfolio:\n- Private jet transfer coordination with helicopter airport transfers\n- Michelin-starred in-room dining with celebrity chef consultations\n- Personal shopping and styling services with luxury brand partnerships\n- In-suite spa treatments with master therapists and wellness consultations\n(Source: policy_doc)\n\n[6] [ALL-MEMBERS] [LIFESTYLE] (32% match)\ncoordination and private yacht access\n  • Cultural immersion experiences and local luxury shopping\n\n- Urban Luxury: The Mark NYC, The Beverly Hills Hotel, Mandarin Oriental Tokyo, The Peninsula Hong Kong\n  • City center locations with metropolitan sophistication\n  • Business centers with executive floors and services\n  • Rooftop dining and exclusive club access\n  • Shopping district proximity and cultural attractions\n\n- Historic Luxury: Hotel de Crillon Paris, The Gritti Palace Venice, Taj Lake Palace Udaipur\n  • Centuries of hospitality heritage combined with modern luxury\n  • UNESCO World Heritage locations\n  • Museum-quality art collections and historic architecture\n  • Royal and presidential suite availability\n(Source: policy_doc)",
+          "data": {
+            "results": [
+              {
+                "id": "hotel-accommodations-comprehensive_chunk_5",
+                "content": "orchester\n- Paris: The Ritz, Four Seasons George V, Le Meurice, Mandarin Oriental, Hotel de Crillon\n- Tokyo: Mandarin Oriental, The Peninsula, The Ritz-Carlton, Park Hyatt, Aman Tokyo\n\nPremium Amenities & Experiences:\n- Private check-in suites and dedicated elevator access\n- Rolls-Royce or Bentley fleet transportation\n- Access to exclusive members' clubs and private dining\n- Personal shopping experiences with luxury brand stylists\n- Private art gallery and museum tour coordination\n- Helicopter transfers to airports and scenic destinations\n- Personal chef services for extended stays and special dietary requirements\n\nBooking Protocols by Member Tier:",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "lifestyle",
+                "similarity": 0.4599636820406462,
+                "metadata": {
+                  "chunkIndex": 5,
+                  "totalChunks": 7,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "luxury_hospitality",
+                  "coverage": "global",
+                  "specialization": "palace_hotels"
+                }
+              },
+              {
+                "id": "hotel-accommodations-comprehensive_chunk_4",
+                "content": "xury brand partnerships\n- In-suite spa treatments with master therapists and wellness consultations\n- Private yacht and helicopter charter coordination\n- Cultural experiences including private museum tours and VIP event access\n- 24/7 butler service with personal preference management\n\nGlobal Portfolio Excellence:\n- New York: The Mark, The St. Regis, The Plaza, The Carlyle, The Lowell\n- Los Angeles: The Beverly Hills Hotel, Chateau Marmont, The Peninsula, Hotel Bel-Air\n- Las Vegas: The Wynn Tower Suites, Four Seasons, The Cosmopolitan Penthouse, ARIA Sky Suites\n- London: The Savoy, Claridge's, The Langham, The Connaught, The Dorchester\n- Paris: The Ritz, Four Seasons George V, Le Meurice, Mandarin Oriental, Hotel de Crillon",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "lifestyle",
+                "similarity": 0.33555043882984303,
+                "metadata": {
+                  "chunkIndex": 4,
+                  "totalChunks": 7,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "luxury_hospitality",
+                  "coverage": "global",
+                  "specialization": "palace_hotels"
+                }
+              },
+              {
+                "id": "hotel-accommodations-comprehensive_chunk_0",
+                "content": "ULTRA-LUXURY HOTEL ACCOMMODATIONS - WORLD'S FINEST PROPERTIES\n\nHotel Property Classifications:\n- Palace Hotels: The Ritz Paris, Hotel Plaza Athénée, The Savoy London, Hotel de Crillon\n  • Historic luxury with modern amenities\n  • Royal suites with palace-level service\n  • Private butler service and dedicated concierge\n  • Access to exclusive events and cultural experiences\n\n- Resort Properties: Four Seasons Maui, The St. Regis Bora Bora, Amanzoe Greece, One&Only Dubai\n  • Destination luxury with comprehensive resort amenities\n  • Private beaches, championship golf courses, world-class spas\n  • Water sports coordination and private yacht access\n  • Cultural immersion experiences and local luxury shopping",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "lifestyle",
+                "similarity": 0.334778496165091,
+                "metadata": {
+                  "chunkIndex": 0,
+                  "totalChunks": 7,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "luxury_hospitality",
+                  "coverage": "global",
+                  "specialization": "palace_hotels"
+                }
+              },
+              {
+                "id": "hotel-accommodations-comprehensive_chunk_6",
+                "content": "hef services for extended stays and special dietary requirements\n\nBooking Protocols by Member Tier:\n- Founding10: All properties including palace hotels, guaranteed availability with 48-hour notice\n- Fifty-K: Palace and resort properties with VIP amenities, priority booking for peak periods\n- Corporate: Urban luxury and resort properties with business amenities, advance booking recommended\n- All-Members: Luxury rooms and executive suites with standard amenities, standard booking procedures",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "lifestyle",
+                "similarity": 0.3263501966978855,
+                "metadata": {
+                  "chunkIndex": 6,
+                  "totalChunks": 7,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "luxury_hospitality",
+                  "coverage": "global",
+                  "specialization": "palace_hotels"
+                }
+              },
+              {
+                "id": "hotel-accommodations-comprehensive_chunk_3",
+                "content": "t (800+ sq ft)\n  • Separate bedroom and living areas\n  • Executive floor privileges and club access\n  • Business center and meeting room availability\n  • Complimentary breakfast and evening cocktails\n\n- Luxury Rooms: $800-3,000/night (500+ sq ft)\n  • Premium location within hotel\n  • Luxury amenities and premium linens\n  • Marble bathrooms with luxury toiletries\n  • City or landmark views where available\n\nExclusive Services Portfolio:\n- Private jet transfer coordination with helicopter airport transfers\n- Michelin-starred in-room dining with celebrity chef consultations\n- Personal shopping and styling services with luxury brand partnerships\n- In-suite spa treatments with master therapists and wellness consultations",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "lifestyle",
+                "similarity": 0.32377123264671603,
+                "metadata": {
+                  "chunkIndex": 3,
+                  "totalChunks": 7,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "luxury_hospitality",
+                  "coverage": "global",
+                  "specialization": "palace_hotels"
+                }
+              },
+              {
+                "id": "hotel-accommodations-comprehensive_chunk_1",
+                "content": "coordination and private yacht access\n  • Cultural immersion experiences and local luxury shopping\n\n- Urban Luxury: The Mark NYC, The Beverly Hills Hotel, Mandarin Oriental Tokyo, The Peninsula Hong Kong\n  • City center locations with metropolitan sophistication\n  • Business centers with executive floors and services\n  • Rooftop dining and exclusive club access\n  • Shopping district proximity and cultural attractions\n\n- Historic Luxury: Hotel de Crillon Paris, The Gritti Palace Venice, Taj Lake Palace Udaipur\n  • Centuries of hospitality heritage combined with modern luxury\n  • UNESCO World Heritage locations\n  • Museum-quality art collections and historic architecture\n  • Royal and presidential suite availability",
+                "source": "policy_doc",
+                "sourceType": "policy_doc",
+                "memberTier": "all-members",
+                "serviceCategory": "lifestyle",
+                "similarity": 0.3200349863902981,
+                "metadata": {
+                  "chunkIndex": 1,
+                  "totalChunks": 7,
+                  "lastUpdated": "2024-01-01",
+                  "version": "2.0",
+                  "category": "luxury_hospitality",
+                  "coverage": "global",
+                  "specialization": "palace_hotels"
+                }
+              }
+            ],
+            "query": "I need dining reservations at Michelin star restaurants in Paris",
+            "searchOptions": {
+              "intent": "lifestyle",
+              "memberTier": "better",
+              "serviceCategory": "lifestyle",
+              "minimumSimilarity": 0.3,
+              "maxResults": 6
+            },
+            "totalFound": 6,
+            "avgSimilarity": 0.35007483879508
+          },
+          "tool": "search_luxury_knowledge"
+        },
+        "executionTime": 697
+      },
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "lifestyle",
+          "tier": "better",
+          "searchTerm": "general"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T02:57:42.921Z",
+        "result": {
+          "services": [],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 0,
+          "searchSummary": "Found 0 services in lifestyle at better tier matching \"general\""
+        },
+        "executionTime": 0
+      },
+      {
+        "toolName": "create_ticket",
+        "parameters": {
+          "serviceId": "to_be_determined",
+          "requirements": {
+            "destination": "Michelin"
+          },
+          "priority": "standard"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T02:57:42.921Z",
+        "result": {
+          "ticket": {
+            "id": "TAG-MBOI4U8A",
+            "memberId": "guest_session_",
+            "serviceId": "luxury-ground-transport",
+            "serviceName": "Executive Ground Services",
+            "serviceBucket": "transportation",
+            "status": "pending",
+            "priority": "standard",
+            "requestDetails": {
+              "requirements": {
+                "destination": "Michelin"
+              },
+              "preferences": [],
+              "timeline": "30 minutes"
+            },
+            "pricing": {
+              "basePrice": 500,
+              "adjustments": [],
+              "totalPrice": 500,
+              "paymentStatus": "pending"
+            },
+            "timeline": {
+              "requested": "2025-06-09T02:57:42.922Z"
+            },
+            "communications": [
+              {
+                "timestamp": "2025-06-09T02:57:42.922Z",
+                "from": "system",
+                "message": "Service request created for Executive Ground Services",
+                "type": "note"
+              }
+            ],
+            "tags": [
+              "transportation",
+              "better"
+            ],
+            "attachments": []
+          },
+          "confirmationCode": "TAG-MBOI4U8A-4U8A",
+          "nextSteps": [
+            "Confirmation email sent with booking details",
+            "Service specialist will review and confirm availability",
+            "Detailed itinerary will be prepared",
+            "Payment authorization will be requested once details are confirmed"
+          ],
+          "estimatedResponse": "5 minutes"
+        },
+        "executionTime": 6
+      }
+    ],
+    "finalResult": {
+      "ticket": {
+        "id": "TAG-MBOI4U8A",
+        "memberId": "guest_session_",
+        "serviceId": "luxury-ground-transport",
+        "serviceName": "Executive Ground Services",
+        "serviceBucket": "transportation",
+        "status": "pending",
+        "priority": "standard",
+        "requestDetails": {
+          "requirements": {
+            "destination": "Michelin"
+          },
+          "preferences": [],
+          "timeline": "30 minutes"
+        },
+        "pricing": {
+          "basePrice": 500,
+          "adjustments": [],
+          "totalPrice": 500,
+          "paymentStatus": "pending"
+        },
+        "timeline": {
+          "requested": "2025-06-09T02:57:42.922Z"
+        },
+        "communications": [
+          {
+            "timestamp": "2025-06-09T02:57:42.922Z",
+            "from": "system",
+            "message": "Service request created for Executive Ground Services",
+            "type": "note"
+          }
+        ],
+        "tags": [
+          "transportation",
+          "better"
+        ],
+        "attachments": []
+      },
+      "confirmationCode": "TAG-MBOI4U8A-4U8A",
+      "nextSteps": [
+        "Confirmation email sent with booking details",
+        "Service specialist will review and confirm availability",
+        "Detailed itinerary will be prepared",
+        "Payment authorization will be requested once details are confirmed"
+      ],
+      "estimatedResponse": "5 minutes"
+    },
+    "recommendations": [],
+    "nextActions": [
+      "Ticket TAG-MBOI4U8A created - confirmation email sent",
+      "Dedicated concierge will contact you within 30 minutes",
+      "You can track progress via your member portal"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": false,
+    "requiresWorkflow": false
+  },
+  "outcome": "success",
+  "metrics": {
+    "responseTime": 704,
+    "toolsUsed": [
+      "search_luxury_knowledge",
+      "fetch_active_services",
+      "create_ticket"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 1,
+    "areas_for_improvement": [],
+    "successful_patterns": [
+      "High confidence lifestyle intent recognition",
+      "Perfect tool execution sequence"
+    ]
+  },
+  "followUp": {
+    "required": true,
+    "type": "confirmation",
+    "scheduledAt": "2025-06-09T03:27:42.927Z"
+  }
+}

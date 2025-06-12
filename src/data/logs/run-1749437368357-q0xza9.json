@@ -1,0 +1,51 @@
+{
+  "id": "run-1749437368357-q0xza9",
+  "timestamp": "2025-06-09T02:49:28.357Z",
+  "memberId": "guest_session_",
+  "originalMessage": "I need a Citation Latitude for 8 passengers to Tokyo",
+  "intentAnalysis": {
+    "primaryBucket": "lifestyle",
+    "secondaryBuckets": [],
+    "serviceType": "emergency",
+    "urgency": "emergency",
+    "confidence": 1,
+    "extractedEntities": {},
+    "suggestedTier": "extraordinary"
+  },
+  "executionResult": {
+    "success": false,
+    "plan": {
+      "steps": [],
+      "strategy": "escalation",
+      "expectedOutcome": "Human concierge emergency response",
+      "fallbackOptions": []
+    },
+    "executedSteps": [],
+    "finalResult": null,
+    "recommendations": [
+      "Emergency escalation initiated"
+    ],
+    "nextActions": [
+      "Senior concierge will contact you immediately"
+    ],
+    "escalationNeeded": true
+  },
+  "outcome": "escalation",
+  "metrics": {
+    "responseTime": 252,
+    "toolsUsed": [],
+    "escalationTriggered": true
+  },
+  "learnings": {
+    "intentAccuracy": 0.5,
+    "executionEfficiency": 0,
+    "areas_for_improvement": [
+      "Intent recognition accuracy",
+      "Tool execution reliability"
+    ],
+    "successful_patterns": []
+  },
+  "followUp": {
+    "required": false
+  }
+}

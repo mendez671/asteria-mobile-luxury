@@ -1,0 +1,252 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* ===============================
+ * PHASE 3.5: OPTIMIZED GLOBALS CSS
+ * Reduced from 2312 lines to ~200 lines
+ * Essential luxury styles only
+ * ===============================
+ */
+
+/* Import premium typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Core color system */
+  --background: 0 0% 3.9%;
+  --foreground: 0 0% 98%;
+  --primary: 0 0% 9%;
+  --primary-foreground: 0 0% 98%;
+  --border: 0 0% 14.9%;
+  --ring: 0 0% 83.1%;
+  
+  /* TAG Luxury Colors - Essential only */
+  --tag-gold: #D4AF37;
+  --tag-gold-light: #FFD700;
+  --tag-dark-purple: #0D0016;
+  --tag-light-purple: #2D1B69;
+  
+  /* Glass morphism variables */
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-hover: rgba(255, 255, 255, 0.15);
+  
+  /* Typography */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  
+  /* Mobile optimizations */
+  --mobile-safe-area-top: env(safe-area-inset-top, 0px);
+  --mobile-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ===============================
+ * BASE STYLES
+ * ===============================
+ */
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+/* Re-enable text selection for content */
+p, span, div[contenteditable], input, textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: linear-gradient(135deg, var(--tag-dark-purple) 0%, var(--tag-light-purple) 100%);
+  color: var(--foreground);
+  font-family: var(--font-primary);
+  min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
+  overscroll-behavior: none;
+  
+  /* Safe area padding for mobile */
+  padding-top: var(--mobile-safe-area-top);
+  padding-bottom: var(--mobile-safe-area-bottom);
+}
+
+/* ===============================
+ * GLASS MORPHISM SYSTEM
+ * ===============================
+ */
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  transition: all 0.2s ease;
+}
+
+.glass:hover {
+  background: var(--glass-hover);
+  transform: translateY(-1px);
+}
+
+/* ===============================
+ * ESSENTIAL ANIMATIONS
+ * Only performance-critical animations
+ * ===============================
+ */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ===============================
+ * MOBILE OPTIMIZATIONS
+ * ===============================
+ */
+
+@media (max-width: 768px) {
+  .mobile-container {
+    padding: 1rem;
+    max-width: 100%;
+  }
+  
+  /* Prevent iOS zoom on input focus */
+  input, textarea, select {
+    font-size: 16px;
+  }
+  
+  /* Mobile-friendly touch targets */
+  button, .interactive {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ===============================
+ * SCROLLBAR STYLING
+ * ===============================
+ */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(13, 0, 22, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--tag-gold), #B8860B);
+  border-radius: 4px;
+}
+
+/* ===============================
+ * ACCESSIBILITY
+ * ===============================
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.focus-visible:focus-visible {
+  outline: 2px solid var(--tag-gold);
+  outline-offset: 2px;
+}
+
+/* ===============================
+ * UTILITY CLASSES
+ * ===============================
+ */
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--tag-gold), var(--tag-gold-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.interactive {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.interactive:hover {
+  transform: translateY(-1px);
+}
+
+.interactive:active {
+  transform: translateY(0);
+}
+
+/* Mobile haptic feedback */
+@media (hover: none) and (pointer: coarse) {
+  .interactive:active {
+    transform: scale(0.98);
+  }
+}
+
+/* ===============================
+ * PERFORMANCE OPTIMIZATIONS
+ * ===============================
+ */
+
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.prevent-layout-shift {
+  contain: layout style;
+}
+
+/* ===============================
+ * PRINT STYLES
+ * ===============================
+ */
+
+@media print {
+  .glass {
+    background: white !important;
+    backdrop-filter: none !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+} 

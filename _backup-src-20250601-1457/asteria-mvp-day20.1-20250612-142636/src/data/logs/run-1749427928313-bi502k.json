@@ -1,0 +1,305 @@
+{
+  "id": "run-1749427928313-bi502k",
+  "timestamp": "2025-06-09T00:12:08.313Z",
+  "memberId": "test-member-0",
+  "originalMessage": "I need a private jet to London with full service [Retry: Escalating to human concierge]",
+  "intentAnalysis": {
+    "primaryBucket": "transportation",
+    "secondaryBuckets": [
+      "lifestyle"
+    ],
+    "serviceType": "private aviation",
+    "urgency": "standard",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [],
+      "locations": [
+        "London"
+      ],
+      "people": [],
+      "preferences": [
+        "a private jet to London with full service [Retry: Escalating to human concierge]"
+      ]
+    },
+    "suggestedTier": "extraordinary"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "search_luxury_knowledge",
+          "parameters": {
+            "query": "transportation private aviation luxury services",
+            "serviceCategory": "transportation",
+            "memberTier": "extraordinary"
+          },
+          "status": "failed",
+          "timestamp": "2025-06-09T00:12:08.182Z",
+          "result": {
+            "error": "ENOENT: no such file or directory, open './test/data/05-versions-space.pdf'"
+          }
+        },
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "transportation",
+            "tier": "extraordinary"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T00:12:08.312Z",
+          "result": {
+            "services": [
+              {
+                "id": "private-jet-global",
+                "name": "Global Private Aviation",
+                "description": "24/7 private jet charter worldwide with our exclusive fleet partners",
+                "tier": "extraordinary",
+                "basePrice": 15000,
+                "availability": "immediate",
+                "bookingRequirements": [
+                  "departure",
+                  "destination",
+                  "passengers",
+                  "date",
+                  "time"
+                ],
+                "features": [
+                  "Dedicated concierge",
+                  "Ground transportation included",
+                  "Catering options",
+                  "Wi-Fi & entertainment"
+                ],
+                "leadTime": "2 hours minimum",
+                "maxPassengers": 14
+              },
+              {
+                "id": "yacht-charter",
+                "name": "Luxury Marine Experiences",
+                "description": "Private yacht charters and maritime adventures",
+                "tier": "extraordinary",
+                "basePrice": 8000,
+                "availability": "seasonal",
+                "bookingRequirements": [
+                  "location",
+                  "duration",
+                  "passengers",
+                  "date",
+                  "activities"
+                ],
+                "features": [
+                  "Professional crew",
+                  "Gourmet catering",
+                  "Water sports equipment",
+                  "Scenic routes"
+                ],
+                "leadTime": "48 hours",
+                "maxPassengers": 20
+              }
+            ],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 2,
+            "searchSummary": "Found 2 services in transportation at extraordinary tier"
+          },
+          "executionTime": 1
+        }
+      ],
+      "strategy": "guided_collection",
+      "expectedOutcome": "Curated transportation service options with booking assistance",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "search_luxury_knowledge",
+        "parameters": {
+          "query": "transportation private aviation luxury services",
+          "serviceCategory": "transportation",
+          "memberTier": "extraordinary"
+        },
+        "status": "failed",
+        "timestamp": "2025-06-09T00:12:08.182Z",
+        "result": {
+          "error": "ENOENT: no such file or directory, open './test/data/05-versions-space.pdf'"
+        }
+      },
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "transportation",
+          "tier": "extraordinary"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T00:12:08.312Z",
+        "result": {
+          "services": [
+            {
+              "id": "private-jet-global",
+              "name": "Global Private Aviation",
+              "description": "24/7 private jet charter worldwide with our exclusive fleet partners",
+              "tier": "extraordinary",
+              "basePrice": 15000,
+              "availability": "immediate",
+              "bookingRequirements": [
+                "departure",
+                "destination",
+                "passengers",
+                "date",
+                "time"
+              ],
+              "features": [
+                "Dedicated concierge",
+                "Ground transportation included",
+                "Catering options",
+                "Wi-Fi & entertainment"
+              ],
+              "leadTime": "2 hours minimum",
+              "maxPassengers": 14
+            },
+            {
+              "id": "yacht-charter",
+              "name": "Luxury Marine Experiences",
+              "description": "Private yacht charters and maritime adventures",
+              "tier": "extraordinary",
+              "basePrice": 8000,
+              "availability": "seasonal",
+              "bookingRequirements": [
+                "location",
+                "duration",
+                "passengers",
+                "date",
+                "activities"
+              ],
+              "features": [
+                "Professional crew",
+                "Gourmet catering",
+                "Water sports equipment",
+                "Scenic routes"
+              ],
+              "leadTime": "48 hours",
+              "maxPassengers": 20
+            }
+          ],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 2,
+          "searchSummary": "Found 2 services in transportation at extraordinary tier"
+        },
+        "executionTime": 1
+      }
+    ],
+    "finalResult": {
+      "services": [
+        {
+          "id": "private-jet-global",
+          "name": "Global Private Aviation",
+          "description": "24/7 private jet charter worldwide with our exclusive fleet partners",
+          "tier": "extraordinary",
+          "basePrice": 15000,
+          "availability": "immediate",
+          "bookingRequirements": [
+            "departure",
+            "destination",
+            "passengers",
+            "date",
+            "time"
+          ],
+          "features": [
+            "Dedicated concierge",
+            "Ground transportation included",
+            "Catering options",
+            "Wi-Fi & entertainment"
+          ],
+          "leadTime": "2 hours minimum",
+          "maxPassengers": 14
+        },
+        {
+          "id": "yacht-charter",
+          "name": "Luxury Marine Experiences",
+          "description": "Private yacht charters and maritime adventures",
+          "tier": "extraordinary",
+          "basePrice": 8000,
+          "availability": "seasonal",
+          "bookingRequirements": [
+            "location",
+            "duration",
+            "passengers",
+            "date",
+            "activities"
+          ],
+          "features": [
+            "Professional crew",
+            "Gourmet catering",
+            "Water sports equipment",
+            "Scenic routes"
+          ],
+          "leadTime": "48 hours",
+          "maxPassengers": 20
+        }
+      ],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 2,
+      "searchSummary": "Found 2 services in transportation at extraordinary tier"
+    },
+    "recommendations": [
+      "Some services may require additional information - our concierge team will follow up",
+      "Also consider our lifestyle services for a complete experience"
+    ],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": false,
+    "requiresWorkflow": false
+  },
+  "outcome": "partial_success",
+  "metrics": {
+    "responseTime": 131,
+    "toolsUsed": [
+      "search_luxury_knowledge",
+      "fetch_active_services"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 0.5,
+    "areas_for_improvement": [
+      "Tool execution reliability"
+    ],
+    "successful_patterns": [
+      "High confidence transportation intent recognition"
+    ]
+  },
+  "followUp": {
+    "required": true,
+    "type": "additional_info",
+    "scheduledAt": "2025-06-09T00:27:08.313Z"
+  }
+}

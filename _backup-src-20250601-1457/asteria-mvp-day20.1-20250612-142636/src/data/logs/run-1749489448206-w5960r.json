@@ -1,0 +1,244 @@
+{
+  "id": "run-1749489448206-w5960r",
+  "timestamp": "2025-06-09T17:17:28.206Z",
+  "memberId": "guest_session_",
+  "originalMessage": "Lets book a trip to miami please [Retry: Escalating to human concierge] [Retry: Escalating to human concierge]",
+  "intentAnalysis": {
+    "primaryBucket": "lifestyle",
+    "secondaryBuckets": [
+      "events"
+    ],
+    "serviceType": "general",
+    "urgency": "standard",
+    "confidence": 1.3,
+    "extractedEntities": {
+      "dates": [],
+      "locations": [
+        "miami"
+      ],
+      "people": [],
+      "preferences": [],
+      "budgetHints": []
+    },
+    "suggestedTier": "better"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "search_luxury_knowledge",
+          "parameters": {
+            "query": "Lets book a trip to miami please [Retry: Escalating to human concierge] [Retry: Escalating to human concierge]",
+            "serviceCategory": "lifestyle",
+            "memberTier": "better",
+            "intent": "lifestyle"
+          },
+          "status": "pending",
+          "timestamp": ""
+        },
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "lifestyle",
+            "tier": "better",
+            "searchTerm": "general"
+          },
+          "status": "pending",
+          "timestamp": ""
+        },
+        {
+          "toolName": "create_ticket",
+          "parameters": {
+            "serviceId": "to_be_determined",
+            "requirements": {
+              "destination": "miami"
+            },
+            "priority": "standard"
+          },
+          "status": "pending",
+          "timestamp": ""
+        }
+      ],
+      "strategy": "direct_fulfillment",
+      "expectedOutcome": "Complete lifestyle service booking with confirmation",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {},
+        "result": {
+          "services": [],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 0,
+          "searchSummary": "Found 0 services in lifestyle at better tier matching \"general\""
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T17:17:18.200Z",
+        "executionTime": 1
+      },
+      {
+        "toolName": "search_luxury_knowledge",
+        "parameters": {},
+        "result": null,
+        "status": "failed",
+        "timestamp": "2025-06-09T17:17:28.200Z",
+        "executionTime": 10001
+      },
+      {
+        "toolName": "create_ticket",
+        "parameters": {},
+        "result": {
+          "ticket": {
+            "id": "TAG-MBPCUHOT",
+            "memberId": "guest_session_",
+            "serviceId": "luxury-ground-transport",
+            "serviceName": "Executive Ground Services",
+            "serviceBucket": "transportation",
+            "status": "pending",
+            "priority": "standard",
+            "requestDetails": {
+              "requirements": {
+                "destination": "miami"
+              },
+              "preferences": [],
+              "timeline": "30 minutes"
+            },
+            "pricing": {
+              "basePrice": 500,
+              "adjustments": [],
+              "totalPrice": 500,
+              "paymentStatus": "pending"
+            },
+            "timeline": {
+              "requested": "2025-06-09T17:17:28.205Z"
+            },
+            "communications": [
+              {
+                "timestamp": "2025-06-09T17:17:28.205Z",
+                "from": "system",
+                "message": "Service request created for Executive Ground Services",
+                "type": "note"
+              }
+            ],
+            "tags": [
+              "transportation",
+              "better"
+            ],
+            "attachments": []
+          },
+          "confirmationCode": "TAG-MBPCUHOT-UHOT",
+          "nextSteps": [
+            "Confirmation email sent with booking details",
+            "Service specialist will review and confirm availability",
+            "Detailed itinerary will be prepared",
+            "Payment authorization will be requested once details are confirmed"
+          ],
+          "estimatedResponse": "5 minutes"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T17:17:28.206Z",
+        "executionTime": 2
+      }
+    ],
+    "finalResult": {
+      "ticket": {
+        "id": "TAG-MBPCUHOT",
+        "memberId": "guest_session_",
+        "serviceId": "luxury-ground-transport",
+        "serviceName": "Executive Ground Services",
+        "serviceBucket": "transportation",
+        "status": "pending",
+        "priority": "standard",
+        "requestDetails": {
+          "requirements": {
+            "destination": "miami"
+          },
+          "preferences": [],
+          "timeline": "30 minutes"
+        },
+        "pricing": {
+          "basePrice": 500,
+          "adjustments": [],
+          "totalPrice": 500,
+          "paymentStatus": "pending"
+        },
+        "timeline": {
+          "requested": "2025-06-09T17:17:28.205Z"
+        },
+        "communications": [
+          {
+            "timestamp": "2025-06-09T17:17:28.205Z",
+            "from": "system",
+            "message": "Service request created for Executive Ground Services",
+            "type": "note"
+          }
+        ],
+        "tags": [
+          "transportation",
+          "better"
+        ],
+        "attachments": []
+      },
+      "confirmationCode": "TAG-MBPCUHOT-UHOT",
+      "nextSteps": [
+        "Confirmation email sent with booking details",
+        "Service specialist will review and confirm availability",
+        "Detailed itinerary will be prepared",
+        "Payment authorization will be requested once details are confirmed"
+      ],
+      "estimatedResponse": "5 minutes"
+    },
+    "recommendations": [
+      "Some services may require additional information - our concierge team will follow up",
+      "Also consider our events services for a complete experience"
+    ],
+    "nextActions": [
+      "Ticket TAG-MBPCUHOT created - confirmation email sent",
+      "Dedicated concierge will contact you within 30 minutes",
+      "You can track progress via your member portal"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": false,
+    "requiresWorkflow": false
+  },
+  "outcome": "partial_success",
+  "metrics": {
+    "responseTime": 10013,
+    "toolsUsed": [
+      "fetch_active_services",
+      "search_luxury_knowledge",
+      "create_ticket"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1.3,
+    "executionEfficiency": 0.6666666666666666,
+    "areas_for_improvement": [
+      "Tool execution reliability",
+      "Response time optimization"
+    ],
+    "successful_patterns": [
+      "High confidence lifestyle intent recognition"
+    ]
+  },
+  "followUp": {
+    "required": true,
+    "type": "additional_info",
+    "scheduledAt": "2025-06-09T17:32:28.206Z"
+  }
+}

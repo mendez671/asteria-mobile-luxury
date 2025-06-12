@@ -1,0 +1,595 @@
+// ===============================
+// PHASE 5.2: WORKFLOW STATE MANAGEMENT
+// Firebase Firestore integration for workflow persistence
+// ===============================
+
+import { getFirebaseAdmin } from '../firebase/admin';
+import { 
+  WorkflowState, 
+  WorkflowStep, 
+  ApprovalRequest, 
+  WorkflowExecution, 
+  WorkflowMetrics,
+  WorkflowEvent,
+  WorkflowStatus,
+  StepStatus
+} from './types';
+import { 
+  doc, 
+  setDoc, 
+  getDoc, 
+  updateDoc, 
+  deleteDoc, 
+  collection, 
+  query, 
+  where, 
+  orderBy, 
+  limit, 
+  getDocs, 
+  onSnapshot, 
+  writeBatch,
+  Timestamp 
+} from 'firebase/firestore';
+
+// Collection names
+const WORKFLOWS_COLLECTION = 'workflows';
+const EXECUTIONS_COLLECTION = 'workflow_executions';
+const METRICS_COLLECTION = 'workflow_metrics';
+
+// ===============================
+// PHASE 6.3: FIREBASE UNDEFINED FIELD DIAGNOSTIC SYSTEM
+// Comprehensive validation to identify the exact undefined field causing Firebase setDoc failure
+// ===============================
+
+function validateWorkflowForFirestore(workflowData: WorkflowState, workflowId: string) {
+  console.log(`🔍🔍🔍 [PHASE 6.3 FIREBASE DIAGNOSTIC] Starting comprehensive undefined field validation for workflow: ${workflowId}`);
+  
+  const undefinedFields: string[] = [];
+  
+  // TOP-LEVEL FIELD VALIDATION (Most likely source #1)
+  console.log(`🔍 [DIAGNOSTIC] 1. TOP-LEVEL FIELDS:`);
+  Object.entries(workflowData).forEach(([key, value]) => {
+    if (value === undefined) {
+      undefinedFields.push(`workflowData.${key}`);
+      console.log(`❌ [DIAGNOSTIC] UNDEFINED: workflowData.${key} = undefined`);
+    } else {
+      console.log(`✅ [DIAGNOSTIC] workflowData.${key} = ${typeof value} (${Array.isArray(value) ? 'array' : typeof value})`);
+    }
+  });
+  
+  // DATE FIELD VALIDATION (Most likely source #2)
+  console.log(`🔍 [DIAGNOSTIC] 2. DATE FIELDS:`);
+  const dateFields = ['createdAt', 'updatedAt', 'startedAt', 'completedAt', 'estimatedCompletionAt'];
+  dateFields.forEach(field => {
+    const value = (workflowData as any)[field];
+    if (value === undefined) {
+      undefinedFields.push(`workflowData.${field}`);
+      console.log(`❌ [DIAGNOSTIC] UNDEFINED DATE: workflowData.${field} = undefined`);
+    } else if (value === null) {
+      console.log(`⚠️  [DIAGNOSTIC] NULL DATE: workflowData.${field} = null (OK for optional dates)`);
+    } else if (value instanceof Date) {
+      console.log(`✅ [DIAGNOSTIC] VALID DATE: workflowData.${field} = ${value.toISOString()}`);
+    } else {
+      console.log(`⚠️  [DIAGNOSTIC] INVALID DATE TYPE: workflowData.${field} = ${typeof value} (${value})`);
+    }
+  });
+  
+  // STEPS ARRAY VALIDATION (Potential source #3)
+  console.log(`🔍 [DIAGNOSTIC] 3. STEPS ARRAY (${workflowData.steps?.length || 0} steps):`);
+  if (workflowData.steps === undefined) {
+    undefinedFields.push('workflowData.steps');
+    console.log(`❌ [DIAGNOSTIC] UNDEFINED ARRAY: workflowData.steps = undefined`);
+  } else if (Array.isArray(workflowData.steps)) {
+    workflowData.steps.forEach((step, index) => {
+      console.log(`🔍 [DIAGNOSTIC] 3.${index+1}. Step[${index}] validation:`);
+      Object.entries(step).forEach(([key, value]) => {
+        if (value === undefined) {
+          undefinedFields.push(`workflowData.steps[${index}].${key}`);
+          console.log(`❌ [DIAGNOSTIC] UNDEFINED STEP FIELD: steps[${index}].${key} = undefined`);
+        } else {
+          console.log(`✅ [DIAGNOSTIC] steps[${index}].${key} = ${typeof value} (${Array.isArray(value) ? 'array' : typeof value})`);
+        }
+      });
+      
+      // Nested step field validation
+      if (step.config && typeof step.config === 'object') {
+        Object.entries(step.config).forEach(([key, value]) => {
+          if (value === undefined) {
+            undefinedFields.push(`workflowData.steps[${index}].config.${key}`);
+            console.log(`❌ [DIAGNOSTIC] UNDEFINED STEP CONFIG: steps[${index}].config.${key} = undefined`);
+          }
+        });
+      }
+    });
+  } else {
+    console.log(`⚠️  [DIAGNOSTIC] INVALID STEPS TYPE: workflowData.steps = ${typeof workflowData.steps}`);
+  }
+  
+  // APPROVALS ARRAY VALIDATION (Potential source #4)
+  console.log(`🔍 [DIAGNOSTIC] 4. APPROVALS ARRAY (${workflowData.approvals?.length || 0} approvals):`);
+  if (workflowData.approvals === undefined) {
+    undefinedFields.push('workflowData.approvals');
+    console.log(`❌ [DIAGNOSTIC] UNDEFINED ARRAY: workflowData.approvals = undefined`);
+  } else if (Array.isArray(workflowData.approvals)) {
+    workflowData.approvals.forEach((approval, index) => {
+      Object.entries(approval).forEach(([key, value]) => {
+        if (value === undefined) {
+          undefinedFields.push(`workflowData.approvals[${index}].${key}`);
+          console.log(`❌ [DIAGNOSTIC] UNDEFINED APPROVAL FIELD: approvals[${index}].${key} = undefined`);
+        }
+      });
+    });
+  }
+  
+  // ERROR HISTORY VALIDATION (Potential source #5)
+  console.log(`🔍 [DIAGNOSTIC] 5. ERROR HISTORY ARRAY (${workflowData.errorHistory?.length || 0} errors):`);
+  if (workflowData.errorHistory === undefined) {
+    undefinedFields.push('workflowData.errorHistory');
+    console.log(`❌ [DIAGNOSTIC] UNDEFINED ARRAY: workflowData.errorHistory = undefined`);
+  } else if (Array.isArray(workflowData.errorHistory)) {
+    workflowData.errorHistory.forEach((error, index) => {
+      Object.entries(error).forEach(([key, value]) => {
+        if (value === undefined) {
+          undefinedFields.push(`workflowData.errorHistory[${index}].${key}`);
+          console.log(`❌ [DIAGNOSTIC] UNDEFINED ERROR FIELD: errorHistory[${index}].${key} = undefined`);
+        }
+      });
+    });
+  }
+  
+  // METADATA VALIDATION (Potential source #6)
+  console.log(`🔍 [DIAGNOSTIC] 6. METADATA OBJECT:`);
+  if (workflowData.metadata === undefined) {
+    undefinedFields.push('workflowData.metadata');
+    console.log(`❌ [DIAGNOSTIC] UNDEFINED OBJECT: workflowData.metadata = undefined`);
+  } else if (workflowData.metadata && typeof workflowData.metadata === 'object') {
+    Object.entries(workflowData.metadata).forEach(([key, value]) => {
+      if (value === undefined) {
+        undefinedFields.push(`workflowData.metadata.${key}`);
+        console.log(`❌ [DIAGNOSTIC] UNDEFINED METADATA FIELD: metadata.${key} = undefined`);
+      } else {
+        console.log(`✅ [DIAGNOSTIC] metadata.${key} = ${typeof value}`);
+      }
+      
+      // Deep nested metadata validation
+      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+        Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+          if (nestedValue === undefined) {
+            undefinedFields.push(`workflowData.metadata.${key}.${nestedKey}`);
+            console.log(`❌ [DIAGNOSTIC] UNDEFINED NESTED METADATA: metadata.${key}.${nestedKey} = undefined`);
+          }
+        });
+      }
+    });
+  }
+  
+  // DIAGNOSTIC SUMMARY
+  console.log(`🔍🔍🔍 [PHASE 6.3 FIREBASE DIAGNOSTIC] VALIDATION COMPLETE`);
+  if (undefinedFields.length > 0) {
+    console.log(`❌❌❌ [DIAGNOSTIC] FOUND ${undefinedFields.length} UNDEFINED FIELDS:`);
+    undefinedFields.forEach((field, index) => {
+      console.log(`❌ ${index + 1}. ${field}`);
+    });
+    console.log(`🎯 [DIAGNOSTIC] SMOKING GUN: First undefined field likely causing Firebase error: ${undefinedFields[0]}`);
+  } else {
+    console.log(`✅✅✅ [DIAGNOSTIC] NO UNDEFINED FIELDS DETECTED - Error may be in Firebase conversion process`);
+  }
+  
+  return undefinedFields;
+}
+
+// ===============================
+// WORKFLOW STATE OPERATIONS
+// ===============================
+
+export class WorkflowStateManager {
+  /**
+   * Create a new workflow with comprehensive undefined field diagnostic validation
+   */
+  async createWorkflow(workflow: Omit<WorkflowState, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+    const { adminDb: db } = await getFirebaseAdmin();
+    const workflowId = `wf_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    const now = new Date();
+    
+    console.log('🔍 [WORKFLOW_STATE] Creating workflow with data:', JSON.stringify(workflow, null, 2));
+    
+    const workflowData: WorkflowState = {
+      ...workflow,
+      id: workflowId,
+      createdAt: now,
+      updatedAt: now
+    };
+
+    console.log('🔍 [WORKFLOW_STATE] Final workflow data before Firestore:', JSON.stringify(workflowData, null, 2));
+
+    // ===============================
+    // COMPREHENSIVE UNDEFINED FIELD VALIDATION
+    // ===============================
+    const undefinedFields = validateWorkflowForFirestore(workflowData, workflowId);
+    
+    if (undefinedFields.length > 0) {
+      console.log(`🚨 [WORKFLOW_STATE] ABORTING FIRESTORE SAVE - Found ${undefinedFields.length} undefined fields`);
+      throw new Error(`Workflow validation failed: undefined fields detected: ${undefinedFields.join(', ')}`);
+    }
+
+    // ===============================
+    // FIREBASE DOCUMENT CONSTRUCTION WITH DETAILED LOGGING
+    // ===============================
+    console.log(`🔍 [WORKFLOW_STATE] Building Firebase document with Timestamp conversions...`);
+    
+    try {
+      const firestoreDoc = {
+        ...workflowData,
+        createdAt: Timestamp.fromDate(workflowData.createdAt),
+        updatedAt: Timestamp.fromDate(workflowData.updatedAt),
+        startedAt: workflowData.startedAt ? Timestamp.fromDate(workflowData.startedAt) : null,
+        completedAt: workflowData.completedAt ? Timestamp.fromDate(workflowData.completedAt) : null,
+        estimatedCompletionAt: workflowData.estimatedCompletionAt ? Timestamp.fromDate(workflowData.estimatedCompletionAt) : null,
+        steps: workflowData.steps.map((step, index) => {
+          console.log(`🔍 [WORKFLOW_STATE] Processing step[${index}]: ${step.id}`);
+          return {
+            ...step,
+            startedAt: step.startedAt ? Timestamp.fromDate(step.startedAt) : null,
+            completedAt: step.completedAt ? Timestamp.fromDate(step.completedAt) : null
+          };
+        }),
+        approvals: workflowData.approvals.map((approval, index) => {
+          console.log(`🔍 [WORKFLOW_STATE] Processing approval[${index}]: ${approval.id}`);
+          return {
+            ...approval,
+            requestedAt: Timestamp.fromDate(approval.requestedAt),
+            approvedAt: approval.approvedAt ? Timestamp.fromDate(approval.approvedAt) : null,
+            expiresAt: approval.expiresAt ? Timestamp.fromDate(approval.expiresAt) : null
+          };
+        }),
+        errorHistory: workflowData.errorHistory.map((error, index) => {
+          console.log(`🔍 [WORKFLOW_STATE] Processing error[${index}]: stepId=${error.stepId}, retryAttempt=${error.retryAttempt}`);
+          return {
+            ...error,
+            timestamp: Timestamp.fromDate(error.timestamp)
+          };
+        })
+      };
+      
+      console.log(`🔍 [WORKFLOW_STATE] Firebase document built successfully, attempting setDoc...`);
+      
+      await setDoc(doc(db, WORKFLOWS_COLLECTION, workflowId), firestoreDoc);
+      
+      console.log(`✅ Created workflow: ${workflowId}`);
+      return workflowId;
+      
+    } catch (error) {
+      console.log(`❌❌❌ [WORKFLOW_STATE] Firebase setDoc failed with error:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get workflow by ID
+   */
+  async getWorkflow(workflowId: string): Promise<WorkflowState | null> {
+    const { adminDb: db } = await getFirebaseAdmin();
+    const docRef = doc(db, WORKFLOWS_COLLECTION, workflowId);
+    const docSnap = await getDoc(docRef);
+    
+    if (!docSnap.exists()) {
+      return null;
+    }
+
+    const data = docSnap.data();
+    return this.convertFirestoreToWorkflow(data);
+  }
+
+  /**
+   * Update workflow state
+   */
+  async updateWorkflow(workflowId: string, updates: Partial<WorkflowState>): Promise<void> {
+    const { adminDb: db } = await getFirebaseAdmin();
+    const docRef = doc(db, WORKFLOWS_COLLECTION, workflowId);
+    
+    const updateData: any = {
+      ...updates,
+      updatedAt: Timestamp.fromDate(new Date())
+    };
+
+    // Convert Date objects to Timestamps
+    if (updates.startedAt) updateData.startedAt = Timestamp.fromDate(updates.startedAt);
+    if (updates.completedAt) updateData.completedAt = Timestamp.fromDate(updates.completedAt);
+    if (updates.estimatedCompletionAt) updateData.estimatedCompletionAt = Timestamp.fromDate(updates.estimatedCompletionAt);
+    
+    if (updates.steps) {
+      updateData.steps = updates.steps.map(step => ({
+        ...step,
+        startedAt: step.startedAt ? Timestamp.fromDate(step.startedAt) : null,
+        completedAt: step.completedAt ? Timestamp.fromDate(step.completedAt) : null
+      }));
+    }
+
+    if (updates.approvals) {
+      updateData.approvals = updates.approvals.map(approval => ({
+        ...approval,
+        requestedAt: Timestamp.fromDate(approval.requestedAt),
+        approvedAt: approval.approvedAt ? Timestamp.fromDate(approval.approvedAt) : null,
+        expiresAt: approval.expiresAt ? Timestamp.fromDate(approval.expiresAt) : null
+      }));
+    }
+
+    if (updates.errorHistory) {
+      updateData.errorHistory = updates.errorHistory.map(error => ({
+        ...error,
+        timestamp: Timestamp.fromDate(error.timestamp)
+      }));
+    }
+
+    await updateDoc(docRef, updateData);
+    console.log(`✅ Updated workflow: ${workflowId}`);
+  }
+
+  /**
+   * Update specific step in workflow
+   */
+  async updateStep(workflowId: string, stepId: string, stepUpdates: Partial<WorkflowStep>): Promise<void> {
+    const workflow = await this.getWorkflow(workflowId);
+    if (!workflow) {
+      throw new Error(`Workflow ${workflowId} not found`);
+    }
+
+    const stepIndex = workflow.steps.findIndex(step => step.id === stepId);
+    if (stepIndex === -1) {
+      throw new Error(`Step ${stepId} not found in workflow ${workflowId}`);
+    }
+
+    const updatedSteps = [...workflow.steps];
+    updatedSteps[stepIndex] = { ...updatedSteps[stepIndex], ...stepUpdates };
+
+    await this.updateWorkflow(workflowId, { 
+      steps: updatedSteps,
+      updatedAt: new Date()
+    });
+
+    console.log(`✅ Updated step ${stepId} in workflow ${workflowId}`);
+  }
+
+  /**
+   * Add approval request to workflow
+   */
+  async addApprovalRequest(workflowId: string, approval: ApprovalRequest): Promise<void> {
+    const workflow = await this.getWorkflow(workflowId);
+    if (!workflow) {
+      throw new Error(`Workflow ${workflowId} not found`);
+    }
+
+    const updatedApprovals = [...workflow.approvals, approval];
+    await this.updateWorkflow(workflowId, { 
+      approvals: updatedApprovals,
+      updatedAt: new Date()
+    });
+
+    console.log(`✅ Added approval request ${approval.id} to workflow ${workflowId}`);
+  }
+
+  /**
+   * Update approval status
+   */
+  async updateApproval(workflowId: string, approvalId: string, updates: Partial<ApprovalRequest>): Promise<void> {
+    const workflow = await this.getWorkflow(workflowId);
+    if (!workflow) {
+      throw new Error(`Workflow ${workflowId} not found`);
+    }
+
+    const approvalIndex = workflow.approvals.findIndex(approval => approval.id === approvalId);
+    if (approvalIndex === -1) {
+      throw new Error(`Approval ${approvalId} not found in workflow ${workflowId}`);
+    }
+
+    const updatedApprovals = [...workflow.approvals];
+    updatedApprovals[approvalIndex] = { ...updatedApprovals[approvalIndex], ...updates };
+
+    await this.updateWorkflow(workflowId, { 
+      approvals: updatedApprovals,
+      updatedAt: new Date()
+    });
+
+    console.log(`✅ Updated approval ${approvalId} in workflow ${workflowId}`);
+  }
+
+  /**
+   * Get workflows by member ID
+   */
+  async getWorkflowsByMember(memberId: string, limitCount: number = 50): Promise<WorkflowState[]> {
+    const { adminDb: db } = await getFirebaseAdmin();
+    const q = query(
+      collection(db, WORKFLOWS_COLLECTION),
+      where('memberId', '==', memberId),
+      orderBy('createdAt', 'desc'),
+      limit(limitCount)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => this.convertFirestoreToWorkflow(doc.data()));
+  }
+
+  /**
+   * Get workflows by status
+   */
+  async getWorkflowsByStatus(status: WorkflowStatus, limitCount: number = 100): Promise<WorkflowState[]> {
+    const { adminDb: db } = await getFirebaseAdmin();
+    const q = query(
+      collection(db, WORKFLOWS_COLLECTION),
+      where('status', '==', status),
+      orderBy('createdAt', 'desc'),
+      limit(limitCount)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => this.convertFirestoreToWorkflow(doc.data()));
+  }
+
+  /**
+   * Get active workflows (running or pending)
+   */
+  async getActiveWorkflows(): Promise<WorkflowState[]> {
+    const { adminDb: db } = await getFirebaseAdmin();
+    const runningQuery = query(
+      collection(db, WORKFLOWS_COLLECTION),
+      where('status', '==', 'running'),
+      orderBy('createdAt', 'desc')
+    );
+
+    const pendingQuery = query(
+      collection(db, WORKFLOWS_COLLECTION),
+      where('status', '==', 'pending'),
+      orderBy('createdAt', 'desc')
+    );
+
+    const [runningSnapshot, pendingSnapshot] = await Promise.all([
+      getDocs(runningQuery),
+      getDocs(pendingQuery)
+    ]);
+
+    const runningWorkflows = runningSnapshot.docs.map(doc => this.convertFirestoreToWorkflow(doc.data()));
+    const pendingWorkflows = pendingSnapshot.docs.map(doc => this.convertFirestoreToWorkflow(doc.data()));
+
+    return [...runningWorkflows, ...pendingWorkflows];
+  }
+
+  /**
+   * Delete workflow
+   */
+  async deleteWorkflow(workflowId: string): Promise<void> {
+    const { adminDb: db } = await getFirebaseAdmin();
+    await deleteDoc(doc(db, WORKFLOWS_COLLECTION, workflowId));
+    console.log(`✅ Deleted workflow: ${workflowId}`);
+  }
+
+  /**
+   * Subscribe to workflow changes
+   */
+  async subscribeToWorkflow(workflowId: string, callback: (workflow: WorkflowState | null) => void): Promise<() => void> {
+    const { adminDb: db } = await getFirebaseAdmin();
+    const docRef = doc(db, WORKFLOWS_COLLECTION, workflowId);
+    
+    return onSnapshot(docRef, (doc) => {
+      if (doc.exists()) {
+        const workflow = this.convertFirestoreToWorkflow(doc.data());
+        callback(workflow);
+      } else {
+        callback(null);
+      }
+    });
+  }
+
+  /**
+   * Subscribe to workflows by member
+   */
+  async subscribeToMemberWorkflows(memberId: string, callback: (workflows: WorkflowState[]) => void): Promise<() => void> {
+    const { adminDb: db } = await getFirebaseAdmin();
+    const q = query(
+      collection(db, WORKFLOWS_COLLECTION),
+      where('memberId', '==', memberId),
+      orderBy('createdAt', 'desc'),
+      limit(50)
+    );
+    
+    return onSnapshot(q, (querySnapshot) => {
+      const workflows = querySnapshot.docs.map(doc => this.convertFirestoreToWorkflow(doc.data()));
+      callback(workflows);
+    });
+  }
+
+  // ===============================
+  // EXECUTION LOGGING
+  // ===============================
+
+  /**
+   * Log workflow execution event
+   */
+  async logExecution(execution: WorkflowExecution): Promise<void> {
+    const { adminDb: db } = await getFirebaseAdmin();
+    const executionId = `exec_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    
+    await setDoc(doc(db, EXECUTIONS_COLLECTION, executionId), {
+      ...execution,
+      timestamp: Timestamp.fromDate(execution.timestamp)
+    });
+  }
+
+  /**
+   * Get execution history for workflow
+   */
+  async getExecutionHistory(workflowId: string, limitCount: number = 100): Promise<WorkflowExecution[]> {
+    const { adminDb: db } = await getFirebaseAdmin();
+    const q = query(
+      collection(db, EXECUTIONS_COLLECTION),
+      where('workflowId', '==', workflowId),
+      orderBy('timestamp', 'desc'),
+      limit(limitCount)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        ...data,
+        timestamp: data.timestamp.toDate()
+      } as WorkflowExecution;
+    });
+  }
+
+  // ===============================
+  // UTILITY METHODS
+  // ===============================
+
+  /**
+   * Convert Firestore document to WorkflowState
+   */
+  private convertFirestoreToWorkflow(data: any): WorkflowState {
+    return {
+      ...data,
+      createdAt: data.createdAt.toDate(),
+      updatedAt: data.updatedAt.toDate(),
+      startedAt: data.startedAt?.toDate() || undefined,
+      completedAt: data.completedAt?.toDate() || undefined,
+      estimatedCompletionAt: data.estimatedCompletionAt?.toDate() || undefined,
+      steps: data.steps.map((step: any) => ({
+        ...step,
+        startedAt: step.startedAt?.toDate() || undefined,
+        completedAt: step.completedAt?.toDate() || undefined
+      })),
+      approvals: data.approvals.map((approval: any) => ({
+        ...approval,
+        requestedAt: approval.requestedAt.toDate(),
+        approvedAt: approval.approvedAt?.toDate() || undefined,
+        expiresAt: approval.expiresAt?.toDate() || undefined
+      })),
+      errorHistory: data.errorHistory.map((error: any) => ({
+        ...error,
+        timestamp: error.timestamp.toDate()
+      }))
+    } as WorkflowState;
+  }
+
+  /**
+   * Batch update multiple workflows
+   */
+  async batchUpdateWorkflows(updates: Array<{ workflowId: string; updates: Partial<WorkflowState> }>): Promise<void> {
+    const { adminDb: db } = await getFirebaseAdmin();
+    const batch = writeBatch(db);
+    
+    for (const { workflowId, updates: workflowUpdates } of updates) {
+      const docRef = doc(db, WORKFLOWS_COLLECTION, workflowId);
+      const updateData = {
+        ...workflowUpdates,
+        updatedAt: Timestamp.fromDate(new Date())
+      };
+      
+      batch.update(docRef, updateData);
+    }
+    
+    await batch.commit();
+    console.log(`✅ Batch updated ${updates.length} workflows`);
+  }
+}
+
+// Singleton instance
+export const workflowStateManager = new WorkflowStateManager();

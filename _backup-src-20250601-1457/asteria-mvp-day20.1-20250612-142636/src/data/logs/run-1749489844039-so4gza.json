@@ -1,0 +1,51 @@
+{
+  "id": "run-1749489844039-so4gza",
+  "timestamp": "2025-06-09T17:24:04.039Z",
+  "memberId": "test-member",
+  "originalMessage": "Hello, can you help me with a test request?",
+  "intentAnalysis": {
+    "primaryBucket": "lifestyle",
+    "secondaryBuckets": [],
+    "serviceType": "emergency",
+    "urgency": "emergency",
+    "confidence": 1,
+    "extractedEntities": {},
+    "suggestedTier": "extraordinary"
+  },
+  "executionResult": {
+    "success": false,
+    "plan": {
+      "steps": [],
+      "strategy": "escalation",
+      "expectedOutcome": "Human concierge emergency response",
+      "fallbackOptions": []
+    },
+    "executedSteps": [],
+    "finalResult": null,
+    "recommendations": [
+      "Emergency escalation initiated"
+    ],
+    "nextActions": [
+      "Senior concierge will contact you immediately"
+    ],
+    "escalationNeeded": true
+  },
+  "outcome": "escalation",
+  "metrics": {
+    "responseTime": 2151,
+    "toolsUsed": [],
+    "escalationTriggered": true
+  },
+  "learnings": {
+    "intentAccuracy": 0.5,
+    "executionEfficiency": 0,
+    "areas_for_improvement": [
+      "Intent recognition accuracy",
+      "Tool execution reliability"
+    ],
+    "successful_patterns": []
+  },
+  "followUp": {
+    "required": false
+  }
+}

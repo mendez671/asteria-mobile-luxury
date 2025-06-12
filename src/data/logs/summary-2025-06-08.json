@@ -1,0 +1,671 @@
+{
+  "date": "2025-06-08",
+  "runs": [
+    {
+      "id": "run-1749344036316-q5t9z9",
+      "timestamp": "2025-06-08T00:53:56.316Z",
+      "outcome": "success",
+      "responseTime": 2138
+    },
+    {
+      "id": "run-1749353320167-iojhdg",
+      "timestamp": "2025-06-08T03:28:40.167Z",
+      "outcome": "success",
+      "responseTime": 2
+    },
+    {
+      "id": "run-1749353356422-3vfra9",
+      "timestamp": "2025-06-08T03:29:16.422Z",
+      "outcome": "escalation",
+      "responseTime": 1820
+    },
+    {
+      "id": "run-1749356307641-dzile9",
+      "timestamp": "2025-06-08T04:18:27.641Z",
+      "outcome": "success",
+      "responseTime": 2
+    },
+    {
+      "id": "run-1749356324959-onwv2s",
+      "timestamp": "2025-06-08T04:18:44.959Z",
+      "outcome": "escalation",
+      "responseTime": 947
+    },
+    {
+      "id": "run-1749356332482-aokq1s",
+      "timestamp": "2025-06-08T04:18:52.482Z",
+      "outcome": "escalation",
+      "responseTime": 293
+    },
+    {
+      "id": "run-1749357111349-4s2f3o",
+      "timestamp": "2025-06-08T04:31:51.349Z",
+      "outcome": "success",
+      "responseTime": 1062
+    },
+    {
+      "id": "run-1749357111527-477mvw",
+      "timestamp": "2025-06-08T04:31:51.527Z",
+      "outcome": "success",
+      "responseTime": 147
+    },
+    {
+      "id": "run-1749357111688-0dhaif",
+      "timestamp": "2025-06-08T04:31:51.688Z",
+      "outcome": "success",
+      "responseTime": 147
+    },
+    {
+      "id": "run-1749357118153-gzk89u",
+      "timestamp": "2025-06-08T04:31:58.153Z",
+      "outcome": "success",
+      "responseTime": 274
+    },
+    {
+      "id": "run-1749357143072-9h5ykn",
+      "timestamp": "2025-06-08T04:32:23.072Z",
+      "outcome": "success",
+      "responseTime": 258
+    },
+    {
+      "id": "run-1749357441782-qe452a",
+      "timestamp": "2025-06-08T04:37:21.782Z",
+      "outcome": "success",
+      "responseTime": 2
+    },
+    {
+      "id": "run-1749357652651-wvvhu8",
+      "timestamp": "2025-06-08T04:40:52.651Z",
+      "outcome": "success",
+      "responseTime": 718
+    },
+    {
+      "id": "run-1749357698122-pdmudi",
+      "timestamp": "2025-06-08T04:41:38.122Z",
+      "outcome": "success",
+      "responseTime": 1149
+    },
+    {
+      "id": "run-1749357730339-bmbyoe",
+      "timestamp": "2025-06-08T04:42:10.339Z",
+      "outcome": "success",
+      "responseTime": 227
+    },
+    {
+      "id": "run-1749357731554-t3w1uy",
+      "timestamp": "2025-06-08T04:42:11.554Z",
+      "outcome": "success",
+      "responseTime": 188
+    },
+    {
+      "id": "run-1749357732698-5c9ykc",
+      "timestamp": "2025-06-08T04:42:12.698Z",
+      "outcome": "success",
+      "responseTime": 131
+    },
+    {
+      "id": "run-1749358344988-fs3ndh",
+      "timestamp": "2025-06-08T04:52:24.988Z",
+      "outcome": "success",
+      "responseTime": 772
+    },
+    {
+      "id": "run-1749358346218-dnr0qm",
+      "timestamp": "2025-06-08T04:52:26.218Z",
+      "outcome": "success",
+      "responseTime": 197
+    },
+    {
+      "id": "run-1749358347436-zs5mmq",
+      "timestamp": "2025-06-08T04:52:27.436Z",
+      "outcome": "success",
+      "responseTime": 207
+    },
+    {
+      "id": "run-1749358355897-l33crg",
+      "timestamp": "2025-06-08T04:52:35.897Z",
+      "outcome": "success",
+      "responseTime": 216
+    },
+    {
+      "id": "run-1749358425935-pmn9u4",
+      "timestamp": "2025-06-08T04:53:45.935Z",
+      "outcome": "escalation",
+      "responseTime": 912
+    },
+    {
+      "id": "run-1749358427216-4xd4pr",
+      "timestamp": "2025-06-08T04:53:47.216Z",
+      "outcome": "escalation",
+      "responseTime": 256
+    },
+    {
+      "id": "run-1749358428428-0vvbw5",
+      "timestamp": "2025-06-08T04:53:48.428Z",
+      "outcome": "success",
+      "responseTime": 198
+    },
+    {
+      "id": "run-1749358454352-9f63w2",
+      "timestamp": "2025-06-08T04:54:14.352Z",
+      "outcome": "escalation",
+      "responseTime": 667
+    },
+    {
+      "id": "run-1749358460733-05gn0z",
+      "timestamp": "2025-06-08T04:54:20.733Z",
+      "outcome": "escalation",
+      "responseTime": 264
+    },
+    {
+      "id": "run-1749358461945-8kkmnc",
+      "timestamp": "2025-06-08T04:54:21.945Z",
+      "outcome": "escalation",
+      "responseTime": 195
+    },
+    {
+      "id": "run-1749358463146-jpgk57",
+      "timestamp": "2025-06-08T04:54:23.146Z",
+      "outcome": "escalation",
+      "responseTime": 187
+    },
+    {
+      "id": "run-1749358631958-di8c9a",
+      "timestamp": "2025-06-08T04:57:11.958Z",
+      "outcome": "success",
+      "responseTime": 3
+    },
+    {
+      "id": "run-1749368990725-1gz3xq",
+      "timestamp": "2025-06-08T07:49:50.725Z",
+      "outcome": "success",
+      "responseTime": 42
+    },
+    {
+      "id": "run-1749377732185-u5ml51",
+      "timestamp": "2025-06-08T10:15:32.185Z",
+      "outcome": "escalation",
+      "responseTime": 773
+    },
+    {
+      "id": "run-1749377732465-mbu7ej",
+      "timestamp": "2025-06-08T10:15:32.465Z",
+      "outcome": "escalation",
+      "responseTime": 252
+    },
+    {
+      "id": "run-1749377732473-g8uv82",
+      "timestamp": "2025-06-08T10:15:32.473Z",
+      "outcome": "success",
+      "responseTime": 1
+    },
+    {
+      "id": "run-1749377732748-iv13bo",
+      "timestamp": "2025-06-08T10:15:32.748Z",
+      "outcome": "escalation",
+      "responseTime": 268
+    },
+    {
+      "id": "run-1749377761698-9j0esz",
+      "timestamp": "2025-06-08T10:16:01.699Z",
+      "outcome": "escalation",
+      "responseTime": 394
+    },
+    {
+      "id": "run-1749377765952-qrhnnc",
+      "timestamp": "2025-06-08T10:16:05.952Z",
+      "outcome": "escalation",
+      "responseTime": 342
+    },
+    {
+      "id": "run-1749377797115-m5fv0q",
+      "timestamp": "2025-06-08T10:16:37.115Z",
+      "outcome": "escalation",
+      "responseTime": 726
+    },
+    {
+      "id": "run-1749377816758-10v590",
+      "timestamp": "2025-06-08T10:16:56.758Z",
+      "outcome": "escalation",
+      "responseTime": 928
+    },
+    {
+      "id": "run-1749377885411-yg6koa",
+      "timestamp": "2025-06-08T10:18:05.411Z",
+      "outcome": "escalation",
+      "responseTime": 782
+    },
+    {
+      "id": "run-1749377915168-5p39hk",
+      "timestamp": "2025-06-08T10:18:35.168Z",
+      "outcome": "escalation",
+      "responseTime": 375
+    },
+    {
+      "id": "run-1749377937259-jp9ptv",
+      "timestamp": "2025-06-08T10:18:57.259Z",
+      "outcome": "escalation",
+      "responseTime": 1974
+    },
+    {
+      "id": "run-1749377944178-oj540f",
+      "timestamp": "2025-06-08T10:19:04.178Z",
+      "outcome": "escalation",
+      "responseTime": 336
+    },
+    {
+      "id": "run-1749377952104-nyg3sf",
+      "timestamp": "2025-06-08T10:19:12.104Z",
+      "outcome": "escalation",
+      "responseTime": 440
+    },
+    {
+      "id": "run-1749377975105-j50oee",
+      "timestamp": "2025-06-08T10:19:35.105Z",
+      "outcome": "escalation",
+      "responseTime": 682
+    },
+    {
+      "id": "run-1749377982238-vqwlet",
+      "timestamp": "2025-06-08T10:19:42.238Z",
+      "outcome": "escalation",
+      "responseTime": 266
+    },
+    {
+      "id": "run-1749377988703-xxivv5",
+      "timestamp": "2025-06-08T10:19:48.703Z",
+      "outcome": "escalation",
+      "responseTime": 463
+    },
+    {
+      "id": "run-1749377996169-8wwyuf",
+      "timestamp": "2025-06-08T10:19:56.169Z",
+      "outcome": "escalation",
+      "responseTime": 343
+    },
+    {
+      "id": "run-1749378041896-3ol7wu",
+      "timestamp": "2025-06-08T10:20:41.896Z",
+      "outcome": "escalation",
+      "responseTime": 725
+    },
+    {
+      "id": "run-1749378049737-7qep6m",
+      "timestamp": "2025-06-08T10:20:49.737Z",
+      "outcome": "escalation",
+      "responseTime": 312
+    },
+    {
+      "id": "run-1749378103956-tsnjxn",
+      "timestamp": "2025-06-08T10:21:43.956Z",
+      "outcome": "escalation",
+      "responseTime": 761
+    },
+    {
+      "id": "run-1749378110994-u6epot",
+      "timestamp": "2025-06-08T10:21:50.994Z",
+      "outcome": "escalation",
+      "responseTime": 353
+    },
+    {
+      "id": "run-1749378121143-hc8jnr",
+      "timestamp": "2025-06-08T10:22:01.143Z",
+      "outcome": "escalation",
+      "responseTime": 346
+    },
+    {
+      "id": "run-1749378131191-eehi5m",
+      "timestamp": "2025-06-08T10:22:11.191Z",
+      "outcome": "escalation",
+      "responseTime": 321
+    },
+    {
+      "id": "run-1749378139337-4ao2ug",
+      "timestamp": "2025-06-08T10:22:19.337Z",
+      "outcome": "escalation",
+      "responseTime": 283
+    },
+    {
+      "id": "run-1749378265484-1323gi",
+      "timestamp": "2025-06-08T10:24:25.485Z",
+      "outcome": "escalation",
+      "responseTime": 654
+    },
+    {
+      "id": "run-1749378265678-8oo8nd",
+      "timestamp": "2025-06-08T10:24:25.678Z",
+      "outcome": "escalation",
+      "responseTime": 182
+    },
+    {
+      "id": "run-1749378265687-r5tc1p",
+      "timestamp": "2025-06-08T10:24:25.687Z",
+      "outcome": "success",
+      "responseTime": 1
+    },
+    {
+      "id": "run-1749378265999-7frrg8",
+      "timestamp": "2025-06-08T10:24:25.999Z",
+      "outcome": "escalation",
+      "responseTime": 306
+    },
+    {
+      "id": "run-1749378294788-kyv8mf",
+      "timestamp": "2025-06-08T10:24:54.788Z",
+      "outcome": "escalation",
+      "responseTime": 653
+    },
+    {
+      "id": "run-1749378295022-t60uxi",
+      "timestamp": "2025-06-08T10:24:55.022Z",
+      "outcome": "escalation",
+      "responseTime": 223
+    },
+    {
+      "id": "run-1749378295032-b6ddqn",
+      "timestamp": "2025-06-08T10:24:55.032Z",
+      "outcome": "success",
+      "responseTime": 2
+    },
+    {
+      "id": "run-1749378295274-p714oi",
+      "timestamp": "2025-06-08T10:24:55.274Z",
+      "outcome": "escalation",
+      "responseTime": 234
+    },
+    {
+      "id": "run-1749379392903-9olz9d",
+      "timestamp": "2025-06-08T10:43:12.903Z",
+      "outcome": "escalation",
+      "responseTime": 1827
+    },
+    {
+      "id": "run-1749379393141-2tq0pr",
+      "timestamp": "2025-06-08T10:43:13.141Z",
+      "outcome": "escalation",
+      "responseTime": 221
+    },
+    {
+      "id": "run-1749379393179-bq6ywd",
+      "timestamp": "2025-06-08T10:43:13.179Z",
+      "outcome": "success",
+      "responseTime": 32
+    },
+    {
+      "id": "run-1749379393405-07bi39",
+      "timestamp": "2025-06-08T10:43:13.405Z",
+      "outcome": "escalation",
+      "responseTime": 220
+    },
+    {
+      "id": "run-1749380140719-59lj8h",
+      "timestamp": "2025-06-08T10:55:40.719Z",
+      "outcome": "escalation",
+      "responseTime": 1850
+    },
+    {
+      "id": "run-1749381258142-xw3zjw",
+      "timestamp": "2025-06-08T11:14:18.142Z",
+      "outcome": "escalation",
+      "responseTime": 1766
+    },
+    {
+      "id": "run-1749381277114-klzwyx",
+      "timestamp": "2025-06-08T11:14:37.114Z",
+      "outcome": "escalation",
+      "responseTime": 940
+    },
+    {
+      "id": "run-1749381319507-w0ou0o",
+      "timestamp": "2025-06-08T11:15:19.507Z",
+      "outcome": "escalation",
+      "responseTime": 839
+    },
+    {
+      "id": "run-1749381811564-xvh5ww",
+      "timestamp": "2025-06-08T11:23:31.564Z",
+      "outcome": "escalation",
+      "responseTime": 1137
+    },
+    {
+      "id": "run-1749381855060-b7o0e4",
+      "timestamp": "2025-06-08T11:24:15.060Z",
+      "outcome": "escalation",
+      "responseTime": 1529
+    },
+    {
+      "id": "run-1749381997933-7w8rb3",
+      "timestamp": "2025-06-08T11:26:37.933Z",
+      "outcome": "escalation",
+      "responseTime": 1366
+    },
+    {
+      "id": "run-1749407079936-e3xex3",
+      "timestamp": "2025-06-08T18:24:39.936Z",
+      "outcome": "success",
+      "responseTime": 134
+    },
+    {
+      "id": "run-1749408646328-ap2yh7",
+      "timestamp": "2025-06-08T18:50:46.328Z",
+      "outcome": "escalation",
+      "responseTime": 848
+    },
+    {
+      "id": "run-1749408647948-ouf8ag",
+      "timestamp": "2025-06-08T18:50:47.948Z",
+      "outcome": "success",
+      "responseTime": 164
+    },
+    {
+      "id": "run-1749408693545-9eodwk",
+      "timestamp": "2025-06-08T18:51:33.545Z",
+      "outcome": "success",
+      "responseTime": 243
+    },
+    {
+      "id": "run-1749408695703-ascj2o",
+      "timestamp": "2025-06-08T18:51:35.703Z",
+      "outcome": "success",
+      "responseTime": 134
+    },
+    {
+      "id": "run-1749408697831-9lv7ht",
+      "timestamp": "2025-06-08T18:51:37.831Z",
+      "outcome": "success",
+      "responseTime": 114
+    },
+    {
+      "id": "run-1749408755535-6moxt1",
+      "timestamp": "2025-06-08T18:52:35.535Z",
+      "outcome": "success",
+      "responseTime": 3
+    },
+    {
+      "id": "run-1749408755739-zyee96",
+      "timestamp": "2025-06-08T18:52:35.739Z",
+      "outcome": "success",
+      "responseTime": 186
+    },
+    {
+      "id": "run-1749408755878-59njqk",
+      "timestamp": "2025-06-08T18:52:35.878Z",
+      "outcome": "success",
+      "responseTime": 128
+    },
+    {
+      "id": "run-1749408755971-zu54zo",
+      "timestamp": "2025-06-08T18:52:35.971Z",
+      "outcome": "success",
+      "responseTime": 85
+    },
+    {
+      "id": "run-1749408756064-3k9qd1",
+      "timestamp": "2025-06-08T18:52:36.064Z",
+      "outcome": "success",
+      "responseTime": 88
+    },
+    {
+      "id": "run-1749410675230-9kbr4u",
+      "timestamp": "2025-06-08T19:24:35.230Z",
+      "outcome": "escalation",
+      "responseTime": 1402
+    },
+    {
+      "id": "run-1749410678135-ijgtkc",
+      "timestamp": "2025-06-08T19:24:38.135Z",
+      "outcome": "escalation",
+      "responseTime": 737
+    },
+    {
+      "id": "run-1749410678400-xpfrqy",
+      "timestamp": "2025-06-08T19:24:38.400Z",
+      "outcome": "escalation",
+      "responseTime": 239
+    },
+    {
+      "id": "run-1749410678407-k9ad7x",
+      "timestamp": "2025-06-08T19:24:38.407Z",
+      "outcome": "success",
+      "responseTime": 1
+    },
+    {
+      "id": "run-1749410686974-4do6fs",
+      "timestamp": "2025-06-08T19:24:46.974Z",
+      "outcome": "escalation",
+      "responseTime": 492
+    },
+    {
+      "id": "run-1749410971247-vm08lp",
+      "timestamp": "2025-06-08T19:29:31.247Z",
+      "outcome": "escalation",
+      "responseTime": 776
+    },
+    {
+      "id": "run-1749410971612-421yod",
+      "timestamp": "2025-06-08T19:29:31.612Z",
+      "outcome": "escalation",
+      "responseTime": 342
+    },
+    {
+      "id": "run-1749410971859-p74ach",
+      "timestamp": "2025-06-08T19:29:31.859Z",
+      "outcome": "escalation",
+      "responseTime": 235
+    },
+    {
+      "id": "run-1749410971869-l1nocb",
+      "timestamp": "2025-06-08T19:29:31.869Z",
+      "outcome": "success",
+      "responseTime": 1
+    },
+    {
+      "id": "run-1749410979881-u68z3l",
+      "timestamp": "2025-06-08T19:29:39.881Z",
+      "outcome": "escalation",
+      "responseTime": 424
+    },
+    {
+      "id": "run-1749411019854-yrracz",
+      "timestamp": "2025-06-08T19:30:19.854Z",
+      "outcome": "success",
+      "responseTime": 5
+    },
+    {
+      "id": "run-1749412469531-ngpob4",
+      "timestamp": "2025-06-08T19:54:29.531Z",
+      "outcome": "escalation",
+      "responseTime": 1215
+    },
+    {
+      "id": "run-1749412470666-97psvr",
+      "timestamp": "2025-06-08T19:54:30.666Z",
+      "outcome": "success",
+      "responseTime": 100
+    },
+    {
+      "id": "run-1749412471914-5uo7yt",
+      "timestamp": "2025-06-08T19:54:31.914Z",
+      "outcome": "escalation",
+      "responseTime": 233
+    },
+    {
+      "id": "run-1749412656444-ixcfpk",
+      "timestamp": "2025-06-08T19:57:36.444Z",
+      "outcome": "success",
+      "responseTime": 4
+    },
+    {
+      "id": "run-1749425947915-vl03bt",
+      "timestamp": "2025-06-08T23:39:07.915Z",
+      "outcome": "success",
+      "responseTime": 1692
+    },
+    {
+      "id": "run-1749425954913-kl24ie",
+      "timestamp": "2025-06-08T23:39:14.913Z",
+      "outcome": "escalation",
+      "responseTime": 469
+    },
+    {
+      "id": "run-1749425955655-1ccb4s",
+      "timestamp": "2025-06-08T23:39:15.655Z",
+      "outcome": "partial_success",
+      "responseTime": 230
+    },
+    {
+      "id": "run-1749425955882-3a4s9y",
+      "timestamp": "2025-06-08T23:39:15.882Z",
+      "outcome": "escalation",
+      "responseTime": 225
+    },
+    {
+      "id": "run-1749425956423-vsnnyk",
+      "timestamp": "2025-06-08T23:39:16.423Z",
+      "outcome": "escalation",
+      "responseTime": 391
+    },
+    {
+      "id": "run-1749425957072-rtl5z4",
+      "timestamp": "2025-06-08T23:39:17.072Z",
+      "outcome": "success",
+      "responseTime": 139
+    },
+    {
+      "id": "run-1749425957324-7fngw3",
+      "timestamp": "2025-06-08T23:39:17.324Z",
+      "outcome": "escalation",
+      "responseTime": 243
+    },
+    {
+      "id": "run-1749425957925-qy3nh1",
+      "timestamp": "2025-06-08T23:39:17.925Z",
+      "outcome": "partial_success",
+      "responseTime": 87
+    },
+    {
+      "id": "run-1749425958016-x2m6k8",
+      "timestamp": "2025-06-08T23:39:18.016Z",
+      "outcome": "escalation",
+      "responseTime": 90
+    },
+    {
+      "id": "run-1749426094918-fh8thk",
+      "timestamp": "2025-06-08T23:41:34.918Z",
+      "outcome": "success",
+      "responseTime": 291
+    },
+    {
+      "id": "run-1749426571042-m0kwre",
+      "timestamp": "2025-06-08T23:49:31.042Z",
+      "outcome": "partial_success",
+      "responseTime": 203
+    },
+    {
+      "id": "run-1749426573061-wy5tie",
+      "timestamp": "2025-06-08T23:49:33.061Z",
+      "outcome": "escalation",
+      "responseTime": 2006
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+  "id": "run-1748652209690-agsjbr",
+  "timestamp": "2025-05-31T00:43:29.690Z",
+  "memberId": "demo-member-001",
+  "originalMessage": "I need a private jet from NYC to London tomorrow for 3 people, urgent business meeting",
+  "intentAnalysis": {
+    "primaryBucket": "brandDev",
+    "secondaryBuckets": [
+      "transportation"
+    ],
+    "serviceType": "media relations",
+    "urgency": "emergency",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [
+        "tomorrow"
+      ],
+      "locations": [
+        "NYC",
+        "London"
+      ],
+      "people": [
+        "3 people"
+      ],
+      "preferences": [
+        "a private jet from NYC to London tomorrow for 3 people, urgent business meeting"
+      ]
+    },
+    "suggestedTier": "extraordinary"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "brandDev",
+            "tier": "extraordinary",
+            "searchTerm": "media relations"
+          },
+          "status": "completed",
+          "timestamp": "2025-05-31T00:43:29.398Z",
+          "result": {
+            "services": [],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 0,
+            "searchSummary": "Found 0 services in brandDev at extraordinary tier matching \"media relations\""
+          },
+          "executionTime": 0
+        },
+        {
+          "toolName": "create_ticket",
+          "parameters": {
+            "serviceId": "to_be_determined",
+            "requirements": {
+              "date": "tomorrow",
+              "destination": "NYC",
+              "passengers": "3 people"
+            },
+            "priority": "emergency"
+          },
+          "status": "failed",
+          "timestamp": "2025-05-31T00:43:29.398Z",
+          "result": {
+            "error": "Missing required information: pickup, time"
+          }
+        }
+      ],
+      "strategy": "direct_fulfillment",
+      "expectedOutcome": "Complete brandDev service booking with confirmation",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "brandDev",
+          "tier": "extraordinary",
+          "searchTerm": "media relations"
+        },
+        "status": "completed",
+        "timestamp": "2025-05-31T00:43:29.398Z",
+        "result": {
+          "services": [],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 0,
+          "searchSummary": "Found 0 services in brandDev at extraordinary tier matching \"media relations\""
+        },
+        "executionTime": 0
+      },
+      {
+        "toolName": "create_ticket",
+        "parameters": {
+          "serviceId": "to_be_determined",
+          "requirements": {
+            "date": "tomorrow",
+            "destination": "NYC",
+            "passengers": "3 people"
+          },
+          "priority": "emergency"
+        },
+        "status": "failed",
+        "timestamp": "2025-05-31T00:43:29.398Z",
+        "result": {
+          "error": "Missing required information: pickup, time"
+        }
+      }
+    ],
+    "finalResult": {
+      "services": [],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 0,
+      "searchSummary": "Found 0 services in brandDev at extraordinary tier matching \"media relations\""
+    },
+    "recommendations": [
+      "Some services may require additional information - our concierge team will follow up",
+      "Also consider our transportation services for a complete experience"
+    ],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": true
+  },
+  "outcome": "escalation",
+  "metrics": {
+    "responseTime": 292,
+    "toolsUsed": [
+      "fetch_active_services",
+      "create_ticket"
+    ],
+    "escalationTriggered": true
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 0.5,
+    "areas_for_improvement": [
+      "Tool execution reliability"
+    ],
+    "successful_patterns": [
+      "High confidence brandDev intent recognition"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

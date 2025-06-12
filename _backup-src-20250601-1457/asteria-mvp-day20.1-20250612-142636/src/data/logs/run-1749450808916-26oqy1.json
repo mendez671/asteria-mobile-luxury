@@ -1,0 +1,183 @@
+{
+  "id": "run-1749450808916-26oqy1",
+  "timestamp": "2025-06-09T06:33:28.916Z",
+  "memberId": "test-member",
+  "originalMessage": "from las vegas, closest to henderson, 4 of us",
+  "intentAnalysis": {
+    "primaryBucket": "transportation",
+    "secondaryBuckets": [],
+    "serviceType": "private aviation",
+    "urgency": "standard",
+    "confidence": 1.4,
+    "extractedEntities": {
+      "dates": [
+        "tomorrow"
+      ],
+      "locations": [
+        "Las"
+      ],
+      "people": [],
+      "preferences": [],
+      "budgetHints": []
+    },
+    "suggestedTier": "better"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "search_luxury_knowledge",
+          "parameters": {
+            "query": "from las vegas, closest to henderson, 4 of us",
+            "serviceCategory": "transportation",
+            "memberTier": "better",
+            "intent": "transportation"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T06:33:27.749Z",
+          "result": {
+            "success": true,
+            "data": {
+              "results": [],
+              "totalFound": 0,
+              "query": "from las vegas, closest to henderson, 4 of us",
+              "serviceCategory": "transportation",
+              "memberTier": "better",
+              "conversationAware": true
+            }
+          },
+          "executionTime": 1166
+        },
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "transportation",
+            "tier": "better",
+            "searchTerm": "private aviation"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-09T06:33:28.915Z",
+          "result": {
+            "services": [],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 0,
+            "searchSummary": "Found 0 services in transportation at better tier matching \"private aviation\""
+          },
+          "executionTime": 0
+        }
+      ],
+      "strategy": "workflow_triggered",
+      "expectedOutcome": "Automated transportation workflow execution in progress",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "search_luxury_knowledge",
+        "parameters": {
+          "query": "from las vegas, closest to henderson, 4 of us",
+          "serviceCategory": "transportation",
+          "memberTier": "better",
+          "intent": "transportation"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T06:33:27.749Z",
+        "result": {
+          "success": true,
+          "data": {
+            "results": [],
+            "totalFound": 0,
+            "query": "from las vegas, closest to henderson, 4 of us",
+            "serviceCategory": "transportation",
+            "memberTier": "better",
+            "conversationAware": true
+          }
+        },
+        "executionTime": 1166
+      },
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "transportation",
+          "tier": "better",
+          "searchTerm": "private aviation"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T06:33:28.915Z",
+        "result": {
+          "services": [],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 0,
+          "searchSummary": "Found 0 services in transportation at better tier matching \"private aviation\""
+        },
+        "executionTime": 0
+      }
+    ],
+    "finalResult": {
+      "services": [],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 0,
+      "searchSummary": "Found 0 services in transportation at better tier matching \"private aviation\""
+    },
+    "recommendations": [
+      "Consider upgrading to our Extraordinary tier for enhanced privacy and luxury amenities"
+    ],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": true,
+    "workflowId": "wf_1749450807568_9jx1v",
+    "workflowType": "travel",
+    "requiresWorkflow": false
+  },
+  "outcome": "success",
+  "metrics": {
+    "responseTime": 1354,
+    "toolsUsed": [
+      "search_luxury_knowledge",
+      "fetch_active_services"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1.4,
+    "executionEfficiency": 1,
+    "areas_for_improvement": [],
+    "successful_patterns": [
+      "High confidence transportation intent recognition",
+      "Perfect tool execution sequence"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

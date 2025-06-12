@@ -1,0 +1,38 @@
+{
+  "id": "TAG-MBPCUPEY",
+  "memberId": "guest_session_",
+  "serviceId": "luxury-ground-transport",
+  "serviceName": "Executive Ground Services",
+  "serviceBucket": "transportation",
+  "status": "pending",
+  "priority": "standard",
+  "requestDetails": {
+    "requirements": {
+      "destination": "miami"
+    },
+    "preferences": [],
+    "timeline": "30 minutes"
+  },
+  "pricing": {
+    "basePrice": 500,
+    "adjustments": [],
+    "totalPrice": 500,
+    "paymentStatus": "pending"
+  },
+  "timeline": {
+    "requested": "2025-06-09T17:17:38.218Z"
+  },
+  "communications": [
+    {
+      "timestamp": "2025-06-09T17:17:38.218Z",
+      "from": "system",
+      "message": "Service request created for Executive Ground Services",
+      "type": "note"
+    }
+  ],
+  "tags": [
+    "transportation",
+    "better"
+  ],
+  "attachments": []
+}

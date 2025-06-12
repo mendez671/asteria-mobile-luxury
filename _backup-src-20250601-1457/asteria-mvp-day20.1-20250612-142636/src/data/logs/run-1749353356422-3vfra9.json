@@ -1,0 +1,169 @@
+{
+  "id": "run-1749353356422-3vfra9",
+  "timestamp": "2025-06-08T03:29:16.422Z",
+  "memberId": "guest_session_",
+  "originalMessage": "Good evening! I'm Asteria, your AI luxury concierge. It's my pleasure to assist you today.\n\nI specialize in creating extraordinary experiences across luxury transportation, exclusive events, lifestyle curation, investment opportunities, and access to our elite TAG network.\n\nHow may I elevate your day? Whether you need private aviation, restaurant reservations, event access, or something uniquely yours, I'm here to make it exceptional.",
+  "intentAnalysis": {
+    "primaryBucket": "lifestyle",
+    "secondaryBuckets": [
+      "taglades",
+      "investments"
+    ],
+    "serviceType": "general",
+    "urgency": "urgent",
+    "confidence": 1,
+    "extractedEntities": {
+      "dates": [
+        "today"
+      ],
+      "locations": [],
+      "people": [],
+      "preferences": [
+        "private aviation, restaurant reservations, event access, or something uniquely yours, I'm here to make it exceptional"
+      ]
+    },
+    "suggestedTier": "extraordinary"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "lifestyle",
+            "tier": "extraordinary",
+            "searchTerm": "general"
+          },
+          "status": "completed",
+          "timestamp": "2025-06-08T03:29:14.607Z",
+          "result": {
+            "services": [],
+            "bucketCounts": {
+              "transportation": 0,
+              "events": 0,
+              "brandDev": 0,
+              "investments": 0,
+              "taglades": 0,
+              "lifestyle": 0
+            },
+            "totalFound": 0,
+            "searchSummary": "Found 0 services in lifestyle at extraordinary tier matching \"general\""
+          },
+          "executionTime": 0
+        },
+        {
+          "toolName": "create_ticket",
+          "parameters": {
+            "serviceId": "to_be_determined",
+            "requirements": {
+              "date": "today"
+            },
+            "priority": "urgent"
+          },
+          "status": "failed",
+          "timestamp": "2025-06-08T03:29:14.608Z",
+          "result": {
+            "error": "Missing required information: pickup, destination, time, passengers"
+          }
+        }
+      ],
+      "strategy": "direct_fulfillment",
+      "expectedOutcome": "Complete lifestyle service booking with confirmation",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {
+          "bucket": "lifestyle",
+          "tier": "extraordinary",
+          "searchTerm": "general"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-08T03:29:14.607Z",
+        "result": {
+          "services": [],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 0,
+          "searchSummary": "Found 0 services in lifestyle at extraordinary tier matching \"general\""
+        },
+        "executionTime": 0
+      },
+      {
+        "toolName": "create_ticket",
+        "parameters": {
+          "serviceId": "to_be_determined",
+          "requirements": {
+            "date": "today"
+          },
+          "priority": "urgent"
+        },
+        "status": "failed",
+        "timestamp": "2025-06-08T03:29:14.608Z",
+        "result": {
+          "error": "Missing required information: pickup, destination, time, passengers"
+        }
+      }
+    ],
+    "finalResult": {
+      "services": [],
+      "bucketCounts": {
+        "transportation": 0,
+        "events": 0,
+        "brandDev": 0,
+        "investments": 0,
+        "taglades": 0,
+        "lifestyle": 0
+      },
+      "totalFound": 0,
+      "searchSummary": "Found 0 services in lifestyle at extraordinary tier matching \"general\""
+    },
+    "recommendations": [
+      "Some services may require additional information - our concierge team will follow up",
+      "Also consider our taglades and investments services for a complete experience"
+    ],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": true,
+    "workflowTriggered": false,
+    "requiresWorkflow": false
+  },
+  "outcome": "escalation",
+  "metrics": {
+    "responseTime": 1820,
+    "toolsUsed": [
+      "fetch_active_services",
+      "create_ticket"
+    ],
+    "escalationTriggered": true
+  },
+  "learnings": {
+    "intentAccuracy": 1,
+    "executionEfficiency": 0.5,
+    "areas_for_improvement": [
+      "Tool execution reliability"
+    ],
+    "successful_patterns": [
+      "High confidence lifestyle intent recognition"
+    ]
+  },
+  "followUp": {
+    "required": false
+  }
+}

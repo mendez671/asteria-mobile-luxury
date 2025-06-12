@@ -1,0 +1,38 @@
+{
+  "id": "TAG-MBPPH75I",
+  "serviceId": "luxury-ground-transport",
+  "serviceName": "Executive Ground Services",
+  "serviceBucket": "transportation",
+  "status": "pending",
+  "priority": "standard",
+  "requestDetails": {
+    "requirements": {
+      "destination": "Paris",
+      "passengers": "6 people"
+    },
+    "preferences": [],
+    "timeline": "30 minutes"
+  },
+  "pricing": {
+    "basePrice": 500,
+    "adjustments": [],
+    "totalPrice": 500,
+    "paymentStatus": "pending"
+  },
+  "timeline": {
+    "requested": "2025-06-09T23:11:03.030Z"
+  },
+  "communications": [
+    {
+      "timestamp": "2025-06-09T23:11:03.030Z",
+      "from": "system",
+      "message": "Service request created for Executive Ground Services",
+      "type": "note"
+    }
+  ],
+  "tags": [
+    "transportation",
+    "better"
+  ],
+  "attachments": []
+}

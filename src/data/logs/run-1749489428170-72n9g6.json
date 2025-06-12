@@ -1,0 +1,172 @@
+{
+  "id": "run-1749489428170-72n9g6",
+  "timestamp": "2025-06-09T17:17:08.170Z",
+  "memberId": "guest_session_",
+  "originalMessage": "Lets book a trip to miami please",
+  "intentAnalysis": {
+    "primaryBucket": "events",
+    "secondaryBuckets": [
+      "lifestyle"
+    ],
+    "serviceType": "private venue",
+    "urgency": "standard",
+    "confidence": 1.3,
+    "extractedEntities": {
+      "dates": [],
+      "locations": [
+        "miami"
+      ],
+      "people": [],
+      "preferences": [],
+      "budgetHints": []
+    },
+    "suggestedTier": "better"
+  },
+  "executionResult": {
+    "success": true,
+    "plan": {
+      "steps": [
+        {
+          "toolName": "search_luxury_knowledge",
+          "parameters": {
+            "query": "events private venue luxury services",
+            "serviceCategory": "events",
+            "memberTier": "better"
+          },
+          "status": "pending",
+          "timestamp": ""
+        },
+        {
+          "toolName": "fetch_active_services",
+          "parameters": {
+            "bucket": "events",
+            "tier": "better"
+          },
+          "status": "pending",
+          "timestamp": ""
+        }
+      ],
+      "strategy": "guided_collection",
+      "expectedOutcome": "Curated events service options with booking assistance",
+      "fallbackOptions": [
+        "Escalate to senior concierge team",
+        "Human concierge consultation available",
+        "Alternative service tiers can be explored",
+        "Custom service arrangements possible"
+      ]
+    },
+    "executedSteps": [
+      {
+        "toolName": "fetch_active_services",
+        "parameters": {},
+        "result": {
+          "services": [
+            {
+              "id": "private-venue",
+              "name": "Private Venue Booking",
+              "description": "Exclusive use of premium venues for private events",
+              "tier": "better",
+              "basePrice": 5000,
+              "availability": "by-request",
+              "bookingRequirements": [
+                "venue",
+                "date",
+                "duration",
+                "guests",
+                "eventType"
+              ],
+              "features": [
+                "Full venue exclusivity",
+                "Event planning",
+                "Catering coordination",
+                "Entertainment booking"
+              ],
+              "leadTime": "2 weeks",
+              "maxGuests": 200
+            }
+          ],
+          "bucketCounts": {
+            "transportation": 0,
+            "events": 0,
+            "brandDev": 0,
+            "investments": 0,
+            "taglades": 0,
+            "lifestyle": 0
+          },
+          "totalFound": 1,
+          "searchSummary": "Found 1 services in events at better tier"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T17:16:58.115Z",
+        "executionTime": 10
+      },
+      {
+        "toolName": "search_luxury_knowledge",
+        "parameters": {},
+        "result": null,
+        "status": "failed",
+        "timestamp": "2025-06-09T17:17:08.112Z",
+        "executionTime": 10009
+      },
+      {
+        "toolName": "fallback_recovery",
+        "parameters": {
+          "strategy": "tool_level_recovery"
+        },
+        "result": {
+          "success": true,
+          "response": "I can help arrange exclusive events and experiences. Our services include VIP access, private venues, and cultural experiences.",
+          "strategy": "tool_level_recovery",
+          "confidence": 0.8,
+          "escalationNeeded": false,
+          "recoveryActions": [
+            "Successfully recovered using fallback strategy"
+          ],
+          "healthStatus": "healthy"
+        },
+        "status": "completed",
+        "timestamp": "2025-06-09T17:17:08.169Z",
+        "executionTime": 0
+      }
+    ],
+    "finalResult": "I can help arrange exclusive events and experiences. Our services include VIP access, private venues, and cultural experiences.",
+    "recommendations": [
+      "Some services may require additional information - our concierge team will follow up",
+      "Also consider our lifestyle services for a complete experience"
+    ],
+    "nextActions": [
+      "Review the curated service options presented",
+      "Provide additional preferences for personalized recommendations",
+      "Confirm your selection to proceed with booking"
+    ],
+    "escalationNeeded": false,
+    "workflowTriggered": false,
+    "requiresWorkflow": false
+  },
+  "outcome": "partial_success",
+  "metrics": {
+    "responseTime": 10073,
+    "toolsUsed": [
+      "fetch_active_services",
+      "search_luxury_knowledge",
+      "fallback_recovery"
+    ],
+    "escalationTriggered": false
+  },
+  "learnings": {
+    "intentAccuracy": 1.3,
+    "executionEfficiency": 0.6666666666666666,
+    "areas_for_improvement": [
+      "Tool execution reliability",
+      "Response time optimization"
+    ],
+    "successful_patterns": [
+      "High confidence events intent recognition"
+    ]
+  },
+  "followUp": {
+    "required": true,
+    "type": "additional_info",
+    "scheduledAt": "2025-06-09T17:32:08.170Z"
+  }
+}
