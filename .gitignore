@@ -43,3 +43,115 @@ node_modules/
 
 # backup folders
 src-backup-*
+
+# ========================================
+# 🔒 SECURITY: CREDENTIAL & SENSITIVE FILES
+# ========================================
+
+# Firebase & Google Cloud Credentials
+firebase-service-account-*.json
+*-service-account-*.json
+service-account.json
+serviceAccountKey.json
+firebase-adminsdk-*.json
+google-credentials.json
+gcp-credentials.json
+firebase-config.json
+firebase-private-key.json
+
+# Google Cloud SDK
+.gcloud/
+gcloud-credentials.json
+application_default_credentials.json
+
+# Environment & Config Files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production
+.env.staging
+config.json
+secrets.json
+
+# API Keys & Tokens
+api-keys.json
+tokens.json
+auth-tokens.json
+access-tokens.json
+refresh-tokens.json
+
+# ========================================
+# 📁 BACKUP & LOG FILES
+# ========================================
+
+# Backup Directories
+_backup-*
+backup-*
+*-backup-*
+*.backup
+backups/
+
+# Log Files
+*.log
+logs/
+server.log
+dev-server.log
+firebase-credential.log
+build-*.log
+diagnostic-*.log
+error-*.log
+
+# Diagnostic & Debug Files
+diagnostic-*.json
+debug-*.json
+*-diagnostic-*
+*-debug-*
+
+# ========================================
+# 🛠️ DEVELOPMENT & BUILD ARTIFACTS
+# ========================================
+
+# Temporary Files
+temp/
+tmp/
+*.tmp
+*.temp
+.cache/
+
+# IDE & Editor Files
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ========================================
+# 🔧 PROJECT SPECIFIC
+# ========================================
+
+# Test Files with Sensitive Data
+test-*-credentials.js
+test-firebase-*.js
+test-secrets-*.js
+
+# Scripts with Credentials
+*-credentials-*.js
+*-secrets-*.js
+setup-credentials.js
+
+# Documentation with Sensitive Info
+*-secrets-*.md
+*-credentials-*.md
+SECRETS.md
+CREDENTIALS.md
