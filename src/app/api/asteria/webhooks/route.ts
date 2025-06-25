@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFirebaseAdmin } from '@/lib/firebase/admin';
 
+// Standard CORS headers for ASTERIA endpoints
+const ASTERIA_CORS_HEADERS = {
+  'Access-Control-Allow-Origin': 'https://innercircle.thriveachievegrow.com',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Allow-Credentials': 'true'
+};
+
 interface WebhookPayload {
   event: 'request_created' | 'request_updated' | 'request_completed' | 'status_changed';
   timestamp: string;
@@ -110,11 +118,7 @@ export async function POST(request: NextRequest) {
       eventId: payload.requestId,
       timestamp: new Date().toISOString()
     }, {
-      headers: {
-        'Access-Control-Allow-Origin': 'https://innercircle.thriveachievegrow.com',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-      }
+      headers: ASTERIA_CORS_HEADERS
     });
 
   } catch (error: any) {
@@ -122,7 +126,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: false,
       error: error.message
-    }, { status: 500 });
+    }, { 
+      status: 500,
+      headers: ASTERIA_CORS_HEADERS
+    });
   }
 }
 
@@ -159,11 +166,7 @@ export async function GET(request: NextRequest) {
       total: events.length,
       filter: { memberId, since, limit }
     }, {
-      headers: {
-        'Access-Control-Allow-Origin': 'https://innercircle.thriveachievegrow.com',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-      }
+      headers: ASTERIA_CORS_HEADERS
     });
 
   } catch (error: any) {
@@ -171,7 +174,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: false,
       error: error.message
-    }, { status: 500 });
+    }, { 
+      status: 500,
+      headers: ASTERIA_CORS_HEADERS
+    });
   }
 }
 
@@ -244,11 +250,6 @@ Please review and take action immediately.`
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': 'https://innercircle.thriveachievegrow.com',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      'Access-Control-Allow-Credentials': 'true'
-    }
+    headers: ASTERIA_CORS_HEADERS
   });
 } 

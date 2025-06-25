@@ -7,6 +7,7 @@ import OpenAI from 'openai';
 // ===============================
 
 import { AsteriaAgentLoop } from '@/lib/agent/core/agent_loop';
+import { processWithN8N } from '@/lib/services/n8n-integration';
 import { 
   AgentContext, 
   AgentResponse, 
@@ -264,14 +265,51 @@ export async function POST(request: NextRequest) {
     };
 
     // ===============================
-    // AUTONOMOUS AGENT EXECUTION - SINGLE SOURCE OF TRUTH
+    // N8N ORCHESTRATION EVALUATION - NEW LAYER
     // ===============================
 
-    console.log(`🚨 DIAGNOSTIC [${requestId}] STARTING AGENT PROCESSING`);
-    console.log(`🤖 AUTONOMOUS AGENT: Processing "${message.substring(0, 50)}..."`);
+    console.log(`🚨 DIAGNOSTIC [${requestId}] EVALUATING N8N ORCHESTRATION...`);
 
     let agentResponse: AgentResponse;
     let oldResult: any; // Store the full agent loop result for optimization metrics
+    let useN8NResponse = false;
+    
+    // Try n8n orchestration for complex requests first
+    try {
+      const n8nResponse = await processWithN8N(agentContext, message);
+      
+      if (n8nResponse) {
+        console.log(`✅ N8N ORCHESTRATION SUCCESS - Using n8n workflow response`);
+        agentResponse = n8nResponse;
+        useN8NResponse = true;
+        
+        // Log successful n8n orchestration
+        console.log(`🎯 N8N Orchestration COMPLETE:`);
+        console.log(`   ├─ Time: ${agentResponse.metadata?.processingTime || 'unknown'}ms`);
+        console.log(`   ├─ Phase: ${agentResponse.journeyPhase}`);
+        console.log(`   ├─ Confidence: ${agentResponse.confidence}`);
+        console.log(`   ├─ Intent: ${agentResponse.intent?.category}`);
+        console.log(`   ├─ Workflow ID: ${agentResponse.metadata?.workflowId}`);
+        console.log(`   └─ Service Ticket: ${agentResponse.metadata?.serviceRequestId}`);
+        
+        // Skip standard agent processing - n8n handled it
+        console.log(`🔄 N8N handled request - skipping standard agent processing`);
+        
+      } else {
+        console.log(`✋ N8N ORCHESTRATION SKIPPED - Using standard agent processing`);
+      }
+      
+    } catch (n8nError) {
+      console.warn(`⚠️ N8N orchestration failed, falling back to standard agent:`, n8nError);
+    }
+    
+    // ===============================
+    // AUTONOMOUS AGENT EXECUTION - SINGLE SOURCE OF TRUTH (fallback)
+    // ===============================
+    
+    if (!useN8NResponse) {
+      console.log(`🚨 DIAGNOSTIC [${requestId}] STARTING AGENT PROCESSING`);
+      console.log(`🤖 AUTONOMOUS AGENT: Processing "${message.substring(0, 50)}..."`);
     
     try {
       console.log(`🚨 DIAGNOSTIC [${requestId}] Initializing AsteriaAgentLoop...`);

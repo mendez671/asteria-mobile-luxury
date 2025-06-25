@@ -155,3 +155,7 @@ setup-credentials.js
 *-credentials-*.md
 SECRETS.md
 CREDENTIALS.md
+# n8n Docker Configuration (contains credentials)
+n8n-docker-config.env
+# n8n Production Configuration (contains credentials)
+n8n-production.env

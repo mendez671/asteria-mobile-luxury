@@ -1,0 +1,189 @@
+graph TD
+    %% External Systems
+    USER[🙋‍♂️ User/Widget<br/>innercircle.thriveachievegrow.com]
+    ASTERIA[🏠 ASTERIA App<br/>localhost:3000]
+    
+    %% External APIs
+    OPENAI[🤖 OpenAI API<br/>GPT-4 Turbo]
+    FIREBASE[🔥 Firebase<br/>tag-inner-circle-v01]
+    AMADEUS[✈️ Amadeus API<br/>Travel Services]
+    STRIPE[💳 Stripe API<br/>Payments]
+    GCAL[📅 Google Calendar<br/>Booking Services]
+    
+    %% N8N Cloud Platform
+    subgraph N8N_CLOUD ["🌐 N8N Cloud Platform - mendez671.app.n8n.cloud"]
+        
+        %% Main Orchestrator Workflow
+        subgraph MAIN_WORKFLOW ["📋 Main Orchestrator Workflow"]
+            MW_WEBHOOK[🔗 Webhook Trigger<br/>/webhook/asteria-request]
+            MW_INTENT[🧠 Intent Classifier<br/>Function Node]
+            MW_COMPLEXITY[⚖️ Complexity Assessment<br/>Function Node]
+            MW_ROUTER[🚦 Route Decision<br/>Switch Node]
+            MW_SIMPLE[🎯 Simple Response<br/>OpenAI Direct]
+            MW_ORCHESTRATE[🎼 Trigger Orchestration<br/>HTTP Request]
+            MW_RESPONSE[📤 Final Response<br/>Response Node]
+        end
+        
+        %% Authentication Agent Workflow
+        subgraph AUTH_WORKFLOW ["🔐 Authentication Agent Workflow"]
+            AW_WEBHOOK[🔗 Auth Webhook<br/>/webhook/auth-agent]
+            AW_VALIDATE[✅ Member Validation<br/>Firebase Query]
+            AW_TIER[👑 Tier Classification<br/>Function Node]
+            AW_CONTEXT[📝 Context Building<br/>Function Node]
+            AW_RESPONSE[📤 Auth Response<br/>Response Node]
+        end
+        
+        %% Member Data Agent Workflow
+        subgraph MEMBER_WORKFLOW ["👤 Member Data Agent Workflow"]
+            MDW_WEBHOOK[🔗 Member Data Webhook<br/>/webhook/member-data-agent]
+            MDW_PROFILE[📊 Profile Fetch<br/>Firebase Query]
+            MDW_HISTORY[📚 History Retrieval<br/>Firebase Query]
+            MDW_PREFERENCES[⚙️ Preferences Loading<br/>Function Node]
+            MDW_RESPONSE[📤 Member Data Response<br/>Response Node]
+        end
+        
+        %% Business Logic Agent Workflow
+        subgraph BUSINESS_WORKFLOW ["💼 Business Logic Agent Workflow"]
+            BW_WEBHOOK[🔗 Business Logic Webhook<br/>/webhook/business-logic-agent]
+            BW_SERVICE[🎯 Service Classification<br/>OpenAI Analysis]
+            BW_LOGIC[⚙️ Business Rules<br/>Function Node]
+            BW_VALIDATION[✅ Request Validation<br/>Function Node]
+            BW_RESPONSE[📤 Business Response<br/>Response Node]
+        end
+        
+        %% Integration Agent Workflow
+        subgraph INTEGRATION_WORKFLOW ["🔌 Integration Agent Workflow"]
+            IW_WEBHOOK[🔗 Integration Webhook<br/>/webhook/integration-agent]
+            IW_ROUTER[🚦 Service Router<br/>Switch Node]
+            IW_TRAVEL[✈️ Travel Integration<br/>Amadeus API]
+            IW_PAYMENT[💳 Payment Integration<br/>Stripe API]
+            IW_CALENDAR[📅 Calendar Integration<br/>Google Calendar]
+            IW_AGGREGATOR[📊 Response Aggregator<br/>Function Node]
+            IW_RESPONSE[📤 Integration Response<br/>Response Node]
+        end
+        
+        %% Orchestrator Workflow
+        subgraph ORCHESTRATOR_WORKFLOW ["🎼 Orchestrator Workflow"]
+            OW_WEBHOOK[🔗 Orchestrator Webhook<br/>/webhook/orchestrator]
+            OW_SEQUENCE[📋 Agent Sequencer<br/>Function Node]
+            OW_AUTH_CALL[🔐 Call Auth Agent<br/>HTTP Request]
+            OW_MEMBER_CALL[👤 Call Member Agent<br/>HTTP Request]
+            OW_BUSINESS_CALL[💼 Call Business Agent<br/>HTTP Request]
+            OW_INTEGRATION_CALL[🔌 Call Integration Agent<br/>HTTP Request]
+            OW_AGGREGATOR[📊 Final Aggregator<br/>Function Node]
+            OW_RESPONSE[📤 Orchestrated Response<br/>Response Node]
+        end
+        
+        %% Credentials Storage
+        subgraph CREDENTIALS ["🔐 N8N Credentials Storage"]
+            CRED_FIREBASE[🔥 FIREBASE_ADMIN_SDK<br/>Generic Credential]
+            CRED_OPENAI[🤖 OPENAI_API_KEY<br/>HTTP Header Auth]
+            CRED_ASTERIA[🏠 ASTERIA_API_ACCESS<br/>HTTP Header Auth]
+            CRED_AMADEUS[✈️ AMADEUS_API_CREDENTIALS<br/>Generic Credential]
+            CRED_STRIPE[💳 STRIPE_API_KEY<br/>HTTP Header Auth]
+            CRED_GCAL[📅 GOOGLE_CALENDAR_OAUTH<br/>OAuth2]
+        end
+    end
+    
+    %% User Flow Connections
+    USER -->|1. Send Request| MW_WEBHOOK
+    USER -->|Alternative: Direct to ASTERIA| ASTERIA
+    ASTERIA -->|2. Proxy to N8N| MW_WEBHOOK
+    
+    %% Main Workflow Internal Flow
+    MW_WEBHOOK --> MW_INTENT
+    MW_INTENT --> MW_COMPLEXITY
+    MW_COMPLEXITY --> MW_ROUTER
+    MW_ROUTER -->|Simple Request| MW_SIMPLE
+    MW_ROUTER -->|Complex Request| MW_ORCHESTRATE
+    MW_SIMPLE --> MW_RESPONSE
+    MW_ORCHESTRATE --> OW_WEBHOOK
+    
+    %% Orchestrator Workflow Flow
+    OW_WEBHOOK --> OW_SEQUENCE
+    OW_SEQUENCE --> OW_AUTH_CALL
+    OW_AUTH_CALL --> AW_WEBHOOK
+    AW_WEBHOOK --> AW_VALIDATE
+    AW_VALIDATE --> AW_TIER
+    AW_TIER --> AW_CONTEXT
+    AW_CONTEXT --> AW_RESPONSE
+    AW_RESPONSE --> OW_MEMBER_CALL
+    
+    OW_MEMBER_CALL --> MDW_WEBHOOK
+    MDW_WEBHOOK --> MDW_PROFILE
+    MDW_PROFILE --> MDW_HISTORY
+    MDW_HISTORY --> MDW_PREFERENCES
+    MDW_PREFERENCES --> MDW_RESPONSE
+    MDW_RESPONSE --> OW_BUSINESS_CALL
+    
+    OW_BUSINESS_CALL --> BW_WEBHOOK
+    BW_WEBHOOK --> BW_SERVICE
+    BW_SERVICE --> BW_LOGIC
+    BW_LOGIC --> BW_VALIDATION
+    BW_VALIDATION --> BW_RESPONSE
+    BW_RESPONSE --> OW_INTEGRATION_CALL
+    
+    OW_INTEGRATION_CALL --> IW_WEBHOOK
+    IW_WEBHOOK --> IW_ROUTER
+    IW_ROUTER -->|Travel Request| IW_TRAVEL
+    IW_ROUTER -->|Payment Request| IW_PAYMENT
+    IW_ROUTER -->|Booking Request| IW_CALENDAR
+    IW_TRAVEL --> IW_AGGREGATOR
+    IW_PAYMENT --> IW_AGGREGATOR
+    IW_CALENDAR --> IW_AGGREGATOR
+    IW_AGGREGATOR --> IW_RESPONSE
+    IW_RESPONSE --> OW_AGGREGATOR
+    
+    OW_AGGREGATOR --> OW_RESPONSE
+    OW_RESPONSE --> MW_RESPONSE
+    MW_RESPONSE -->|5. Final Response| USER
+    
+    %% External API Connections
+    MW_SIMPLE -.->|Uses Credential| CRED_OPENAI
+    CRED_OPENAI -.->|Authenticates| OPENAI
+    MW_SIMPLE -->|3. OpenAI Request| OPENAI
+    OPENAI -->|4. AI Response| MW_SIMPLE
+    
+    AW_VALIDATE -.->|Uses Credential| CRED_FIREBASE
+    CRED_FIREBASE -.->|Authenticates| FIREBASE
+    AW_VALIDATE -->|Member Lookup| FIREBASE
+    FIREBASE -->|Member Data| AW_VALIDATE
+    
+    MDW_PROFILE -.->|Uses Credential| CRED_FIREBASE
+    MDW_PROFILE -->|Profile Query| FIREBASE
+    FIREBASE -->|Profile Data| MDW_PROFILE
+    
+    MDW_HISTORY -.->|Uses Credential| CRED_FIREBASE
+    MDW_HISTORY -->|History Query| FIREBASE
+    FIREBASE -->|History Data| MDW_HISTORY
+    
+    BW_SERVICE -.->|Uses Credential| CRED_OPENAI
+    BW_SERVICE -->|Classification| OPENAI
+    OPENAI -->|Service Type| BW_SERVICE
+    
+    IW_TRAVEL -.->|Uses Credential| CRED_AMADEUS
+    CRED_AMADEUS -.->|Authenticates| AMADEUS
+    IW_TRAVEL -->|Travel Request| AMADEUS
+    AMADEUS -->|Travel Options| IW_TRAVEL
+    
+    IW_PAYMENT -.->|Uses Credential| CRED_STRIPE
+    CRED_STRIPE -.->|Authenticates| STRIPE
+    IW_PAYMENT -->|Payment Request| STRIPE
+    STRIPE -->|Payment Result| IW_PAYMENT
+    
+    IW_CALENDAR -.->|Uses Credential| CRED_GCAL
+    CRED_GCAL -.->|Authenticates| GCAL
+    IW_CALENDAR -->|Booking Request| GCAL
+    GCAL -->|Booking Confirmation| IW_CALENDAR
+    
+    %% Styling
+    classDef userStyle fill:#e1f5fe,stroke:#01579b,stroke-width:3px
+    classDef n8nStyle fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef apiStyle fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef credStyle fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef webhookStyle fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    
+    class USER,ASTERIA userStyle
+    class MW_WEBHOOK,AW_WEBHOOK,MDW_WEBHOOK,BW_WEBHOOK,IW_WEBHOOK,OW_WEBHOOK webhookStyle
+    class OPENAI,FIREBASE,AMADEUS,STRIPE,GCAL apiStyle
+    class CRED_FIREBASE,CRED_OPENAI,CRED_ASTERIA,CRED_AMADEUS,CRED_STRIPE,CRED_GCAL credStyle

@@ -29,7 +29,25 @@ interface ValidationResponse {
 
 export async function POST(request: NextRequest): Promise<NextResponse<ValidationResponse>> {
   try {
-    const { firebaseToken, memberContext }: ValidationRequest = await request.json();
+    let requestBody: ValidationRequest;
+    
+    try {
+      requestBody = await request.json();
+    } catch (jsonError) {
+      return NextResponse.json({
+        success: false,
+        error: 'Invalid JSON in request body'
+      }, { 
+        status: 400,
+        headers: {
+          'Access-Control-Allow-Origin': 'https://innercircle.thriveachievegrow.com',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      });
+    }
+    
+    const { firebaseToken, memberContext } = requestBody;
 
     if (!firebaseToken) {
       return NextResponse.json({

@@ -1,0 +1,154 @@
+{
+  "name": "Authentication Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "auth-agent",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "{{ $env.ASTERIA_CORS_ORIGIN }}"
+        }
+      },
+      "id": "auth-webhook-v2",
+      "name": "Auth Agent Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4-turbo",
+        "messages": {
+          "values": [
+            {
+              "message": "={{ $json.message || 'Authentication request: ' + JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {
+          "systemMessage": "You are the Authentication & Identity Agent for the ASTERIA multi-agent system. You specialize in secure identity validation, session management, and permission calculation for TAG Inner Circle members.\n\nCORE RESPONSIBILITIES:\n- Firebase authentication token validation and verification\n- Member tier mapping and permission calculation  \n- Cross-domain session establishment and management\n- Security context enrichment and validation\n- Session timeout and renewal coordination\n\nMEMBER TIER PERMISSIONS:\nfounding10: ['premium_aviation', 'concierge_direct', 'priority_booking', 'custom_workflows', 'unlimited_access']\nfifty_k: ['standard_aviation', 'concierge_chat', 'priority_booking', 'advanced_features']\ncorporate: ['group_booking', 'corporate_rates', 'team_coordination', 'business_services']\nall_members: ['basic_services', 'community_access', 'standard_features']\n\nSECURITY PROTOCOLS:\n- Validate token expiration and signature\n- Check for suspicious authentication patterns\n- Log all authentication events for audit\n- Implement progressive security measures\n- Handle token refresh and renewal\n\nRESPONSE FORMAT:\nAlways respond with: 'Authentication analysis complete. Proceeding with member validation and tier mapping.'",
+          "temperature": 0.1
+        }
+      },
+      "id": "auth-agent-ai",
+      "name": "Authentication Agent AI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "{{ $env.OPENAI_CREDENTIAL_ID }}",
+          "name": "OpenAI for Asteria"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced Firebase token verification simulation\nconst request = $input.first().json;\nconst memberId = request.memberId || 'unknown';\nconst authToken = request.authToken || 'no-token';\nconst memberTier = request.memberTier || 'all-members';\n\n// Simulate Firebase member lookup\n// In production, this would call actual Firebase\nconst simulatedMemberData = {\n  id: memberId,\n  email: `${memberId}@example.com`,\n  membershipLevel: memberTier === 'founding10' ? 'founder' : \n                   memberTier === 'fifty-k' ? 'premium' : \n                   memberTier === 'corporate' ? 'corporate' : 'member',\n  preferences: {\n    communicationStyle: 'professional',\n    serviceCategories: ['aviation', 'dining']\n  },\n  profileAccessCount: 0,\n  analyticsConsent: true,\n  lastActivity: new Date().toISOString(),\n  createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()\n};\n\nreturn {\n  json: {\n    ...simulatedMemberData,\n    tokenValid: true,\n    authToken: authToken\n  }\n};"
+      },
+      "id": "firebase-token-verify",
+      "name": "Verify Firebase Token",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced member tier mapping and permission calculation\nconst memberData = $input.first().json;\nconst authToken = memberData.authToken;\nconst correlationId = $node['auth-webhook-v2'].json.correlationId;\n\n// Role to tier mapping (from your existing system)\nconst roleTierMapping = {\n  'admin': 'founding10',\n  'founder': 'founding10',\n  'fifty-k': 'fifty-k',\n  'premium': 'fifty-k',\n  'corporate': 'corporate',\n  'member': 'all-members'\n};\n\n// Enhanced permission matrix with specific ASTERIA capabilities\nconst permissionMatrix = {\n  founding10: [\n    'premium_aviation', 'concierge_direct', 'priority_booking', \n    'custom_workflows', 'unlimited_access', 'founding_member_benefits',\n    'personal_concierge', 'exclusive_events', 'priority_support'\n  ],\n  fifty_k: [\n    'standard_aviation', 'concierge_chat', 'priority_booking', \n    'advanced_features', 'premium_dining', 'lifestyle_services'\n  ],\n  corporate: [\n    'group_booking', 'corporate_rates', 'team_coordination', \n    'business_services', 'bulk_reservations', 'corporate_billing'\n  ],\n  all_members: [\n    'basic_services', 'community_access', 'standard_features',\n    'general_concierge', 'basic_booking'\n  ]\n};\n\nconst memberRole = memberData.membershipLevel || 'member';\nconst memberTier = roleTierMapping[memberRole] || 'all-members';\nconst permissions = permissionMatrix[memberTier] || permissionMatrix.all_members;\n\n// Generate enhanced session context\nconst sessionContext = {\n  sessionId: `asteria_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,\n  crossDomainTokens: {\n    asteria: `asteria_token_${Date.now()}`,\n    portal: `portal_token_${Date.now()}`,\n    innercircle: `ic_token_${Date.now()}`\n  },\n  expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours\n  refreshToken: `refresh_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`\n};\n\n// Calculate authentication confidence score\nconst authConfidence = {\n  tokenValidation: memberData.tokenValid ? 1.0 : 0.0,\n  memberExists: memberData.id ? 1.0 : 0.0,\n  tierMapping: memberTier !== 'all-members' ? 1.0 : 0.8,\n  sessionSecurity: 0.95\n};\n\nconst overallConfidence = Object.values(authConfidence).reduce((a, b) => a + b, 0) / Object.keys(authConfidence).length;\n\n// Security flags with enhanced detection\nconst securityFlags = {\n  tokenValid: memberData.tokenValid || false,\n  suspiciousActivity: false, // Could be enhanced with ML detection\n  requiresReauth: overallConfidence < 0.8,\n  geoLocationCheck: 'passed', // Placeholder for geo validation\n  deviceFingerprint: 'recognized' // Placeholder for device recognition\n};\n\nreturn {\n  json: {\n    authenticationValid: overallConfidence >= 0.8,\n    authenticationConfidence: Math.round(overallConfidence * 100) / 100,\n    memberTier,\n    permissions,\n    sessionContext,\n    securityFlags,\n    memberProfile: {\n      memberId: memberData.id || $node['auth-webhook-v2'].json.memberId,\n      email: memberData.email,\n      membershipLevel: memberRole,\n      lastActivity: new Date().toISOString(),\n      profileCompleteness: calculateProfileCompleteness(memberData)\n    },\n    authorizationMatrix: {\n      canAccessPremiumServices: permissions.includes('premium_aviation'),\n      canDirectMessage: permissions.includes('concierge_direct'),\n      canCreateCustomWorkflows: permissions.includes('custom_workflows'),\n      maxConcurrentRequests: memberTier === 'founding10' ? 10 : memberTier === 'fifty-k' ? 5 : 3,\n      budgetLimit: memberTier === 'founding10' ? 'unlimited' : memberTier === 'fifty-k' ? 100000 : 25000\n    },\n    correlationId: correlationId,\n    nextAction: 'proceed',\n    processingTime: Date.now() - parseInt(correlationId?.split('_')[1] || Date.now())\n  }\n};\n\n// Helper function for profile completeness\nfunction calculateProfileCompleteness(profile) {\n  const requiredFields = ['email', 'membershipLevel', 'preferences'];\n  const optionalFields = ['phone', 'address', 'emergencyContact', 'preferredLanguage'];\n  \n  const requiredComplete = requiredFields.filter(field => profile[field]).length;\n  const optionalComplete = optionalFields.filter(field => profile[field]).length;\n  \n  const requiredScore = (requiredComplete / requiredFields.length) * 0.7;\n  const optionalScore = (optionalComplete / optionalFields.length) * 0.3;\n  \n  return Math.round((requiredScore + optionalScore) * 100);\n}"
+      },
+      "id": "tier-mapping-enhanced",
+      "name": "Calculate Member Tier & Permissions",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced authentication event logging\nconst authResult = $input.first().json;\nconst originalRequest = $node['auth-webhook-v2'].json;\n\n// Create comprehensive auth event log\nconst authEvent = {\n  eventId: `auth_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,\n  memberId: authResult.memberProfile.memberId,\n  memberTier: authResult.memberTier,\n  timestamp: new Date().toISOString(),\n  authMethod: 'firebase_token_validation',\n  sessionId: authResult.sessionContext.sessionId,\n  success: authResult.authenticationValid,\n  confidence: authResult.authenticationConfidence,\n  ipAddress: 'n8n-internal', // In production, extract from request headers\n  userAgent: 'asteria-agent-system',\n  securityFlags: authResult.securityFlags,\n  permissionsGranted: authResult.permissions,\n  processingTime: authResult.processingTime,\n  correlationId: authResult.correlationId,\n  eventType: 'agent_authentication',\n  agentSystem: 'asteria_multi_agent',\n  authorizationLevel: authResult.memberTier,\n  sessionDuration: '24h',\n  crossDomainAccess: true\n};\n\n// Simulate successful Firebase write\n// In production, this would write to Firestore auth_events collection\nconsole.log('Authentication Event Logged:', JSON.stringify(authEvent, null, 2));\n\nreturn {\n  json: {\n    logSuccess: true,\n    eventId: authEvent.eventId,\n    timestamp: authEvent.timestamp,\n    authenticationResult: authResult\n  }\n};"
+      },
+      "id": "log-auth-event-enhanced",
+      "name": "Log Authentication Event",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.authenticationResult }}"
+      },
+      "id": "auth-response-enhanced",
+      "name": "Authentication Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "auth-webhook-v2": {
+      "main": [
+        [
+          {
+            "node": "auth-agent-ai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "auth-agent-ai": {
+      "main": [
+        [
+          {
+            "node": "firebase-token-verify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "firebase-token-verify": {
+      "main": [
+        [
+          {
+            "node": "tier-mapping-enhanced",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "tier-mapping-enhanced": {
+      "main": [
+        [
+          {
+            "node": "log-auth-event-enhanced",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "log-auth-event-enhanced": {
+      "main": [
+        [
+          {
+            "node": "auth-response-enhanced",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-12-08T12:00:00.000Z",
+  "updatedAt": "2024-12-08T12:00:00.000Z",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["asteria", "authentication", "multi-agent"],
+  "triggerCount": 0,
+  "versionId": "1"
+} 

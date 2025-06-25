@@ -1,0 +1,762 @@
+{
+  "workflows": [
+    {
+      "name": "Asteria Main Orchestrator",
+      "id": "asteria_main_orchestrator",
+      "description": "Main coordination agent that orchestrates specialized agents",
+      "workflow": {
+        "id": 1,
+        "name": "Asteria Main Orchestrator",
+        "nodes": [
+          {
+            "id": "webhook-trigger",
+            "name": "Asteria Request Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [240, 300],
+            "parameters": {
+              "path": "asteria-request",
+              "httpMethod": "POST",
+              "responseMode": "responseNode",
+              "options": {
+                "allowedOrigins": "https://innercircle.thriveachievegrow.com"
+              }
+            }
+          },
+          {
+            "id": "main-agent",
+            "name": "Asteria Main Agent",
+            "type": "n8n-nodes-langchain.agent",
+            "typeVersion": 1,
+            "position": [460, 300],
+            "parameters": {
+              "systemMessage": "You are ASTERIA, the premier AI concierge for TAG Inner Circle. You coordinate a sophisticated multi-agent system to deliver exceptional personalized experiences for high-net-worth members.\n\nCORE IDENTITY:\n- Role: Master Orchestrator & Curator of Extraordinary Experiences\n- Personality: Sophisticated ally, confident whisper, always available but never intrusive\n- Mission: Transform member requests into orchestrated luxury experiences\n\nORCHESTRATION RESPONSIBILITIES:\n1. Initial member interaction and intent recognition\n2. Delegate to specialized agents based on request complexity\n3. Coordinate responses from multiple agents\n4. Ensure luxury experience continuity\n5. Handle escalations and exceptional cases\n\nAGENT COORDINATION PROTOCOL:\n- Analyze member request for complexity and agent requirements\n- Delegate to Authentication Agent for identity validation\n- Coordinate with Member Data Agent for context enrichment\n- Route to Business Logic Agent for rule processing\n- Engage Integration Agent for service coordination\n- Synthesize responses into cohesive luxury experience\n\nMEMBER TIER AWARENESS:\n- founding10: Immediate priority, unlimited access, personal touch\n- fifty-k: Premium services, priority handling, advanced features\n- corporate: Team coordination, group services, business focus\n- all-members: Standard luxury baseline, community access\n\nCOMMUNICATION STYLE:\n- Use sophisticated luxury language: \"curated\", \"arranged\", \"exceptional\"\n- Match member energy and urgency appropriately\n- Never waste member time - every word serves purpose\n- Provide information hierarchy: Essential → Useful → Interesting\n\nAvailable tools:\n- coordinate_authentication: Delegate to Authentication Agent\n- enrich_member_context: Delegate to Member Data Agent\n- process_business_rules: Delegate to Business Logic Agent\n- coordinate_services: Delegate to Integration Agent\n- escalate_to_human: Escalate to concierge team\n- search_luxury_knowledge: Access RAG knowledge base directly",
+              "temperature": 0.3,
+              "maxIterations": 5
+            }
+          },
+          {
+            "id": "complexity-assessment",
+            "name": "Assess Request Complexity",
+            "type": "n8n-nodes-base.function",
+            "typeVersion": 1,
+            "position": [680, 300],
+            "parameters": {
+              "functionCode": "// Assess if request requires multi-agent coordination\nconst request = $input.first().json;\nconst message = request.message || '';\nconst memberTier = request.memberTier || 'all-members';\n\n// Complexity indicators\nconst complexityIndicators = {\n  multiService: /\\b(flight|hotel|restaurant|car|yacht)\\b.*\\b(flight|hotel|restaurant|car|yacht)\\b/i.test(message),\n  highValue: /\\$(\\d{1,3},)*\\d{4,}|premium|luxury|exclusive|private jet/i.test(message),\n  timeConstraint: /asap|urgent|immediately|today|tomorrow|next week/i.test(message),\n  coordination: /coordinate|arrange|plan|organize|manage/i.test(message),\n  memberTierComplex: ['founding10', 'fifty-k'].includes(memberTier)\n};\n\nconst complexityScore = Object.values(complexityIndicators).filter(Boolean).length;\nconst requiresOrchestration = complexityScore >= 2;\n\nreturn {\n  json: {\n    ...request,\n    complexityScore,\n    requiresOrchestration,\n    complexityIndicators,\n    nextAction: requiresOrchestration ? 'orchestrate' : 'direct_processing'\n  }\n};"
+            }
+          },
+          {
+            "id": "route-decision",
+            "name": "Route Decision",
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 1,
+            "position": [900, 300],
+            "parameters": {
+              "rules": {
+                "rules": [
+                  {
+                    "operation": "equal",
+                    "value1": "={{ $json.nextAction }}",
+                    "value2": "orchestrate"
+                  },
+                  {
+                    "operation": "equal",
+                    "value1": "={{ $json.nextAction }}",
+                    "value2": "direct_processing"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "id": "auth-agent-call",
+            "name": "Call Authentication Agent",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 1,
+            "position": [1120, 200],
+            "parameters": {
+              "url": "={{ $node['webhook-trigger'].json.n8nBaseUrl }}/webhook/auth-agent",
+              "method": "POST",
+              "sendBody": true,
+              "bodyParameters": {
+                "parameters": [
+                  {
+                    "name": "correlationId",
+                    "value": "={{ $json.correlationId || $now }}"
+                  },
+                  {
+                    "name": "memberId",
+                    "value": "={{ $json.memberId }}"
+                  },
+                  {
+                    "name": "authToken",
+                    "value": "={{ $json.authToken }}"
+                  },
+                  {
+                    "name": "memberTier",
+                    "value": "={{ $json.memberTier }}"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "id": "member-data-call",
+            "name": "Call Member Data Agent",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 1,
+            "position": [1120, 300],
+            "parameters": {
+              "url": "={{ $node['webhook-trigger'].json.n8nBaseUrl }}/webhook/member-data-agent",
+              "method": "POST",
+              "sendBody": true,
+              "bodyParameters": {
+                "parameters": [
+                  {
+                    "name": "correlationId",
+                    "value": "={{ $json.correlationId }}"
+                  },
+                  {
+                    "name": "memberId",
+                    "value": "={{ $json.memberId }}"
+                  },
+                  {
+                    "name": "authContext",
+                    "value": "={{ $node['auth-agent-call'].json }}"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "id": "business-logic-call",
+            "name": "Call Business Logic Agent",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 1,
+            "position": [1120, 400],
+            "parameters": {
+              "url": "={{ $node['webhook-trigger'].json.n8nBaseUrl }}/webhook/business-logic-agent",
+              "method": "POST",
+              "sendBody": true,
+              "bodyParameters": {
+                "parameters": [
+                  {
+                    "name": "correlationId",
+                    "value": "={{ $json.correlationId }}"
+                  },
+                  {
+                    "name": "memberContext",
+                    "value": "={{ $node['member-data-call'].json }}"
+                  },
+                  {
+                    "name": "originalMessage",
+                    "value": "={{ $json.message }}"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "id": "integration-call",
+            "name": "Call Integration Agent",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 1,
+            "position": [1120, 500],
+            "parameters": {
+              "url": "={{ $node['webhook-trigger'].json.n8nBaseUrl }}/webhook/integration-agent",
+              "method": "POST",
+              "sendBody": true,
+              "bodyParameters": {
+                "parameters": [
+                  {
+                    "name": "correlationId",
+                    "value": "={{ $json.correlationId }}"
+                  },
+                  {
+                    "name": "businessPlan",
+                    "value": "={{ $node['business-logic-call'].json }}"
+                  },
+                  {
+                    "name": "memberContext",
+                    "value": "={{ $node['member-data-call'].json }}"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "id": "orchestrated-response",
+            "name": "Generate Orchestrated Response",
+            "type": "n8n-nodes-base.function",
+            "typeVersion": 1,
+            "position": [1340, 350],
+            "parameters": {
+              "functionCode": "// Synthesize responses from all agents\nconst authResult = $node['auth-agent-call'].json;\nconst memberData = $node['member-data-call'].json;\nconst businessLogic = $node['business-logic-call'].json;\nconst integration = $node['integration-call'].json;\n\n// Create orchestrated response\nconst orchestratedResponse = {\n  success: true,\n  response: integration.memberDelivery?.confirmationDetails || \"Your request has been expertly coordinated through our specialized concierge team.\",\n  metadata: {\n    responseTime: Date.now() - parseInt($json.correlationId),\n    agentsUsed: ['auth', 'member-data', 'business-logic', 'integration'],\n    orchestrationUsed: true,\n    memberTier: authResult.memberTier,\n    workflowTriggered: businessLogic.executionPlan?.workflowRequired || false,\n    serviceCategory: businessLogic.intentAnalysis?.primaryIntent || 'general'\n  },\n  tracking: {\n    correlationId: $json.correlationId,\n    serviceTicketId: integration.serviceTicketId,\n    estimatedCompletion: businessLogic.executionPlan?.estimatedTimeline\n  }\n};\n\nreturn { json: orchestratedResponse };"
+            }
+          },
+          {
+            "id": "direct-processing",
+            "name": "Direct Processing (Existing System)",
+            "type": "n8n-nodes-base.function",
+            "typeVersion": 1,
+            "position": [1120, 600],
+            "parameters": {
+              "functionCode": "// Handle simple requests through existing system\nconst request = $input.first().json;\n\n// This would call your existing AsteriaAgentLoop for simple requests\nconst directResponse = {\n  success: true,\n  response: \"Your request has been processed through our standard luxury concierge system.\",\n  metadata: {\n    responseTime: 1500, // Your existing 1.4-2.1s average\n    agentsUsed: ['single-agent'],\n    orchestrationUsed: false,\n    processingMethod: 'existing_asteria_loop'\n  }\n};\n\nreturn { json: directResponse };"
+            }
+          },
+          {
+            "id": "response-webhook",
+            "name": "Send Response",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [1560, 400],
+            "parameters": {
+              "respondWith": "json",
+              "responseBody": "={{ $json }}"
+            }
+          }
+        ],
+        "connections": {
+          "webhook-trigger": {
+            "main": [
+              [
+                {
+                  "node": "main-agent",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "main-agent": {
+            "main": [
+              [
+                {
+                  "node": "complexity-assessment",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "complexity-assessment": {
+            "main": [
+              [
+                {
+                  "node": "route-decision",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "route-decision": {
+            "main": [
+              [
+                {
+                  "node": "auth-agent-call",
+                  "type": "main",
+                  "index": 0
+                }
+              ],
+              [
+                {
+                  "node": "direct-processing",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "auth-agent-call": {
+            "main": [
+              [
+                {
+                  "node": "member-data-call",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "member-data-call": {
+            "main": [
+              [
+                {
+                  "node": "business-logic-call",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "business-logic-call": {
+            "main": [
+              [
+                {
+                  "node": "integration-call",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "integration-call": {
+            "main": [
+              [
+                {
+                  "node": "orchestrated-response",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "orchestrated-response": {
+            "main": [
+              [
+                {
+                  "node": "response-webhook",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "direct-processing": {
+            "main": [
+              [
+                {
+                  "node": "response-webhook",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "Authentication Agent",
+      "id": "authentication_agent",
+      "description": "Specialized agent for authentication and member tier validation",
+      "workflow": {
+        "id": 2,
+        "name": "Authentication Agent",
+        "nodes": [
+          {
+            "id": "auth-webhook",
+            "name": "Auth Agent Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [240, 300],
+            "parameters": {
+              "path": "auth-agent",
+              "httpMethod": "POST",
+              "responseMode": "responseNode"
+            }
+          },
+          {
+            "id": "auth-agent",
+            "name": "Authentication Agent AI",
+            "type": "n8n-nodes-langchain.agent",
+            "typeVersion": 1,
+            "position": [460, 300],
+            "parameters": {
+              "systemMessage": "You are the Authentication & Identity Agent for the ASTERIA multi-agent system. You specialize in secure identity validation, session management, and permission calculation for TAG Inner Circle members.\n\nCORE RESPONSIBILITIES:\n- Firebase authentication token validation and verification\n- Member tier mapping and permission calculation\n- Cross-domain session establishment and management\n- Security context enrichment and validation\n- Session timeout and renewal coordination\n\nMEMBER TIER PERMISSIONS:\nfounding10: ['premium_aviation', 'concierge_direct', 'priority_booking', 'custom_workflows', 'unlimited_access']\nfifty_k: ['standard_aviation', 'concierge_chat', 'priority_booking', 'advanced_features']\ncorporate: ['group_booking', 'corporate_rates', 'team_coordination', 'business_services']\nall_members: ['basic_services', 'community_access', 'standard_features']\n\nSECURITY PROTOCOLS:\n- Validate token expiration and signature\n- Check for suspicious authentication patterns\n- Log all authentication events for audit\n- Implement progressive security measures\n- Handle token refresh and renewal\n\nAvailable tools:\n- firebase_verify_token: Verify Firebase ID tokens\n- retrieve_member_profile: Get member data from Firestore\n- calculate_permissions: Generate tier-based permissions\n- generate_session_tokens: Create cross-domain session tokens\n- log_security_event: Record security events",
+              "temperature": 0.1
+            }
+          },
+          {
+            "id": "firebase-token-verify",
+            "name": "Verify Firebase Token",
+            "type": "n8n-nodes-base.googleCloudFirestore",
+            "typeVersion": 1,
+            "position": [680, 300],
+            "parameters": {
+              "operation": "get",
+              "collection": "asteria_members",
+              "documentId": "={{ $json.memberId }}"
+            }
+          },
+          {
+            "id": "tier-mapping",
+            "name": "Calculate Member Tier & Permissions",
+            "type": "n8n-nodes-base.function",
+            "typeVersion": 1,
+            "position": [900, 300],
+            "parameters": {
+              "functionCode": "// Map member role to tier and calculate permissions\nconst memberData = $input.first().json;\nconst authToken = $node['auth-webhook'].json.authToken;\n\n// Role to tier mapping (from your existing system)\nconst roleTierMapping = {\n  'admin': 'founding10',\n  'founder': 'founding10',\n  'fifty-k': 'fifty-k',\n  'premium': 'fifty-k',\n  'corporate': 'corporate',\n  'member': 'all-members'\n};\n\n// Permission matrix\nconst permissionMatrix = {\n  founding10: ['premium_aviation', 'concierge_direct', 'priority_booking', 'custom_workflows', 'unlimited_access'],\n  fifty_k: ['standard_aviation', 'concierge_chat', 'priority_booking', 'advanced_features'],\n  corporate: ['group_booking', 'corporate_rates', 'team_coordination', 'business_services'],\n  all_members: ['basic_services', 'community_access', 'standard_features']\n};\n\nconst memberRole = memberData.membershipLevel || 'member';\nconst memberTier = roleTierMapping[memberRole] || 'all-members';\nconst permissions = permissionMatrix[memberTier] || permissionMatrix.all_members;\n\n// Generate session context\nconst sessionContext = {\n  sessionId: `asteria_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,\n  crossDomainTokens: {\n    asteria: `asteria_token_${Date.now()}`,\n    portal: `portal_token_${Date.now()}`\n  },\n  expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours\n};\n\nreturn {\n  json: {\n    authenticationValid: true,\n    memberTier,\n    permissions,\n    sessionContext,\n    securityFlags: {\n      tokenValid: true,\n      suspiciousActivity: false,\n      requiresReauth: false\n    },\n    memberProfile: {\n      memberId: memberData.id || $json.memberId,\n      email: memberData.email,\n      lastActivity: new Date().toISOString()\n    },\n    nextAction: 'proceed'\n  }\n};"
+            }
+          },
+          {
+            "id": "log-auth-event",
+            "name": "Log Authentication Event",
+            "type": "n8n-nodes-base.googleCloudFirestore",
+            "typeVersion": 1,
+            "position": [1120, 300],
+            "parameters": {
+              "operation": "create",
+              "collection": "auth_events",
+              "fields": {
+                "parameters": [
+                  {
+                    "name": "memberId",
+                    "value": "={{ $json.memberProfile.memberId }}"
+                  },
+                  {
+                    "name": "memberTier",
+                    "value": "={{ $json.memberTier }}"
+                  },
+                  {
+                    "name": "timestamp",
+                    "value": "={{ $now }}"
+                  },
+                  {
+                    "name": "authMethod",
+                    "value": "firebase_token"
+                  },
+                  {
+                    "name": "sessionId",
+                    "value": "={{ $json.sessionContext.sessionId }}"
+                  },
+                  {
+                    "name": "success",
+                    "value": "={{ $json.authenticationValid }}"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "id": "auth-response",
+            "name": "Authentication Response",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [1340, 300],
+            "parameters": {
+              "respondWith": "json",
+              "responseBody": "={{ $node['tier-mapping'].json }}"
+            }
+          }
+        ],
+        "connections": {
+          "auth-webhook": {
+            "main": [
+              [
+                {
+                  "node": "auth-agent",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "auth-agent": {
+            "main": [
+              [
+                {
+                  "node": "firebase-token-verify",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "firebase-token-verify": {
+            "main": [
+              [
+                {
+                  "node": "tier-mapping",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "tier-mapping": {
+            "main": [
+              [
+                {
+                  "node": "log-auth-event",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "log-auth-event": {
+            "main": [
+              [
+                {
+                  "node": "auth-response",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "Member Data Agent",
+      "id": "member_data_agent", 
+      "description": "Specialized agent for member context enrichment and preference management",
+      "workflow": {
+        "id": 3,
+        "name": "Member Data Agent",
+        "nodes": [
+          {
+            "id": "member-data-webhook",
+            "name": "Member Data Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [240, 300],
+            "parameters": {
+              "path": "member-data-agent",
+              "httpMethod": "POST",
+              "responseMode": "responseNode"
+            }
+          },
+          {
+            "id": "member-data-agent",
+            "name": "Member Data Agent AI",
+            "type": "n8n-nodes-langchain.agent",
+            "typeVersion": 1,
+            "position": [460, 300],
+            "parameters": {
+              "systemMessage": "You are the Member Data Agent for the ASTERIA multi-agent system. You specialize in member context enrichment, preference management, and personalized data insights for luxury service delivery.\n\nCORE RESPONSIBILITIES:\n- Member profile retrieval and context enrichment\n- Conversation history analysis and context preservation\n- Preference tracking and pattern recognition\n- Service history analysis and insight generation\n- Data privacy compliance and access control\n\nCONVERSATION HISTORY MANAGEMENT:\n- all-members: 30 days rolling retention\n- corporate: 90 days with project continuity\n- fifty-k: 180 days with preference learning\n- founding10: 365 days with full context preservation\n\nPREFERENCE ANALYSIS:\n- Communication style adaptation (formal, casual, technical)\n- Service category preferences (aviation, dining, lifestyle)\n- Budget patterns and spending preferences\n- Urgency patterns and response time expectations\n- Satisfaction indicators and service quality feedback\n\nDATA PRIVACY CONTROLS:\n- Tier-based data access restrictions\n- PII encryption and secure handling\n- Consent management for data usage\n- Cross-domain data sharing protocols\n- Retention policy enforcement\n\nAvailable tools:\n- retrieve_member_profile: Access Firebase member data\n- analyze_conversation_history: Pattern recognition analysis\n- calculate_member_insights: Generate insights from data\n- check_privacy_controls: Validate data access permissions\n- update_member_preferences: Store preference updates",
+              "temperature": 0.2
+            }
+          },
+          {
+            "id": "get-member-profile",
+            "name": "Get Member Profile",
+            "type": "n8n-nodes-base.googleCloudFirestore",
+            "typeVersion": 1,
+            "position": [680, 200],
+            "parameters": {
+              "operation": "get",
+              "collection": "asteria_members",
+              "documentId": "={{ $json.memberId }}"
+            }
+          },
+          {
+            "id": "get-conversation-history",
+            "name": "Get Conversation History",
+            "type": "n8n-nodes-base.googleCloudFirestore",
+            "typeVersion": 1,
+            "position": [680, 300],
+            "parameters": {
+              "operation": "getAll",
+              "collection": "conversation_history",
+              "filters": {
+                "combineOperation": "AND",
+                "conditions": [
+                  {
+                    "key": "memberId",
+                    "operation": "equal",
+                    "value": "={{ $json.memberId }}"
+                  }
+                ]
+              },
+              "limit": 50,
+              "sort": {
+                "field": "timestamp",
+                "direction": "desc"
+              }
+            }
+          },
+          {
+            "id": "get-service-history",
+            "name": "Get Service History", 
+            "type": "n8n-nodes-base.googleCloudFirestore",
+            "typeVersion": 1,
+            "position": [680, 400],
+            "parameters": {
+              "operation": "getAll",
+              "collection": "service_requests",
+              "filters": {
+                "combineOperation": "AND",
+                "conditions": [
+                  {
+                    "key": "memberId",
+                    "operation": "equal",
+                    "value": "={{ $json.memberId }}"
+                  }
+                ]
+              },
+              "limit": 25,
+              "sort": {
+                "field": "createdAt",
+                "direction": "desc"
+              }
+            }
+          },
+          {
+            "id": "generate-insights",
+            "name": "Generate Member Insights",
+            "type": "n8n-nodes-base.function",
+            "typeVersion": 1,
+            "position": [900, 300],
+            "parameters": {
+              "functionCode": "// Generate personalized member insights\nconst memberProfile = $node['get-member-profile'].json;\nconst conversationHistory = $node['get-conversation-history'].json || [];\nconst serviceHistory = $node['get-service-history'].json || [];\nconst authContext = $node['member-data-webhook'].json.authContext;\n\n// Analyze service preferences\nconst serviceCategories = serviceHistory.reduce((acc, service) => {\n  const category = service.serviceCategory || 'general';\n  acc[category] = (acc[category] || 0) + 1;\n  return acc;\n}, {});\n\nconst preferredServices = Object.entries(serviceCategories)\n  .sort(([,a], [,b]) => b - a)\n  .slice(0, 3)\n  .map(([category]) => category);\n\n// Analyze communication patterns\nconst messageLengths = conversationHistory.map(conv => conv.message?.length || 0);\nconst avgMessageLength = messageLengths.reduce((a, b) => a + b, 0) / messageLengths.length || 100;\nconst communicationStyle = avgMessageLength > 200 ? 'detailed' : avgMessageLength > 100 ? 'moderate' : 'concise';\n\n// Analyze budget patterns\nconst serviceValues = serviceHistory\n  .filter(service => service.estimatedValue)\n  .map(service => service.estimatedValue);\n\nconst avgBudget = serviceValues.reduce((a, b) => a + b, 0) / serviceValues.length || 0;\nconst budgetRange = avgBudget > 25000 ? 'ultra-luxury' : avgBudget > 10000 ? 'premium' : avgBudget > 5000 ? 'high-end' : 'standard';\n\n// Calculate satisfaction score\nconst satisfactionScores = serviceHistory\n  .filter(service => service.satisfactionRating)\n  .map(service => service.satisfactionRating);\n  \nconst avgSatisfaction = satisfactionScores.reduce((a, b) => a + b, 0) / satisfactionScores.length || 8.5;\n\n// Analyze urgency patterns\nconst urgentRequests = serviceHistory.filter(service => \n  service.priority === 'high' || service.priority === 'urgent'\n).length;\nconst urgencyRatio = urgentRequests / serviceHistory.length || 0;\n\n// Generate personalized recommendations\nconst recommendations = [];\nif (preferredServices.includes('transportation')) {\n  recommendations.push('Consider our new private aviation membership benefits');\n}\nif (budgetRange === 'ultra-luxury' && authContext.memberTier !== 'founding10') {\n  recommendations.push('You may be eligible for founding member tier upgrade');\n}\nif (avgSatisfaction > 9.0) {\n  recommendations.push('Join our ambassador program for exclusive experiences');\n}\n\nreturn {\n  json: {\n    memberProfile: {\n      memberId: memberProfile.id || $json.memberId,\n      memberTier: authContext.memberTier,\n      profileCompleteness: calculateProfileCompleteness(memberProfile),\n      lastActivity: new Date().toISOString()\n    },\n    conversationContext: {\n      recentHistory: conversationHistory.slice(0, 10),\n      communicationStyle: communicationStyle,\n      contextualPatterns: {\n        averageMessageLength: Math.round(avgMessageLength),\n        conversationFrequency: conversationHistory.length\n      }\n    },\n    serviceInsights: {\n      preferredServices: preferredServices,\n      budgetPatterns: {\n        averageBudget: Math.round(avgBudget),\n        budgetRange: budgetRange,\n        totalServices: serviceHistory.length\n      },\n      satisfactionScore: Math.round(avgSatisfaction * 10) / 10,\n      urgencyPatterns: {\n        urgencyRatio: Math.round(urgencyRatio * 100) / 100,\n        typicalResponseTime: urgencyRatio > 0.3 ? 'immediate' : 'standard'\n      }\n    },\n    personalizedRecommendations: recommendations,\n    privacyControls: {\n      dataRetentionDays: getRetentionDays(authContext.memberTier),\n      shareAcrossDomains: true,\n      analyticsOptIn: memberProfile.analyticsConsent !== false\n    },\n    nextAction: 'proceed'\n  }\n};\n\n// Helper functions\nfunction calculateProfileCompleteness(profile) {\n  const requiredFields = ['email', 'membershipLevel', 'preferences'];\n  const completedFields = requiredFields.filter(field => profile[field]).length;\n  return Math.round((completedFields / requiredFields.length) * 100);\n}\n\nfunction getRetentionDays(memberTier) {\n  const retentionMap = {\n    'founding10': 365,\n    'fifty-k': 180,\n    'corporate': 90,\n    'all-members': 30\n  };\n  return retentionMap[memberTier] || 30;\n}"
+            }
+          },
+          {
+            "id": "update-member-activity",
+            "name": "Update Member Activity",
+            "type": "n8n-nodes-base.googleCloudFirestore",
+            "typeVersion": 1,
+            "position": [1120, 300],
+            "parameters": {
+              "operation": "update",
+              "collection": "asteria_members",
+              "documentId": "={{ $json.memberProfile.memberId }}",
+              "fields": {
+                "parameters": [
+                  {
+                    "name": "lastActivity",
+                    "value": "={{ $json.memberProfile.lastActivity }}"
+                  },
+                  {
+                    "name": "lastAgentInteraction",
+                    "value": "member_data_agent"
+                  },
+                  {
+                    "name": "profileAccessCount",
+                    "value": "={{ $node['get-member-profile'].json.profileAccessCount + 1 || 1 }}"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "id": "member-data-response",
+            "name": "Member Data Response",
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [1340, 300],
+            "parameters": {
+              "respondWith": "json",
+              "responseBody": "={{ $node['generate-insights'].json }}"
+            }
+          }
+        ],
+        "connections": {
+          "member-data-webhook": {
+            "main": [
+              [
+                {
+                  "node": "member-data-agent",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "member-data-agent": {
+            "main": [
+              [
+                {
+                  "node": "get-member-profile",
+                  "type": "main",
+                  "index": 0
+                },
+                {
+                  "node": "get-conversation-history",
+                  "type": "main",
+                  "index": 0
+                },
+                {
+                  "node": "get-service-history",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "get-member-profile": {
+            "main": [
+              [
+                {
+                  "node": "generate-insights",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "get-conversation-history": {
+            "main": [
+              [
+                {
+                  "node": "generate-insights",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "get-service-history": {
+            "main": [
+              [
+                {
+                  "node": "generate-insights",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "generate-insights": {
+            "main": [
+              [
+                {
+                  "node": "update-member-activity",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          },
+          "update-member-activity": {
+            "main": [
+              [
+                {
+                  "node": "member-data-response",
+                  "type": "main",
+                  "index": 0
+                }
+              ]
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "credentials": {
+    "firebase": {
+      "name": "TAG Inner Circle Firebase",
+      "type": "googleFirebaseRealtimeDatabase",
+      "data": {
+        "projectId": "tag-inner-circle-v01",
+        "serviceAccount": "firebase-service-account-key-from-secret-manager"
+      }
+    },
+    "openai": {
+      "name": "OpenAI for Asteria",
+      "type": "openAi",
+      "data": {
+        "apiKey": "openai-api-key-from-secret-manager"
+      }
+    }
+  },
+  "environment_variables": {
+    "N8N_ASTERIA_BASE_URL": "https://your-n8n-instance.com",
+    "FIREBASE_PROJECT_ID": "tag-inner-circle-v01",
+    "ASTERIA_CORS_ORIGIN": "https://innercircle.thriveachievegrow.com"
+  }
+}

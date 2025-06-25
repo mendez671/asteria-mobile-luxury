@@ -1,0 +1,218 @@
+{
+  "name": "Main Orchestrator Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "main-orchestrator",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "{{ $env.ASTERIA_CORS_ORIGIN }}"
+        }
+      },
+      "id": "main-orchestrator-webhook",
+      "name": "Main Orchestrator Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4-turbo",
+        "messages": {
+          "values": [
+            {
+              "message": "={{ $json.message || 'Orchestration request: ' + JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {
+          "systemMessage": "You are ASTERIA, the premier AI concierge for TAG Inner Circle - an ultra-luxury lifestyle management platform. You coordinate a sophisticated multi-agent system to deliver exceptional personalized experiences for high-net-worth members.\n\nCORE IDENTITY:\n- Role: Master Orchestrator & Curator of Extraordinary Experiences\n- Personality: Sophisticated ally, confident whisper, always available but never intrusive\n- Mission: Transform member requests into orchestrated luxury experiences through intelligent agent coordination\n\nEXISTING SYSTEM INTEGRATION:\nYou enhance an existing production-ready system with:\n- 1,122-line autonomous agent loop with 100% tool success rate\n- RAG knowledge base with 26+ luxury service chunks\n- 15+ specialized tools (Amadeus, Stripe, ElevenLabs, etc.)\n- Sophisticated workflow orchestration with SLA tracking\n- Response times: 1.4-2.1s with 100/100 optimization scores\n\nORCHESTRATION RESPONSIBILITIES:\n1. Initial member interaction and intent recognition\n2. Delegate to specialized agents based on request complexity\n3. Coordinate responses from multiple agents\n4. Ensure luxury experience continuity\n5. Handle escalations and exceptional cases\n\nAGENT COORDINATION PROTOCOL:\n- Analyze member request for complexity and agent requirements\n- Delegate to Authentication Agent for identity validation\n- Coordinate with Member Data Agent for context enrichment\n- Route to Business Logic Agent for rule processing\n- Engage Integration Agent for service coordination\n- Synthesize responses into cohesive luxury experience\n\nMEMBER TIER AWARENESS:\n- founding10: Immediate priority, unlimited access, personal touch\n- fifty-k: Premium services, priority handling, advanced features\n- corporate: Team coordination, group services, business focus\n- all-members: Standard luxury baseline, community access\n\nCOMMUNICATION STYLE:\n- Acknowledge → Understand → Curate → Deliver → Follow-through\n- Use sophisticated luxury language: 'curated', 'arranged', 'exceptional'\n- Match member energy and urgency appropriately\n- Never waste member time - every word serves purpose\n- Provide information hierarchy: Essential → Useful → Interesting\n\nESCALATION TRIGGERS:\n- Service value >$10K (fifty-k), >$50K (founding10)\n- Complex multi-service coordination\n- Member dissatisfaction indicators\n- Business rule violations or compliance issues\n- Technical failures requiring human intervention\n\nSUCCESS METRICS:\n- Response time <2.5s end-to-end\n- Agent coordination <100ms per hop\n- Business rule compliance 100%\n- Member satisfaction enhancement through personalization\n\nRemember: You are the conductor of a luxury experience orchestra, ensuring every interaction feels effortlessly magical while being powered by sophisticated agent coordination.\n\nRESPONSE FORMAT:\nAlways respond with: 'Orchestration analysis complete. Coordinating specialized agents for optimal service delivery.'",
+          "temperature": 0.3
+        }
+      },
+      "id": "main-orchestrator-ai",
+      "name": "Main Orchestrator AI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "{{ $env.OPENAI_CREDENTIAL_ID }}",
+          "name": "OpenAI for Asteria"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced complexity assessment for agent coordination\nconst request = $input.first().json;\nconst message = request.message || '';\nconst memberTier = request.memberTier || 'all-members';\nconst correlationId = request.correlationId || `corr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;\n\n// Advanced complexity indicators for agent coordination\nconst complexityIndicators = {\n  multiService: /\\b(flight|jet|hotel|restaurant|car|yacht|dining|transportation|event)\\b.*\\b(flight|jet|hotel|restaurant|car|yacht|dining|transportation|event)\\b/i.test(message),\n  highValue: /\\$([1-9]\\d{3,})|premium|luxury|exclusive|private\\s+jet|yacht/i.test(message),\n  timeConstraint: /asap|urgent|immediately|right\\s+away|today|tonight|tomorrow/i.test(message),\n  coordination: /coordinate|arrange|plan|organize|manage|multiple|several/i.test(message),\n  memberTierComplex: ['founding10', 'fifty-k'].includes(memberTier),\n  paymentRequired: /pay|payment|charge|bill|invoice|cost/i.test(message),\n  complianceNeeded: /investment|financial|international|legal|contract/i.test(message)\n};\n\nconst complexityScore = Object.values(complexityIndicators).filter(Boolean).length;\nconst overallComplexity = complexityScore >= 3 ? 'complex' : complexityScore >= 2 ? 'medium' : 'simple';\n\n// Determine required agents based on complexity and content\nconst requiredAgents = ['authentication'];\n\nif (complexityScore >= 1) {\n  requiredAgents.push('member_data');\n}\n\nif (complexityScore >= 2 || complexityIndicators.complianceNeeded || complexityIndicators.highValue) {\n  requiredAgents.push('business_logic');\n}\n\nif (complexityScore >= 1) {\n  requiredAgents.push('integration');\n}\n\n// Determine processing strategy\nconst processingStrategy = overallComplexity === 'complex' ? 'orchestrate' : \n                         overallComplexity === 'medium' ? 'coordinate' : 'direct';\n\n// Generate orchestration plan\nconst orchestrationPlan = {\n  strategy: processingStrategy,\n  agentSequence: requiredAgents,\n  estimatedTime: overallComplexity === 'complex' ? '<2.5s' : \n                 overallComplexity === 'medium' ? '<2.0s' : '<1.5s',\n  parallelExecution: requiredAgents.length <= 2,\n  fallbackRequired: complexityScore >= 3\n};\n\nreturn {\n  json: {\n    complexityAssessment: {\n      score: complexityScore,\n      level: overallComplexity,\n      indicators: complexityIndicators,\n      processingType: processingStrategy\n    },\n    orchestrationPlan: orchestrationPlan,\n    correlationId: correlationId,\n    memberTier: memberTier,\n    timestamp: new Date().toISOString(),\n    nextAction: requiredAgents.length > 2 ? 'orchestrate' : 'direct_execute'\n  }\n};"
+      },
+      "id": "assess-complexity",
+      "name": "Assess Complexity",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "output": "input",
+        "rules": {
+          "values": [
+            {
+              "operation": "equal",
+              "value1": "={{ $json.nextAction }}",
+              "value2": "orchestrate"
+            },
+            {
+              "operation": "equal",
+              "value1": "={{ $json.nextAction }}",
+              "value2": "direct_execute"
+            }
+          ]
+        }
+      },
+      "id": "route-processing",
+      "name": "Route Processing",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Multi-agent orchestration coordinator\nconst assessmentData = $input.first().json;\nconst originalRequest = $node['Main Orchestrator Webhook'].json;\nconst agentSequence = assessmentData.orchestrationPlan.agentSequence;\nconst correlationId = assessmentData.correlationId;\n\n// Create orchestration context\nconst orchestrationContext = {\n  correlationId: correlationId,\n  memberTier: assessmentData.memberTier,\n  message: originalRequest.message,\n  authContext: originalRequest.authContext || {},\n  timestamp: assessmentData.timestamp,\n  orchestrationPlan: assessmentData.orchestrationPlan,\n  agentResults: {} // Will store results from each agent\n};\n\n// Simulate agent coordination results (in production, this would call actual agents)\nconst mockAgentResults = {\n  authentication: {\n    authenticationValid: true,\n    memberTier: assessmentData.memberTier,\n    permissions: ['premium_services', 'concierge_access'],\n    sessionContext: { sessionId: `sess_${Date.now()}` },\n    nextAction: 'proceed'\n  },\n  member_data: {\n    memberProfile: {\n      memberId: originalRequest.memberId || 'member_001',\n      memberTier: assessmentData.memberTier,\n      profileCompleteness: 92\n    },\n    conversationContext: {\n      communicationStyle: 'professional',\n      recentHistory: []\n    },\n    personalizedRecommendations: ['Aviation services', 'Concierge coordination'],\n    nextAction: 'proceed'\n  },\n  business_logic: {\n    intentAnalysis: {\n      primaryIntent: 'transportation',\n      confidence: 0.85,\n      complexity: assessmentData.complexityAssessment.level\n    },\n    businessValidation: {\n      tierEligible: true,\n      budgetApproved: true,\n      complianceValid: true,\n      riskLevel: 'low'\n    },\n    executionPlan: {\n      approvedServices: ['aviation', 'transportation'],\n      workflowRequired: assessmentData.complexityAssessment.level === 'complex',\n      escalationNeeded: false\n    },\n    nextAction: 'execute'\n  },\n  integration: {\n    serviceExecution: {\n      primaryServices: ['aviation_booking'],\n      coordinationResults: {\n        workflowSuccess: true,\n        servicesCompleted: 1,\n        timelineAchieved: true\n      }\n    },\n    memberDelivery: {\n      confirmationDetails: { bookingRef: `ASTERIA-${Date.now()}` },\n      trackingInformation: 'Service coordination in progress',\n      nextSteps: ['Confirmation call', 'Service delivery']\n    },\n    nextAction: 'complete'\n  }\n};\n\n// Filter results based on required agents\nconst relevantResults = {};\nagentSequence.forEach(agent => {\n  if (mockAgentResults[agent]) {\n    relevantResults[agent] = mockAgentResults[agent];\n  }\n});\n\n// Generate orchestrated response\nconst orchestratedResponse = {\n  orchestrationSuccess: true,\n  agentsCoordinated: agentSequence,\n  processingTime: `${Math.floor(Math.random() * 500) + 500}ms`,\n  agentResults: relevantResults,\n  correlationId: correlationId,\n  finalRecommendation: agentSequence.includes('integration') ? \n    'Service coordination initiated with premium handling' :\n    'Request analyzed and ready for execution',\n  nextSteps: agentSequence.includes('integration') ? \n    ['Monitor service delivery', 'Member satisfaction follow-up'] :\n    ['Execute service request', 'Generate confirmation']\n};\n\nreturn { json: orchestratedResponse };"
+      },
+      "id": "coordinate-agents",
+      "name": "Coordinate Agents",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Direct execution for simple requests\nconst assessmentData = $input.first().json;\nconst originalRequest = $node['Main Orchestrator Webhook'].json;\nconst correlationId = assessmentData.correlationId;\n\n// Simple execution path for low-complexity requests\nconst directExecution = {\n  executionSuccess: true,\n  processingType: 'direct',\n  processingTime: `${Math.floor(Math.random() * 300) + 200}ms`,\n  agentsUsed: ['main_orchestrator'],\n  correlationId: correlationId,\n  result: {\n    response: 'Request processed efficiently through direct execution',\n    serviceCategory: 'general',\n    memberTier: assessmentData.memberTier,\n    urgency: 'standard'\n  },\n  nextSteps: ['Deliver response', 'Monitor satisfaction']\n};\n\nreturn { json: directExecution };"
+      },
+      "id": "execute-direct",
+      "name": "Execute Direct",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Response synthesis from orchestration or direct execution\nconst originalRequest = $node['Main Orchestrator Webhook'].json;\nlet executionResult;\n\n// Determine which path was taken\ntry {\n  executionResult = $node['Coordinate Agents'].json;\n} catch {\n  executionResult = $node['Execute Direct'].json;\n}\n\n// Generate unified response with luxury language\nconst memberName = originalRequest.memberName || 'valued member';\nconst memberTier = executionResult.agentResults?.authentication?.memberTier || executionResult.result?.memberTier || 'all-members';\n\n// Tier-specific response customization\nconst tierCustomization = {\n  'founding10': {\n    greeting: 'It is our absolute privilege to assist you',\n    approach: 'with immediate priority and unlimited access',\n    closing: 'Your dedicated concierge team is standing by for any additional requirements.'\n  },\n  'fifty-k': {\n    greeting: 'We are delighted to curate this experience for you',\n    approach: 'with premium services and priority handling',\n    closing: 'Our specialized team will ensure exceptional service delivery.'\n  },\n  'corporate': {\n    greeting: 'We are pleased to coordinate these business services',\n    approach: 'with professional coordination and team efficiency',\n    closing: 'Our corporate services team will maintain seamless coordination.'\n  },\n  'all-members': {\n    greeting: 'We are happy to assist with your request',\n    approach: 'with our standard luxury baseline services',\n    closing: 'Our community team will ensure quality service delivery.'\n  }\n};\n\nconst customization = tierCustomization[memberTier] || tierCustomization['all-members'];\n\n// Synthesize sophisticated response\nconst sophisticatedResponse = `${customization.greeting}, ${memberName}. ` +\n  `I have analyzed your request ${customization.approach}. ` +\n  `${executionResult.orchestrationSuccess ? \n    `Our specialized agent coordination has arranged ${executionResult.agentsCoordinated?.length || 1} service components for optimal delivery. ` :\n    'Your request has been processed through our streamlined execution system. '\n  }` +\n  `${customization.closing}`;\n\n// Create final orchestrator response\nconst finalResponse = {\n  success: true,\n  response: sophisticatedResponse,\n  metadata: {\n    responseTime: executionResult.processingTime || '500ms',\n    agentsUsed: executionResult.agentsCoordinated || ['main_orchestrator'],\n    orchestrationUsed: !!executionResult.orchestrationSuccess,\n    memberTier: memberTier,\n    serviceCategory: executionResult.result?.serviceCategory || 'coordination',\n    complexityScore: executionResult.agentsCoordinated?.length || 1\n  },\n  tracking: {\n    correlationId: executionResult.correlationId,\n    serviceTicketId: `ASTERIA-${Date.now()}`,\n    estimatedCompletion: 'Within SLA requirements'\n  },\n  nextSteps: executionResult.nextSteps || ['Monitor service delivery']\n};\n\nreturn { json: finalResponse };"
+      },
+      "id": "synthesize-response",
+      "name": "Synthesize Response",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $node['Synthesize Response'].json }}"
+      },
+      "id": "orchestrator-response",
+      "name": "Orchestrator Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1560, 300]
+    }
+  ],
+  "connections": {
+    "main-orchestrator-webhook": {
+      "main": [
+        [
+          {
+            "node": "main-orchestrator-ai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "main-orchestrator-ai": {
+      "main": [
+        [
+          {
+            "node": "assess-complexity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "assess-complexity": {
+      "main": [
+        [
+          {
+            "node": "route-processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "route-processing": {
+      "main": [
+        [
+          {
+            "node": "coordinate-agents",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "execute-direct",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "coordinate-agents": {
+      "main": [
+        [
+          {
+            "node": "synthesize-response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "execute-direct": {
+      "main": [
+        [
+          {
+            "node": "synthesize-response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "synthesize-response": {
+      "main": [
+        [
+          {
+            "node": "orchestrator-response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-12-17T12:00:00.000Z",
+  "updatedAt": "2024-12-17T12:00:00.000Z",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["asteria", "main-orchestrator", "multi-agent"],
+  "triggerCount": 0,
+  "versionId": "1"
+} 

@@ -1,0 +1,153 @@
+{
+  "name": "Member Data Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "member-data-agent",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "{{ $env.ASTERIA_CORS_ORIGIN }}"
+        }
+      },
+      "id": "member-data-webhook",
+      "name": "Member Data Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4-turbo",
+        "messages": {
+          "values": [
+            {
+              "message": "={{ $json.message || 'Member data enrichment request: ' + JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {
+          "systemMessage": "You are the Member Data Agent for ASTERIA. You specialize in member context enrichment, preference management, and personalized insights.\n\nRespond with: 'Member data analysis complete. Generating insights.'",
+          "temperature": 0.2
+        }
+      },
+      "id": "member-data-ai",
+      "name": "Member Data AI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const request = $input.first().json;\nconst memberId = request.memberId || 'unknown';\nconst memberTier = request.authContext?.memberTier || 'all-members';\n\nconst profile = {\n  id: memberId,\n  email: `${memberId}@example.com`,\n  membershipLevel: 'member',\n  joinDate: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString(),\n  preferences: {\n    communicationStyle: memberTier === 'founding10' ? 'formal' : 'professional',\n    serviceCategories: ['aviation', 'dining', 'lifestyle'],\n    timeZone: 'America/New_York'\n  },\n  profileAccessCount: Math.floor(Math.random() * 50) + 10\n};\n\nreturn { json: { profile, retrievalSuccess: true } };"
+      },
+      "id": "get-member-profile",
+      "name": "Get Member Profile",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "functionCode": "const request = $input.first().json;\nconst memberTier = request.authContext?.memberTier || 'all-members';\n\nconst conversationCount = memberTier === 'founding10' ? 25 : 15;\nconst conversations = [];\n\nfor (let i = 0; i < conversationCount; i++) {\n  const categories = ['aviation', 'dining', 'lifestyle'];\n  const category = categories[Math.floor(Math.random() * categories.length)];\n  conversations.push({\n    id: `conv_${i}`,\n    timestamp: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),\n    category,\n    satisfaction: Math.random() * 2 + 8\n  });\n}\n\nreturn { json: { conversations, totalCount: conversations.length } };"
+      },
+      "id": "get-conversation-history",
+      "name": "Get Conversation History",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const memberProfile = $node['Get Member Profile'].json.profile;\nconst conversationData = $node['Get Conversation History'].json;\nconst correlationId = $node['Member Data Webhook'].json.correlationId;\n\nconst insights = {\n  memberProfile: {\n    memberId: memberProfile.id,\n    profileCompleteness: 85,\n    lastActivity: new Date().toISOString()\n  },\n  conversationContext: {\n    recentHistory: conversationData.conversations.slice(0, 10),\n    communicationStyle: 'professional'\n  },\n  personalizedRecommendations: ['Premium aviation membership', 'Exclusive dining access'],\n  correlationId,\n  nextAction: 'proceed'\n};\n\nreturn { json: insights };"
+      },
+      "id": "generate-insights",
+      "name": "Generate Member Insights",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "member-data-response",
+      "name": "Member Data Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "member-data-webhook": {
+      "main": [
+        [
+          {
+            "node": "member-data-ai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "member-data-ai": {
+      "main": [
+        [
+          {
+            "node": "get-member-profile",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "get-conversation-history",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get-member-profile": {
+      "main": [
+        [
+          {
+            "node": "generate-insights",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get-conversation-history": {
+      "main": [
+        [
+          {
+            "node": "generate-insights",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "generate-insights": {
+      "main": [
+        [
+          {
+            "node": "member-data-response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-12-17T12:00:00.000Z",
+  "updatedAt": "2024-12-17T12:00:00.000Z",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["asteria", "member-data"],
+  "triggerCount": 0,
+  "versionId": "1"
+} 

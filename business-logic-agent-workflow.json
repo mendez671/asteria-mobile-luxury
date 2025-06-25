@@ -1,0 +1,159 @@
+{
+  "name": "Business Logic Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "business-logic-agent",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "{{ $env.ASTERIA_CORS_ORIGIN }}"
+        }
+      },
+      "id": "business-logic-webhook",
+      "name": "Business Logic Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4-turbo",
+        "messages": {
+          "values": [
+            {
+              "message": "={{ $json.message || 'Business logic analysis request: ' + JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {
+          "systemMessage": "You are the Business Logic Agent for the ASTERIA multi-agent system. You specialize in business rule processing, compliance validation, and intelligent workflow coordination for luxury service delivery.\n\nCORE RESPONSIBILITIES:\n- Intent analysis and business rule application\n- Member tier eligibility validation and enforcement\n- Budget approval workflows and financial validation\n- Compliance checking and risk assessment\n- Escalation rule determination and coordination\n\nBUSINESS RULE CATEGORIES:\nService Eligibility Rules:\n- Aviation services: founding10 (unlimited), fifty-k (standard), corporate (group), all-members (basic)\n- Concierge direct access: founding10 only\n- Custom workflow creation: fifty-k and above\n- Investment services: founding10 and fifty-k only\n\nBudget Approval Workflows:\n- founding10: Pre-approved up to $100K, executive approval above\n- fifty-k: Pre-approved up to $25K, manager approval above\n- corporate: Team budget limits with approval chains\n- all-members: $5K limit with manager approval\n\nCompliance Requirements:\n- Financial services: KYC/AML validation required\n- International travel: Passport and visa validation\n- Corporate services: Authorized signatory verification\n- Investment advice: Accredited investor status confirmation\n\nRESPONSE FORMAT:\nAlways respond with: 'Business logic analysis complete. Processing rules and compliance validation.'",
+          "temperature": 0.1
+        }
+      },
+      "id": "business-logic-ai",
+      "name": "Business Logic AI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "{{ $env.OPENAI_CREDENTIAL_ID }}",
+          "name": "OpenAI for Asteria"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced intent analysis with sophisticated pattern recognition\nconst request = $input.first().json;\nconst message = request.message || '';\nconst memberTier = request.authContext?.memberTier || 'all-members';\nconst memberData = request.memberData || {};\n\n// Advanced intent classification with business context\nconst intentPatterns = {\n  transportation: {\n    patterns: [/\\b(flight|jet|plane|helicopter|car|yacht|boat|transportation|travel)\\b/i],\n    keywords: ['private jet', 'charter', 'flight', 'helicopter', 'yacht', 'transportation'],\n    complexity: 'medium',\n    eligibility: ['founding10', 'fifty-k', 'corporate', 'all-members']\n  },\n  dining: {\n    patterns: [/\\b(restaurant|dinner|chef|dining|meal|michelin|cuisine|wine)\\b/i],\n    keywords: ['restaurant', 'chef', 'dining', 'michelin', 'reservation', 'wine'],\n    complexity: 'low',\n    eligibility: ['founding10', 'fifty-k', 'corporate', 'all-members']\n  },\n  lifestyle: {\n    patterns: [/\\b(shopping|spa|wellness|hotel|suite|luxury|personal|concierge)\\b/i],\n    keywords: ['shopping', 'spa', 'wellness', 'hotel', 'luxury', 'personal'],\n    complexity: 'medium',\n    eligibility: ['founding10', 'fifty-k', 'corporate']\n  },\n  events: {\n    patterns: [/\\b(event|party|gala|opening|exclusive|vip|tickets|celebration)\\b/i],\n    keywords: ['event', 'party', 'gala', 'exclusive', 'vip', 'celebration'],\n    complexity: 'high',\n    eligibility: ['founding10', 'fifty-k']\n  },\n  investments: {\n    patterns: [/\\b(investment|portfolio|financial|wealth|fund|advisory|market)\\b/i],\n    keywords: ['investment', 'portfolio', 'financial', 'wealth', 'advisory'],\n    complexity: 'high',\n    eligibility: ['founding10', 'fifty-k']\n  },\n  brandDev: {\n    patterns: [/\\b(brand|marketing|business|development|strategy|consulting)\\b/i],\n    keywords: ['brand', 'marketing', 'business', 'development', 'strategy'],\n    complexity: 'high',\n    eligibility: ['founding10', 'fifty-k']\n  }\n};\n\n// Calculate intent confidence scores\nconst intentScores = Object.entries(intentPatterns).map(([intent, config]) => {\n  const patternMatches = config.patterns.filter(pattern => pattern.test(message)).length;\n  const keywordMatches = config.keywords.filter(keyword => \n    message.toLowerCase().includes(keyword.toLowerCase())\n  ).length;\n  \n  const patternScore = Math.min(patternMatches * 0.4, 0.6);\n  const keywordScore = Math.min(keywordMatches * 0.2, 0.4);\n  const totalScore = patternScore + keywordScore;\n  \n  return {\n    intent,\n    confidence: totalScore,\n    complexity: config.complexity,\n    eligibility: config.eligibility,\n    eligible: config.eligibility.includes(memberTier)\n  };\n});\n\n// Determine primary intent\nconst sortedIntents = intentScores.sort((a, b) => b.confidence - a.confidence);\nconst primaryIntent = sortedIntents[0];\nconst secondaryIntent = sortedIntents[1];\n\n// Multi-service detection\nconst isMultiService = sortedIntents.filter(intent => intent.confidence > 0.3).length > 1;\nconst complexityIndicators = {\n  multiService: isMultiService,\n  highValue: /\\$([1-9]\\d{3,})|premium|luxury|exclusive|private\\s+jet|yacht/i.test(message),\n  timeConstraint: /asap|urgent|immediately|right\\s+away|today|tonight|tomorrow/i.test(message),\n  coordination: /coordinate|arrange|plan|organize|manage|multiple|several/i.test(message),\n  memberTierComplex: ['founding10', 'fifty-k'].includes(memberTier)\n};\n\nconst complexityScore = Object.values(complexityIndicators).filter(Boolean).length;\nconst overallComplexity = complexityScore >= 2 ? 'complex' : complexityScore >= 1 ? 'medium' : 'simple';\n\nreturn {\n  json: {\n    intentAnalysis: {\n      primaryIntent: primaryIntent.intent,\n      primaryConfidence: Math.round(primaryIntent.confidence * 100) / 100,\n      secondaryIntent: secondaryIntent?.intent || null,\n      secondaryConfidence: Math.round((secondaryIntent?.confidence || 0) * 100) / 100,\n      isMultiService: isMultiService,\n      allIntents: intentScores.filter(intent => intent.confidence > 0.1)\n    },\n    complexityAssessment: {\n      overallComplexity: overallComplexity,\n      complexityScore: complexityScore,\n      indicators: complexityIndicators,\n      processingType: overallComplexity === 'complex' ? 'orchestrate' : 'direct_processing'\n    },\n    eligibilityCheck: {\n      serviceEligible: primaryIntent.eligible,\n      memberTier: memberTier,\n      accessLevel: primaryIntent.eligible ? 'granted' : 'restricted',\n      eligibleIntents: intentScores.filter(intent => intent.eligible).map(intent => intent.intent)\n    },\n    analysisSuccess: true,\n    processingTime: Date.now()\n  }\n};"
+      },
+      "id": "analyze-intent",
+      "name": "Analyze Intent",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced business rule validation with tier-specific logic\nconst request = $input.first().json;\nconst intentData = $node['Analyze Intent'].json;\nconst memberTier = request.authContext?.memberTier || 'all-members';\nconst memberData = request.memberData || {};\nconst message = request.message || '';\n\n// Extract potential budget values from message\nconst budgetMatches = message.match(/\\$([\\d,]+(?:\\.\\d{2})?)/g);\nconst estimatedBudget = budgetMatches ? \n  Math.max(...budgetMatches.map(match => parseFloat(match.replace(/[$,]/g, '')))) : 0;\n\n// Enhanced tier-based budget limits\nconst budgetLimits = {\n  founding10: { preApproved: 100000, requiresApproval: Infinity, currency: 'USD' },\n  'fifty-k': { preApproved: 25000, requiresApproval: 100000, currency: 'USD' },\n  corporate: { preApproved: 15000, requiresApproval: 50000, currency: 'USD' },\n  'all-members': { preApproved: 5000, requiresApproval: 15000, currency: 'USD' }\n};\n\nconst memberBudgetLimits = budgetLimits[memberTier] || budgetLimits['all-members'];\nconst budgetStatus = estimatedBudget <= memberBudgetLimits.preApproved ? 'pre-approved' :\n                    estimatedBudget <= memberBudgetLimits.requiresApproval ? 'requires-approval' : 'exceeds-limit';\n\n// Service-specific eligibility rules\nconst serviceEligibilityRules = {\n  transportation: {\n    'founding10': { access: 'unlimited', features: ['private-jet', 'helicopter', 'yacht', 'luxury-car'] },\n    'fifty-k': { access: 'standard', features: ['private-jet', 'luxury-car', 'premium-commercial'] },\n    'corporate': { access: 'group', features: ['group-charter', 'business-class', 'car-service'] },\n    'all-members': { access: 'basic', features: ['premium-commercial', 'car-service'] }\n  },\n  dining: {\n    'founding10': { access: 'unlimited', features: ['michelin', 'private-chef', 'exclusive-venues'] },\n    'fifty-k': { access: 'premium', features: ['michelin', 'premium-reservations'] },\n    'corporate': { access: 'business', features: ['business-dining', 'group-reservations'] },\n    'all-members': { access: 'standard', features: ['standard-reservations'] }\n  },\n  lifestyle: {\n    'founding10': { access: 'unlimited', features: ['personal-concierge', 'luxury-shopping', 'wellness'] },\n    'fifty-k': { access: 'premium', features: ['personal-shopping', 'spa-services'] },\n    'corporate': { access: 'limited', features: ['business-services'] },\n    'all-members': { access: 'basic', features: ['basic-concierge'] }\n  },\n  events: {\n    'founding10': { access: 'exclusive', features: ['private-events', 'vip-access', 'custom-events'] },\n    'fifty-k': { access: 'premium', features: ['vip-access', 'premium-events'] },\n    'corporate': { access: 'none', features: [] },\n    'all-members': { access: 'none', features: [] }\n  },\n  investments: {\n    'founding10': { access: 'full', features: ['wealth-management', 'investment-advisory', 'portfolio-management'] },\n    'fifty-k': { access: 'standard', features: ['investment-advisory', 'portfolio-review'] },\n    'corporate': { access: 'none', features: [] },\n    'all-members': { access: 'none', features: [] }\n  }\n};\n\nconst primaryIntent = intentData.intentAnalysis.primaryIntent;\nconst serviceRules = serviceEligibilityRules[primaryIntent] || {};\nconst memberServiceAccess = serviceRules[memberTier] || { access: 'none', features: [] };\n\n// Compliance requirements assessment\nconst complianceRequirements = {\n  kyc_required: primaryIntent === 'investments' && estimatedBudget > 10000,\n  passport_required: primaryIntent === 'transportation' && /international|abroad|overseas/i.test(message),\n  authorized_signatory: memberTier === 'corporate' && estimatedBudget > 10000,\n  accredited_investor: primaryIntent === 'investments' && memberTier !== 'founding10',\n  legal_review: estimatedBudget > 50000 || /contract|agreement|legal/i.test(message)\n};\n\nconst complianceFlags = Object.entries(complianceRequirements)\n  .filter(([, required]) => required)\n  .map(([requirement]) => requirement);\n\n// Risk assessment calculation\nconst riskFactors = {\n  budget_risk: estimatedBudget > memberBudgetLimits.preApproved ? 2 : 0,\n  compliance_risk: complianceFlags.length > 0 ? 1 : 0,\n  complexity_risk: intentData.complexityAssessment.overallComplexity === 'complex' ? 1 : 0,\n  tier_mismatch: !intentData.eligibilityCheck.serviceEligible ? 2 : 0,\n  urgency_risk: /urgent|asap|immediately/i.test(message) ? 1 : 0\n};\n\nconst totalRiskScore = Object.values(riskFactors).reduce((sum, score) => sum + score, 0);\nconst riskLevel = totalRiskScore >= 4 ? 'high' : totalRiskScore >= 2 ? 'medium' : 'low';\n\n// Escalation determination\nconst escalationTriggers = {\n  budget_exceeded: budgetStatus === 'exceeds-limit',\n  compliance_violation: complianceFlags.length > 2,\n  service_ineligible: !intentData.eligibilityCheck.serviceEligible,\n  high_risk: riskLevel === 'high',\n  complex_coordination: intentData.complexityAssessment.overallComplexity === 'complex' && memberTier === 'all-members'\n};\n\nconst requiresEscalation = Object.values(escalationTriggers).some(trigger => trigger);\nconst activeEscalationTriggers = Object.entries(escalationTriggers)\n  .filter(([, triggered]) => triggered)\n  .map(([trigger]) => trigger);\n\nreturn {\n  json: {\n    businessValidation: {\n      tierEligible: intentData.eligibilityCheck.serviceEligible,\n      budgetApproved: budgetStatus === 'pre-approved',\n      budgetStatus: budgetStatus,\n      estimatedBudget: estimatedBudget,\n      budgetLimit: memberBudgetLimits.preApproved,\n      complianceValid: complianceFlags.length === 0,\n      riskLevel: riskLevel,\n      riskScore: totalRiskScore\n    },\n    serviceAccess: {\n      accessLevel: memberServiceAccess.access,\n      availableFeatures: memberServiceAccess.features,\n      serviceCategory: primaryIntent,\n      memberTier: memberTier\n    },\n    complianceAssessment: {\n      requiredChecks: complianceFlags,\n      complianceStatus: complianceFlags.length === 0 ? 'compliant' : 'requires-validation',\n      riskFactors: riskFactors\n    },\n    escalationAnalysis: {\n      requiresEscalation: requiresEscalation,\n      escalationTriggers: activeEscalationTriggers,\n      escalationReason: activeEscalationTriggers.join(', ') || 'none',\n      escalationPriority: riskLevel === 'high' ? 'immediate' : riskLevel === 'medium' ? 'standard' : 'low'\n    },\n    validationSuccess: true,\n    processingTime: Date.now()\n  }\n};"
+      },
+      "id": "validate-business-rules",
+      "name": "Validate Business Rules",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced execution planning with sophisticated workflow coordination\nconst intentData = $node['Analyze Intent'].json;\nconst businessData = $node['Validate Business Rules'].json;\nconst request = $node['Business Logic Webhook'].json;\nconst correlationId = request.correlationId;\n\n// Determine optimal execution strategy\nconst executionStrategies = {\n  simple: {\n    approach: 'direct_tool_execution',\n    tools: ['single_service_tool'],\n    estimatedTime: '< 5 minutes',\n    conciergeInvolvement: 'none'\n  },\n  medium: {\n    approach: 'coordinated_execution',\n    tools: ['multiple_service_tools', 'calendar_integration'],\n    estimatedTime: '5-15 minutes',\n    conciergeInvolvement: 'notification'\n  },\n  complex: {\n    approach: 'full_orchestration',\n    tools: ['multi_agent_coordination', 'workflow_creation', 'payment_processing'],\n    estimatedTime: '15-60 minutes',\n    conciergeInvolvement: 'active_coordination'\n  }\n};\n\nconst complexity = intentData.complexityAssessment.overallComplexity;\nconst selectedStrategy = executionStrategies[complexity] || executionStrategies.simple;\n\n// Generate approved services list\nconst approvedServices = [];\nconst rejectedServices = [];\n\nif (businessData.businessValidation.tierEligible) {\n  approvedServices.push({\n    category: intentData.intentAnalysis.primaryIntent,\n    accessLevel: businessData.serviceAccess.accessLevel,\n    features: businessData.serviceAccess.availableFeatures,\n    budgetApproved: businessData.businessValidation.budgetApproved\n  });\n  \n  // Add secondary services if multi-service request\n  if (intentData.intentAnalysis.isMultiService && intentData.intentAnalysis.secondaryIntent) {\n    approvedServices.push({\n      category: intentData.intentAnalysis.secondaryIntent,\n      accessLevel: 'standard',\n      features: ['basic_features'],\n      budgetApproved: businessData.businessValidation.budgetApproved\n    });\n  }\n} else {\n  rejectedServices.push({\n    category: intentData.intentAnalysis.primaryIntent,\n    reason: 'tier_ineligible',\n    memberTier: businessData.serviceAccess.memberTier,\n    requiredTier: 'fifty-k or above'\n  });\n}\n\n// SLA requirements based on member tier and urgency\nconst slaRequirements = {\n  'founding10': {\n    responseTime: '< 1 minute',\n    serviceDelivery: 'same day',\n    escalationTime: 'immediate',\n    conciergeAccess: 'direct'\n  },\n  'fifty-k': {\n    responseTime: '< 5 minutes',\n    serviceDelivery: 'next business day',\n    escalationTime: '< 30 minutes',\n    conciergeAccess: 'priority'\n  },\n  'corporate': {\n    responseTime: '< 15 minutes',\n    serviceDelivery: 'within 48 hours',\n    escalationTime: '< 2 hours',\n    conciergeAccess: 'business hours'\n  },\n  'all-members': {\n    responseTime: '< 30 minutes',\n    serviceDelivery: 'within 72 hours',\n    escalationTime: '< 4 hours',\n    conciergeAccess: 'standard'\n  }\n};\n\nconst memberTier = businessData.serviceAccess.memberTier;\nconst sla = slaRequirements[memberTier] || slaRequirements['all-members'];\n\n// Workflow requirements assessment\nconst workflowRequired = complexity === 'complex' || \n                        businessData.escalationAnalysis.requiresEscalation ||\n                        businessData.businessValidation.estimatedBudget > 15000;\n\n// Generate timeline estimation\nconst baseTime = selectedStrategy.estimatedTime;\nconst complianceTime = businessData.complianceAssessment.requiredChecks.length * 5; // 5 min per check\nconst escalationTime = businessData.escalationAnalysis.requiresEscalation ? 15 : 0;\nconst totalEstimatedTime = `${baseTime} + ${complianceTime + escalationTime} minutes compliance/escalation`;\n\n// Next action determination\nlet nextAction = 'execute';\nif (businessData.escalationAnalysis.requiresEscalation) {\n  nextAction = 'escalate';\n} else if (businessData.businessValidation.budgetStatus === 'requires-approval') {\n  nextAction = 'request_approval';\n} else if (businessData.complianceAssessment.requiredChecks.length > 0) {\n  nextAction = 'compliance_check';\n}\n\nreturn {\n  json: {\n    executionPlan: {\n      strategy: selectedStrategy.approach,\n      approvedServices: approvedServices,\n      rejectedServices: rejectedServices,\n      workflowRequired: workflowRequired,\n      estimatedTimeline: totalEstimatedTime,\n      toolsRequired: selectedStrategy.tools,\n      conciergeInvolvement: selectedStrategy.conciergeInvolvement\n    },\n    slaRequirements: {\n      memberTier: memberTier,\n      responseTime: sla.responseTime,\n      serviceDelivery: sla.serviceDelivery,\n      escalationTime: sla.escalationTime,\n      conciergeAccess: sla.conciergeAccess\n    },\n    workflowCoordination: {\n      complexity: complexity,\n      orchestrationRequired: complexity === 'complex',\n      agentSequence: complexity === 'complex' ? \n        ['authentication', 'member_data', 'business_logic', 'integration'] : \n        ['integration'],\n      parallelExecution: intentData.intentAnalysis.isMultiService\n    },\n    businessLogicResult: {\n      intentAnalysis: intentData.intentAnalysis,\n      businessValidation: businessData.businessValidation,\n      complianceStatus: businessData.complianceAssessment.complianceStatus,\n      escalationAnalysis: businessData.escalationAnalysis,\n      executionStrategy: selectedStrategy.approach\n    },\n    correlationId: correlationId,\n    nextAction: nextAction,\n    processingTime: Date.now() - parseInt(correlationId?.split('_')[1] || Date.now())\n  }\n};"
+      },
+      "id": "generate-execution-plan",
+      "name": "Generate Execution Plan",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $node['Generate Execution Plan'].json }}"
+      },
+      "id": "business-logic-response",
+      "name": "Business Logic Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "business-logic-webhook": {
+      "main": [
+        [
+          {
+            "node": "business-logic-ai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "business-logic-ai": {
+      "main": [
+        [
+          {
+            "node": "analyze-intent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "validate-business-rules",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "analyze-intent": {
+      "main": [
+        [
+          {
+            "node": "generate-execution-plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "validate-business-rules": {
+      "main": [
+        [
+          {
+            "node": "generate-execution-plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "generate-execution-plan": {
+      "main": [
+        [
+          {
+            "node": "business-logic-response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-12-17T12:00:00.000Z",
+  "updatedAt": "2024-12-17T12:00:00.000Z",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["asteria", "business-logic", "multi-agent"],
+  "triggerCount": 0,
+  "versionId": "1"
+} 

@@ -1,0 +1,180 @@
+{
+  "name": "Member Data Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "member-data-agent",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "{{ $env.ASTERIA_CORS_ORIGIN }}"
+        }
+      },
+      "id": "member-data-webhook",
+      "name": "Member Data Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4-turbo",
+        "messages": {
+          "values": [
+            {
+              "message": "={{ $json.message || 'Member data enrichment request: ' + JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {
+          "systemMessage": "You are the Member Data Agent for the ASTERIA multi-agent system. You specialize in member context enrichment, preference management, and personalized data insights for luxury service delivery.\n\nCORE RESPONSIBILITIES:\n- Member profile retrieval and context enrichment\n- Conversation history analysis and context preservation\n- Preference tracking and pattern recognition\n- Service history analysis and insight generation\n- Data privacy compliance and access control\n\nMEMBER TIER DATA RETENTION:\n- all-members: 30 days rolling retention\n- corporate: 90 days with project continuity\n- fifty-k: 180 days with preference learning\n- founding10: 365 days with full context preservation\n\nPREFERENCE ANALYSIS:\n- Communication style adaptation (formal, casual, technical)\n- Service category preferences (aviation, dining, lifestyle)\n- Budget patterns and spending preferences\n- Urgency patterns and response time expectations\n- Satisfaction indicators and service quality feedback\n\nRESPONSE FORMAT:\nAlways respond with: 'Member data analysis complete. Generating personalized insights and recommendations.'",
+          "temperature": 0.2
+        }
+      },
+      "id": "member-data-ai",
+      "name": "Member Data AI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "{{ $env.OPENAI_CREDENTIAL_ID }}",
+          "name": "OpenAI for Asteria"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced member profile retrieval simulation\nconst request = $input.first().json;\nconst memberId = request.memberId || 'unknown';\nconst authContext = request.authContext || {};\nconst memberTier = authContext.memberTier || 'all-members';\n\n// Simulate comprehensive member profile\n// In production, this would call Firebase Firestore\nconst simulatedMemberProfile = {\n  id: memberId,\n  email: `${memberId}@example.com`,\n  membershipLevel: authContext.memberProfile?.membershipLevel || 'member',\n  joinDate: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString(),\n  lastActivity: new Date().toISOString(),\n  preferences: {\n    communicationStyle: memberTier === 'founding10' ? 'formal' : 'professional',\n    serviceCategories: ['aviation', 'dining', 'lifestyle'],\n    preferredLanguage: 'en',\n    timeZone: 'America/New_York',\n    contactPreferences: {\n      email: true,\n      sms: true,\n      phone: memberTier === 'founding10'\n    }\n  },\n  demographics: {\n    ageRange: memberTier === 'founding10' ? '45-65' : '35-55',\n    location: 'New York, NY',\n    industry: 'Technology'\n  },\n  profileAccessCount: Math.floor(Math.random() * 50) + 10,\n  analyticsConsent: true,\n  dataRetentionDays: getRetentionDays(memberTier)\n};\n\nfunction getRetentionDays(tier) {\n  const retentionMap = {\n    'founding10': 365,\n    'fifty-k': 180,\n    'corporate': 90,\n    'all-members': 30\n  };\n  return retentionMap[tier] || 30;\n}\n\nreturn {\n  json: {\n    profile: simulatedMemberProfile,\n    retrievalSuccess: true,\n    dataSource: 'firestore_simulation'\n  }\n};"
+      },
+      "id": "get-member-profile",
+      "name": "Get Member Profile",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced conversation history simulation\nconst request = $input.first().json;\nconst memberId = request.memberId || 'unknown';\nconst authContext = request.authContext || {};\nconst memberTier = authContext.memberTier || 'all-members';\n\n// Generate realistic conversation history based on member tier\nconst conversationCount = memberTier === 'founding10' ? 25 : memberTier === 'fifty-k' ? 15 : 8;\nconst conversationHistory = [];\n\nfor (let i = 0; i < conversationCount; i++) {\n  const daysAgo = Math.floor(Math.random() * 30) + 1;\n  const categories = ['aviation', 'dining', 'lifestyle', 'events', 'general'];\n  const category = categories[Math.floor(Math.random() * categories.length)];\n  \n  const messages = {\n    aviation: [\n      'I need a private jet from NYC to Miami for Friday',\n      'Can you arrange helicopter transport to the Hamptons?',\n      'Book me on the next available Citation X to Los Angeles'\n    ],\n    dining: [\n      'Reserve a table at Le Bernardin for 4 people tonight',\n      'I need a private chef for my dinner party next week',\n      'What are the best Michelin restaurants in Tokyo?'\n    ],\n    lifestyle: [\n      'Can you arrange a personal shopping session at Bergdorf?',\n      'I need a wellness retreat recommendation for next month',\n      'Book me a suite at the Four Seasons for the weekend'\n    ],\n    events: [\n      'I need tickets to the Met Gala after-party',\n      'Can you arrange VIP access to Art Basel Miami?',\n      'Get me into the exclusive opening at the Whitney'\n    ],\n    general: [\n      'What services are available for my membership tier?',\n      'Can you help me plan a surprise anniversary celebration?',\n      'I need assistance coordinating a business retreat'\n    ]\n  };\n  \n  const categoryMessages = messages[category] || messages.general;\n  const message = categoryMessages[Math.floor(Math.random() * categoryMessages.length)];\n  \n  conversationHistory.push({\n    id: `conv_${Date.now()}_${i}`,\n    timestamp: new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000).toISOString(),\n    message: message,\n    category: category,\n    memberResponse: Math.random() > 0.8 ? 'Excellent service as always!' : null,\n    satisfaction: Math.random() * 2 + 8, // 8-10 range\n    responseTime: Math.floor(Math.random() * 3600) + 300 // 5 minutes to 1 hour\n  });\n}\n\n// Sort by timestamp descending (most recent first)\nconversationHistory.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));\n\nreturn {\n  json: {\n    conversations: conversationHistory,\n    totalCount: conversationHistory.length,\n    retrievalSuccess: true,\n    dataSource: 'firestore_simulation'\n  }\n};"
+      },
+      "id": "get-conversation-history",
+      "name": "Get Conversation History",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced member insights generation with sophisticated analysis\nconst memberProfile = $node['get-member-profile'].json.profile;\nconst conversationData = $node['get-conversation-history'].json;\nconst authContext = $node['member-data-webhook'].json.authContext || {};\nconst correlationId = $node['member-data-webhook'].json.correlationId;\n\nconst conversationHistory = conversationData.conversations || [];\n\n// Advanced communication pattern analysis\nconst messageLengths = conversationHistory.map(conv => conv.message?.length || 0);\nconst avgMessageLength = messageLengths.reduce((a, b) => a + b, 0) / messageLengths.length || 100;\nconst communicationStyle = avgMessageLength > 200 ? 'detailed' : avgMessageLength > 100 ? 'moderate' : 'concise';\n\n// Response time analysis\nconst responseTimes = conversationHistory.map(conv => conv.responseTime || 0);\nconst avgResponseTime = responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length || 1800;\nconst preferredResponseTime = avgResponseTime < 900 ? 'immediate' : avgResponseTime < 3600 ? 'fast' : 'standard';\n\n// Service category preference analysis\nconst categoryDistribution = conversationHistory.reduce((acc, conv) => {\n  acc[conv.category] = (acc[conv.category] || 0) + 1;\n  return acc;\n}, {});\n\nconst preferredServices = Object.entries(categoryDistribution)\n  .sort(([,a], [,b]) => b - a)\n  .slice(0, 3)\n  .map(([category, count]) => ({\n    category,\n    frequency: count,\n    percentage: Math.round((count / conversationHistory.length) * 100)\n  }));\n\n// Satisfaction analysis\nconst satisfactionScores = conversationHistory\n  .filter(conv => conv.satisfaction)\n  .map(conv => conv.satisfaction);\n  \nconst avgSatisfaction = satisfactionScores.reduce((a, b) => a + b, 0) / satisfactionScores.length || 8.5;\nconst satisfactionTrend = avgSatisfaction > 9.2 ? 'excellent' : avgSatisfaction > 8.5 ? 'very-good' : 'good';\n\n// Generate intelligent recommendations\nconst recommendations = [];\n\nif (preferredServices[0]?.category === 'aviation' && authContext.memberTier === 'founding10') {\n  recommendations.push('Consider our exclusive private aviation membership with unlimited access');\n}\n\nif (authContext.memberTier !== 'founding10' && avgSatisfaction > 9.0) {\n  recommendations.push('You qualify for founding member tier upgrade with exclusive benefits');\n}\n\nif (avgSatisfaction > 9.3) {\n  recommendations.push('Join our ambassador program for early access to exclusive experiences');\n}\n\nif (communicationStyle === 'detailed') {\n  recommendations.push('Enable detailed service briefings and comprehensive itinerary planning');\n}\n\n// Calculate profile completeness\nfunction calculateProfileCompleteness(profile) {\n  const requiredFields = ['email', 'membershipLevel', 'preferences'];\n  const optionalFields = ['demographics', 'contactPreferences', 'timeZone'];\n  \n  const requiredComplete = requiredFields.filter(field => {\n    const value = profile[field];\n    return value && (typeof value !== 'object' || Object.keys(value).length > 0);\n  }).length;\n  \n  const optionalComplete = optionalFields.filter(field => {\n    const value = profile[field] || profile.demographics?.[field] || profile.preferences?.[field];\n    return value && (typeof value !== 'object' || Object.keys(value).length > 0);\n  }).length;\n  \n  const requiredScore = (requiredComplete / requiredFields.length) * 0.7;\n  const optionalScore = (optionalComplete / optionalFields.length) * 0.3;\n  \n  return Math.round((requiredScore + optionalScore) * 100);\n}\n\nreturn {\n  json: {\n    memberProfile: {\n      memberId: memberProfile.id,\n      memberTier: authContext.memberTier,\n      profileCompleteness: calculateProfileCompleteness(memberProfile),\n      lastActivity: new Date().toISOString(),\n      joinDate: memberProfile.joinDate,\n      dataRetentionDays: memberProfile.dataRetentionDays\n    },\n    conversationContext: {\n      recentHistory: conversationHistory.slice(0, 10),\n      communicationStyle: communicationStyle,\n      preferredResponseTime: preferredResponseTime,\n      contextualPatterns: {\n        averageMessageLength: Math.round(avgMessageLength),\n        conversationFrequency: conversationHistory.length,\n        categoryDistribution: categoryDistribution\n      }\n    },\n    serviceInsights: {\n      preferredServices: preferredServices,\n      satisfactionScore: Math.round(avgSatisfaction * 10) / 10,\n      satisfactionTrend: satisfactionTrend,\n      engagementLevel: conversationHistory.length > 15 ? 'high' : conversationHistory.length > 8 ? 'medium' : 'low'\n    },\n    personalizedRecommendations: recommendations,\n    privacyControls: {\n      dataRetentionDays: memberProfile.dataRetentionDays,\n      shareAcrossDomains: true,\n      analyticsOptIn: memberProfile.analyticsConsent !== false,\n      dataProcessingConsent: true\n    },\n    memberInsights: {\n      loyaltyScore: Math.min(Math.round(conversationHistory.length * avgSatisfaction), 100),\n      valueSegment: authContext.memberTier,\n      riskProfile: avgSatisfaction < 8.0 ? 'at-risk' : 'stable',\n      nextServicePrediction: preferredServices[0]?.category || 'lifestyle'\n    },\n    correlationId: correlationId,\n    nextAction: 'proceed',\n    processingTime: Date.now() - parseInt(correlationId?.split('_')[1] || Date.now())\n  }\n};"
+      },
+      "id": "generate-insights",
+      "name": "Generate Member Insights",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced member activity logging\nconst insights = $input.first().json;\nconst originalRequest = $node['member-data-webhook'].json;\n\n// Create comprehensive activity log\nconst activityLog = {\n  eventId: `member_data_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,\n  memberId: insights.memberProfile.memberId,\n  memberTier: insights.memberProfile.memberTier,\n  timestamp: new Date().toISOString(),\n  agentType: 'member_data_enrichment',\n  dataAccessed: {\n    memberProfile: true,\n    conversationHistory: true,\n    generatedInsights: true\n  },\n  insightsGenerated: {\n    profileCompleteness: insights.memberProfile.profileCompleteness,\n    loyaltyScore: insights.memberInsights.loyaltyScore,\n    valueSegment: insights.memberInsights.valueSegment,\n    engagementLevel: insights.serviceInsights.engagementLevel,\n    recommendationsCount: insights.personalizedRecommendations.length\n  },\n  privacyCompliance: {\n    dataRetentionRespected: true,\n    consentVerified: insights.privacyControls.analyticsOptIn,\n    crossDomainSharing: insights.privacyControls.shareAcrossDomains\n  },\n  processingMetrics: {\n    processingTime: insights.processingTime,\n    dataPointsAnalyzed: {\n      conversations: insights.conversationContext.contextualPatterns.conversationFrequency,\n      preferences: Object.keys(insights.serviceInsights.preferredServices).length\n    }\n  },\n  correlationId: insights.correlationId,\n  nextAgent: 'business_logic_agent'\n};\n\n// Simulate successful activity logging\n// In production, this would update Firestore asteria_members collection\nconsole.log('Member Activity Logged:', JSON.stringify(activityLog, null, 2));\n\nreturn {\n  json: {\n    activityLogSuccess: true,\n    eventId: activityLog.eventId,\n    timestamp: activityLog.timestamp,\n    memberDataResult: insights\n  }\n};"
+      },
+      "id": "log-member-activity",
+      "name": "Log Member Activity",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.memberDataResult }}"
+      },
+      "id": "member-data-response",
+      "name": "Member Data Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "member-data-webhook": {
+      "main": [
+        [
+          {
+            "node": "member-data-ai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "member-data-ai": {
+      "main": [
+        [
+          {
+            "node": "get-member-profile",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "get-conversation-history",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get-member-profile": {
+      "main": [
+        [
+          {
+            "node": "generate-insights",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get-conversation-history": {
+      "main": [
+        [
+          {
+            "node": "generate-insights",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "generate-insights": {
+      "main": [
+        [
+          {
+            "node": "log-member-activity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "log-member-activity": {
+      "main": [
+        [
+          {
+            "node": "member-data-response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-12-17T12:00:00.000Z",
+  "updatedAt": "2024-12-17T12:00:00.000Z",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["asteria", "member-data", "multi-agent"],
+  "triggerCount": 0,
+  "versionId": "1"
+} 

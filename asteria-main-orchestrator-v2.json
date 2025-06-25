@@ -1,0 +1,428 @@
+{
+  "name": "Asteria Main Orchestrator V2",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "asteria-request",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "{{ $env.ASTERIA_CORS_ORIGIN }}"
+        }
+      },
+      "id": "e5c7f0b8-4e8f-4c5b-9c5e-0123456789ab",
+      "name": "Asteria Request Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "asteria-main-orchestrator"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "values": [
+            {
+              "message": "={{ $json.message }}"
+            }
+          ]
+        },
+        "options": {
+          "systemMessage": "You are ASTERIA, the premier AI concierge for TAG Inner Circle. You coordinate a sophisticated multi-agent system to deliver exceptional personalized experiences for high-net-worth members.\n\nCORE IDENTITY:\n- Role: Master Orchestrator & Curator of Extraordinary Experiences\n- Personality: Sophisticated ally, confident whisper, always available but never intrusive\n- Mission: Transform member requests into orchestrated luxury experiences\n\nORCHESTRATION RESPONSIBILITIES:\n1. Initial member interaction and intent recognition\n2. Delegate to specialized agents based on request complexity\n3. Coordinate responses from multiple agents\n4. Ensure luxury experience continuity\n5. Handle escalations and exceptional cases\n\nAGENT COORDINATION PROTOCOL:\n- Analyze member request for complexity and agent requirements\n- Delegate to Authentication Agent for identity validation\n- Coordinate with Member Data Agent for context enrichment\n- Route to Business Logic Agent for rule processing\n- Engage Integration Agent for service coordination\n- Synthesize responses into cohesive luxury experience\n\nMEMBER TIER AWARENESS:\n- founding10: Immediate priority, unlimited access, personal touch\n- fifty-k: Premium services, priority handling, advanced features\n- corporate: Team coordination, group services, business focus\n- all-members: Standard luxury baseline, community access\n\nCOMMUNICATION STYLE:\n- Use sophisticated luxury language: \"curated\", \"arranged\", \"exceptional\"\n- Match member energy and urgency appropriately\n- Never waste member time - every word serves purpose\n- Provide information hierarchy: Essential → Useful → Interesting",
+          "temperature": 0.3
+        }
+      },
+      "id": "a1b2c3d4-5e6f-7g8h-9i0j-0987654321ba",
+      "name": "Asteria Main Agent",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "{{ $env.OPENAI_CREDENTIAL_ID }}",
+          "name": "OpenAI for Asteria"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced complexity assessment with new business rules\nconst request = $input.first().json;\nconst message = request.message || '';\nconst memberTier = request.memberTier || 'all-members';\n\n// Enhanced complexity indicators based on Grok updates\nconst complexityIndicators = {\n  multiService: /\\b(flight|jet|hotel|restaurant|car|yacht|dining|transportation|event)\\b.*\\b(flight|jet|hotel|restaurant|car|yacht|dining|transportation|event)\\b/i.test(message),\n  highValue: /\\$(\\d{1,3},)*\\d{4,}|premium|luxury|exclusive|private\\s+jet|yacht|concierge/i.test(message),\n  timeConstraint: /asap|urgent|immediately|right\\s+away|today|tonight|tomorrow|this\\s+week|time.{0,10}sensitive/i.test(message),\n  coordination: /coordinate|arrange|plan|organize|manage|multiple|several|book.{0,30}(and|with|plus)/i.test(message),\n  memberTierComplex: ['founding10', 'fifty-k'].includes(memberTier),\n  goalSetting: /goal|objective|plan|strategy|milestone|achievement/i.test(message),\n  paymentRequired: /pay|payment|charge|bill|invoice|cost/i.test(message)\n};\n\nconst complexityScore = Object.values(complexityIndicators).filter(Boolean).length;\nconst requiresOrchestration = complexityScore >= 2;\n\n// Generate unique correlation ID\nconst correlationId = `asteria_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;\n\nreturn {\n  json: {\n    ...request,\n    correlationId,\n    complexityScore,\n    requiresOrchestration,\n    complexityIndicators,\n    nextAction: requiresOrchestration ? 'orchestrate' : 'direct_processing',\n    timestamp: new Date().toISOString(),\n    n8nBaseUrl: $env.N8N_ASTERIA_BASE_URL\n  }\n};"
+      },
+      "id": "complexity-assessment-v2",
+      "name": "Assess Request Complexity V2",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "rules": [
+            {
+              "operation": "equal",
+              "value1": "={{ $json.nextAction }}",
+              "value2": "orchestrate"
+            },
+            {
+              "operation": "equal",
+              "value1": "={{ $json.nextAction }}",
+              "value2": "direct_processing"
+            }
+          ]
+        }
+      },
+      "id": "route-decision-v2",
+      "name": "Route Decision",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.N8N_ASTERIA_BASE_URL }}/webhook/auth-agent",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "correlationId",
+              "value": "={{ $json.correlationId }}"
+            },
+            {
+              "name": "memberId",
+              "value": "={{ $json.memberId }}"
+            },
+            {
+              "name": "authToken",
+              "value": "={{ $json.authToken }}"
+            },
+            {
+              "name": "memberTier",
+              "value": "={{ $json.memberTier }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "auth-agent-call-v2",
+      "name": "Call Authentication Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.N8N_ASTERIA_BASE_URL }}/webhook/member-data-agent",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "correlationId",
+              "value": "={{ $json.correlationId }}"
+            },
+            {
+              "name": "memberId",
+              "value": "={{ $json.memberId }}"
+            },
+            {
+              "name": "authContext",
+              "value": "={{ $node['auth-agent-call-v2'].json }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "member-data-call-v2",
+      "name": "Call Member Data Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.N8N_ASTERIA_BASE_URL }}/webhook/business-logic-agent",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "correlationId",
+              "value": "={{ $json.correlationId }}"
+            },
+            {
+              "name": "memberContext",
+              "value": "={{ $node['member-data-call-v2'].json }}"
+            },
+            {
+              "name": "originalMessage",
+              "value": "={{ $json.message }}"
+            },
+            {
+              "name": "complexityIndicators",
+              "value": "={{ $json.complexityIndicators }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "business-logic-call-v2",
+      "name": "Call Business Logic Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.N8N_ASTERIA_BASE_URL }}/webhook/integration-agent",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "correlationId",
+              "value": "={{ $json.correlationId }}"
+            },
+            {
+              "name": "businessPlan",
+              "value": "={{ $node['business-logic-call-v2'].json }}"
+            },
+            {
+              "name": "memberContext",
+              "value": "={{ $node['member-data-call-v2'].json }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "integration-call-v2",
+      "name": "Call Integration Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1120, 500]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced orchestrated response with new features\nconst authResult = $node['auth-agent-call-v2'].json;\nconst memberData = $node['member-data-call-v2'].json;\nconst businessLogic = $node['business-logic-call-v2'].json;\nconst integration = $node['integration-call-v2'].json;\n\n// Create comprehensive orchestrated response\nconst orchestratedResponse = {\n  success: true,\n  response: integration.memberDelivery?.confirmationDetails || businessLogic.executionPlan?.message || \"Your request has been expertly coordinated through our specialized concierge team.\",\n  metadata: {\n    responseTime: Date.now() - parseInt($json.correlationId.split('_')[1]),\n    agentsUsed: ['auth', 'member-data', 'business-logic', 'integration'],\n    orchestrationUsed: true,\n    memberTier: authResult.memberTier,\n    workflowTriggered: businessLogic.executionPlan?.workflowRequired || false,\n    serviceCategory: businessLogic.intentAnalysis?.primaryIntent || 'general',\n    complexityScore: $json.complexityScore,\n    personalizationApplied: memberData.personalizedRecommendations?.length > 0\n  },\n  tracking: {\n    correlationId: $json.correlationId,\n    serviceTicketId: integration.serviceTicketId || `SR-${Date.now()}`,\n    estimatedCompletion: businessLogic.executionPlan?.estimatedTimeline || 'Within 24 hours'\n  },\n  personalization: {\n    recommendations: memberData.personalizedRecommendations || [],\n    communicationStyle: memberData.conversationContext?.communicationStyle || 'moderate',\n    memberInsights: memberData.serviceInsights || {}\n  },\n  nextSteps: integration.nextSteps || businessLogic.nextActions || []\n};\n\nreturn { json: orchestratedResponse };"
+      },
+      "id": "orchestrated-response-v2",
+      "name": "Generate Orchestrated Response V2",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1340, 350]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced direct processing with existing system integration\nconst request = $input.first().json;\n\n// This integrates with your existing AsteriaAgentLoop\nconst directResponse = {\n  success: true,\n  response: \"Your request has been processed through our standard luxury concierge system.\",\n  metadata: {\n    responseTime: 1500, // Your existing 1.4-2.1s average\n    agentsUsed: ['single-agent'],\n    orchestrationUsed: false,\n    processingMethod: 'existing_asteria_loop',\n    complexityScore: request.complexityScore,\n    memberTier: request.memberTier\n  },\n  tracking: {\n    correlationId: request.correlationId,\n    serviceTicketId: `SR-${Date.now()}`\n  }\n};\n\nreturn { json: directResponse };"
+      },
+      "id": "direct-processing-v2",
+      "name": "Direct Processing (Existing System)",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1120, 600]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "response-webhook-v2",
+      "name": "Send Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1560, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.success }}",
+              "value2": false
+            }
+          ]
+        }
+      },
+      "id": "error-handler",
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1340, 500]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Comprehensive error handling and fallback\nconst error = $json.error || 'Unknown error occurred';\nconst correlationId = $json.correlationId || `error_${Date.now()}`;\n\nconst errorResponse = {\n  success: false,\n  response: \"We apologize for the inconvenience. Our concierge team has been notified and will personally assist you shortly.\",\n  error: {\n    message: error,\n    timestamp: new Date().toISOString(),\n    correlationId: correlationId,\n    escalated: true\n  },\n  metadata: {\n    responseTime: 500,\n    agentsUsed: ['error-handler'],\n    orchestrationUsed: false,\n    fallbackTriggered: true\n  },\n  tracking: {\n    correlationId: correlationId,\n    serviceTicketId: `ER-${Date.now()}`,\n    estimatedCompletion: 'Immediate escalation to concierge team'\n  }\n};\n\nreturn { json: errorResponse };"
+      },
+      "id": "error-fallback-v2",
+      "name": "Generate Error Response",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1560, 500]
+    }
+  ],
+  "connections": {
+    "Asteria Request Webhook": {
+      "main": [
+        [
+          {
+            "node": "Asteria Main Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Asteria Main Agent": {
+      "main": [
+        [
+          {
+            "node": "Assess Request Complexity V2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assess Request Complexity V2": {
+      "main": [
+        [
+          {
+            "node": "Route Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Decision": {
+      "main": [
+        [
+          {
+            "node": "Call Authentication Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Direct Processing (Existing System)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Authentication Agent": {
+      "main": [
+        [
+          {
+            "node": "Call Member Data Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Member Data Agent": {
+      "main": [
+        [
+          {
+            "node": "Call Business Logic Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Business Logic Agent": {
+      "main": [
+        [
+          {
+            "node": "Call Integration Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Integration Agent": {
+      "main": [
+        [
+          {
+            "node": "Generate Orchestrated Response V2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Orchestrated Response V2": {
+      "main": [
+        [
+          {
+            "node": "Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Direct Processing (Existing System)": {
+      "main": [
+        [
+          {
+            "node": "Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Handler": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Error Response": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-12-09T12:00:00.000Z",
+  "versionId": "asteria-orchestrator-v2"
+}

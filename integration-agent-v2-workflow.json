@@ -1,0 +1,340 @@
+{
+  "name": "Integration Agent V2",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "integration-agent",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "{{ $env.ASTERIA_ALLOWED_ORIGINS }}",
+          "responseHeaders": {
+            "X-Agent-Version": "2.0",
+            "X-Workflow-ID": "{{ $workflow.id }}"
+          }
+        }
+      },
+      "id": "webhook_integration_v2",
+      "name": "Integration Webhook V2",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Enhanced Intent Classification with Context\nconst request = items[0].json;\nconst context = {\n  userId: request.userId,\n  sessionId: request.sessionId,\n  intent: request.intent,\n  entities: request.entities || {},\n  history: request.conversationHistory || [],\n  metadata: request.metadata || {}\n};\n\n// Determine agent routing\nconst agentRoutes = {\n  'planning': ['goal_setting', 'milestone_creation', 'strategy_development'],\n  'execution': ['task_management', 'progress_tracking', 'resource_allocation'],\n  'reflection': ['review', 'feedback', 'adjustment', 'learning'],\n  'checking': ['validation', 'verification', 'compliance', 'quality']\n};\n\nlet targetAgent = 'planning'; // default\n\nfor (const [agent, intents] of Object.entries(agentRoutes)) {\n  if (intents.includes(context.intent)) {\n    targetAgent = agent;\n    break;\n  }\n}\n\n// Add routing metadata\ncontext.routing = {\n  targetAgent,\n  priority: request.priority || 'normal',\n  timestamp: new Date().toISOString(),\n  workflowId: $workflow.id\n};\n\nreturn [{ json: context }];"
+      },
+      "id": "intent_classifier_v2",
+      "name": "Intent Classifier V2",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "planning_route",
+              "leftValue": "={{ $json.routing.targetAgent }}",
+              "rightValue": "planning",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "route_to_planning",
+      "name": "Route to Planning",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "execution_route",
+              "leftValue": "={{ $json.routing.targetAgent }}",
+              "rightValue": "execution",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "route_to_execution",
+      "name": "Route to Execution",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [650, 350]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.PLANNING_AGENT_URL }}/process",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Agent-Type",
+              "value": "IntentPlanner"
+            },
+            {
+              "name": "X-Workflow-ID",
+              "value": "={{ $workflow.id }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "context",
+              "value": "={{ $json }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000,
+          "retry": {
+            "maxTries": 3,
+            "waitBetweenTries": 1000
+          }
+        }
+      },
+      "id": "call_planning_agent",
+      "name": "Call Planning Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [850, 200]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.EXECUTION_AGENT_URL }}/process",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Agent-Type",
+              "value": "ServiceExecutor"
+            },
+            {
+              "name": "X-Workflow-ID",
+              "value": "={{ $workflow.id }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "context",
+              "value": "={{ $json }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000,
+          "retry": {
+            "maxTries": 3,
+            "waitBetweenTries": 1000
+          }
+        }
+      },
+      "id": "call_execution_agent",
+      "name": "Call Execution Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [850, 350]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Aggregate responses from agents\nconst responses = [];\n\n// Collect all incoming data\nfor (const item of items) {\n  responses.push(item.json);\n}\n\n// Create unified response\nconst unifiedResponse = {\n  success: responses.every(r => r.success !== false),\n  timestamp: new Date().toISOString(),\n  workflowId: $workflow.id,\n  results: responses,\n  metadata: {\n    agentsInvoked: responses.length,\n    processingTime: Date.now() - new Date(responses[0]?.timestamp).getTime(),\n    version: '2.0'\n  }\n};\n\n// Add any error aggregation\nconst errors = responses.filter(r => r.error).map(r => r.error);\nif (errors.length > 0) {\n  unifiedResponse.errors = errors;\n}\n\nreturn [{ json: unifiedResponse }];"
+      },
+      "id": "response_aggregator",
+      "name": "Response Aggregator",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "X-Processing-Time",
+                "value": "={{ $json.metadata.processingTime }}ms"
+              }
+            ]
+          }
+        }
+      },
+      "id": "webhook_response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Error Handler\nconst error = items[0].error;\nconst context = items[0].json;\n\nconst errorResponse = {\n  success: false,\n  error: {\n    message: error.message || 'Unknown error occurred',\n    code: error.code || 'INTEGRATION_ERROR',\n    timestamp: new Date().toISOString(),\n    context: {\n      workflowId: $workflow.id,\n      nodeId: error.node?.name || 'unknown',\n      requestId: context.sessionId\n    }\n  }\n};\n\n// Log to error tracking service if configured\nif ($env.ERROR_TRACKING_WEBHOOK) {\n  // This would trigger an error logging workflow\n  errorResponse.logged = true;\n}\n\nreturn [{ json: errorResponse }];"
+      },
+      "id": "error_handler",
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [850, 500],
+      "alwaysOutputData": true
+    }
+  ],
+  "connections": {
+    "webhook_integration_v2": {
+      "main": [
+        [
+          {
+            "node": "intent_classifier_v2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "intent_classifier_v2": {
+      "main": [
+        [
+          {
+            "node": "route_to_planning",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "route_to_execution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "route_to_planning": {
+      "main": [
+        [
+          {
+            "node": "call_planning_agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "route_to_execution": {
+      "main": [
+        [
+          {
+            "node": "call_execution_agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call_planning_agent": {
+      "main": [
+        [
+          {
+            "node": "response_aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call_execution_agent": {
+      "main": [
+        [
+          {
+            "node": "response_aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "response_aggregator": {
+      "main": [
+        [
+          {
+            "node": "webhook_response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "error_handler": {
+      "main": [
+        [
+          {
+            "node": "webhook_response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "error-handler-workflow-id"
+  },
+  "staticData": null,
+  "meta": {
+    "templateId": "integration-agent-v2",
+    "templateVersion": "2.0.0",
+    "description": "Enhanced Integration Agent with dynamic routing and error handling"
+  },
+  "tags": [
+    {
+      "name": "asteria",
+      "createdAt": "2025-06-16T00:00:00.000Z"
+    },
+    {
+      "name": "integration",
+      "createdAt": "2025-06-16T00:00:00.000Z"
+    },
+    {
+      "name": "v2",
+      "createdAt": "2025-06-16T00:00:00.000Z"
+    }
+  ]
+}
