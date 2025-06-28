@@ -6,6 +6,4 @@ export {
   type ServiceIntent,
   type EnhancedWorkflowStep,
   type EnhancedWorkflowTemplate
-} from './enhanced-templates';
-
-export { default } from './enhanced-templates'; 
+} from './enhanced-templates'; 
