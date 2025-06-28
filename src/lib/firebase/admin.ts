@@ -35,17 +35,38 @@ export const getFirebaseAdmin = async () => {
     } catch (error) {
       console.error('❌ Firebase service account initialization failed:', error);
       
-      // Fallback to Application Default Credentials if available
+      // Fallback to local service account file
       try {
-        const { applicationDefault } = await import('firebase-admin/app');
-        adminApp = initializeAdminApp({
-          credential: applicationDefault(),
-          projectId: 'tag-inner-circle-v01'
-        });
-        console.log('⚠️ Using fallback Application Default Credentials');
-      } catch (fallbackError) {
-        console.error('❌ Firebase initialization completely failed:', fallbackError);
-        throw new Error('Firebase Admin SDK initialization failed - no valid credentials found');
+        const fs = await import('fs');
+        const path = await import('path');
+        
+        // Look for the newest service account file
+        const serviceAccountPath = './firebase-service-account-20250628_003557.json';
+        if (fs.existsSync(serviceAccountPath)) {
+          const serviceAccountKey = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
+          adminApp = initializeAdminApp({
+            credential: cert(serviceAccountKey),
+            projectId: 'tag-inner-circle-v01'
+          });
+          console.log('✅ Firebase Admin initialized with local service account file');
+        } else {
+          throw new Error('Service account file not found');
+        }
+      } catch (localError) {
+        console.error('❌ Local service account failed:', localError);
+        
+        // Final fallback to Application Default Credentials if available
+        try {
+          const { applicationDefault } = await import('firebase-admin/app');
+          adminApp = initializeAdminApp({
+            credential: applicationDefault(),
+            projectId: 'tag-inner-circle-v01'
+          });
+          console.log('⚠️ Using fallback Application Default Credentials');
+        } catch (fallbackError) {
+          console.error('❌ Firebase initialization completely failed:', fallbackError);
+          throw new Error('Firebase Admin SDK initialization failed - no valid credentials found');
+        }
       }
     }
   } else {
