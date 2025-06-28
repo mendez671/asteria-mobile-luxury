@@ -27,7 +27,7 @@ import { slaTracker, SLAMetrics, CountdownTimer } from './sla-tracker';
 // ===============================
 import { workflowDetector, WorkflowTrigger, DetectionContext } from './workflow-detector';
 import { workflowStatusTracker } from '../../workflow/status-tracker';
-import { getEnhancedWorkflowTemplate } from '../../workflow/templates/enhanced-templates';
+import { getEnhancedWorkflowTemplate } from '../../workflow/templates';
 
 export interface AgentContext {
   memberId: string;
