@@ -18,7 +18,7 @@ async function initializeFirebase() {
       // Look for service account files
       const fs = require('fs');
       const possibleFiles = [
-        './firebase-service-account-20250624_180746.json',
+        './firebase-service-account-20250628_003557.json',
         './firebase-service-account-key.json',
         './firebase-service-account-20250609_105752.json'
       ];

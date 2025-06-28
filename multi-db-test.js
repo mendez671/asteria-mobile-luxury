@@ -11,7 +11,7 @@ async function testMultiDBConnection() {
 
   try {
     // Initialize Firebase Admin
-    const serviceAccount = require('./firebase-service-account-20250624_180746.json');
+    const serviceAccount = require('./firebase-service-account-20250628_003557.json');
     
     const app = admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
