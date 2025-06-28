@@ -1,0 +1,15 @@
+{
+  "allowedDomains": [
+    "https://innercircle.thriveachievegrow.com",
+    "https://thriveachievegrow.com",
+    "http://localhost:3000"
+  ],
+  "tokenExpiration": 3600,
+  "refreshThreshold": 1800,
+  "tierAccess": {
+    "founding10": ["all", "premium", "exclusive"],
+    "fifty-k": ["standard", "premium"],
+    "corporate": ["standard", "business"],
+    "all-members": ["basic"]
+  }
+} 

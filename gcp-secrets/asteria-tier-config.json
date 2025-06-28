@@ -1,0 +1,73 @@
+{
+  "tierLevels": {
+    "admin": 5,
+    "founding10": 4,
+    "fifty-k": 3,
+    "corporate": 2,
+    "tag-connect": 1
+  },
+  "tierFeatures": {
+    "admin": [
+      "admin-access",
+      "system-management",
+      "premium-concierge",
+      "luxury-travel",
+      "exclusive-events",
+      "investment-advisory",
+      "brand-development",
+      "priority-support",
+      "white-glove-service"
+    ],
+    "founding10": [
+      "premium-concierge",
+      "luxury-travel",
+      "exclusive-events",
+      "investment-advisory",
+      "brand-development",
+      "priority-support",
+      "white-glove-service"
+    ],
+    "fifty-k": [
+      "premium-concierge",
+      "luxury-travel",
+      "exclusive-events",
+      "priority-support"
+    ],
+    "corporate": [
+      "business-travel",
+      "event-planning",
+      "group-services",
+      "standard-support"
+    ],
+    "tag-connect": [
+      "basic-concierge",
+      "standard-support"
+    ]
+  },
+  "accessControlRules": {
+    "apiRateLimit": {
+      "admin": 10000,
+      "founding10": 1000,
+      "fifty-k": 500,
+      "corporate": 200,
+      "tag-connect": 100
+    },
+    "responseTime": {
+      "admin": "immediate",
+      "founding10": "immediate",
+      "fifty-k": "priority",
+      "corporate": "standard",
+      "tag-connect": "standard"
+    }
+  },
+  "featureAccess": {
+    "privateAviation": ["admin", "founding10", "fifty-k"],
+    "luxuryTravel": ["admin", "founding10", "fifty-k", "corporate"],
+    "conciergeServices": ["admin", "founding10", "fifty-k", "corporate", "tag-connect"],
+    "adminAccess": ["admin"],
+    "systemManagement": ["admin"],
+    "exclusiveEvents": ["admin", "founding10", "fifty-k"],
+    "investmentAdvisory": ["admin", "founding10"],
+    "brandDevelopment": ["admin", "founding10"]
+  }
+} 

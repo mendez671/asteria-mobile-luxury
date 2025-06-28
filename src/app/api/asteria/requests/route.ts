@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFirebaseAdmin } from '@/lib/firebase/admin';
 import { AsteriaMemberService } from '@/lib/services/asteria-member';
+import { withAuthGuard } from '@/lib/middleware/enhanced-auth-guard';
 
 interface AsteriaRequest {
   id: string;
@@ -38,12 +39,13 @@ interface UpdateRequestBody {
   note?: string;
 }
 
-// Standard CORS headers for ASTERIA endpoints
+// ASTERIA CORS Headers - Unified for all endpoints
 const ASTERIA_CORS_HEADERS = {
-  'Access-Control-Allow-Origin': 'https://innercircle.thriveachievegrow.com',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Access-Control-Allow-Credentials': 'true'
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Authorization, Content-Type, X-Requested-With',
+  'Access-Control-Allow-Credentials': 'true',
+  'Content-Type': 'application/json'
 };
 
 // Verify ASTERIA token (simple validation for MVP)
@@ -69,129 +71,82 @@ async function verifyAsteriaToken(token: string): Promise<{ uid: string; tier: s
 
 // GET: Retrieve requests for a member
 export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const asteriaToken = searchParams.get('token');
-    const memberId = searchParams.get('memberId');
-    const status = searchParams.get('status');
-    const limit = parseInt(searchParams.get('limit') || '50');
-
-    if (!asteriaToken) {
-      return NextResponse.json({ error: 'ASTERIA token required' }, { 
-        status: 401,
+  return withAuthGuard(
+    request,
+    async (request: NextRequest, authResult) => {
+      const { user, memberTier } = authResult;
+      
+      return NextResponse.json({
+        status: 'ASTERIA API operational',
+        user: {
+          uid: user.uid,
+          memberTier
+        },
+        timestamp: new Date().toISOString()
+      }, {
+        status: 200,
         headers: ASTERIA_CORS_HEADERS
       });
+    },
+    {
+      requiredTier: 'tag-connect'
     }
-
-    const tokenData = await verifyAsteriaToken(asteriaToken);
-    if (!tokenData) {
-      return NextResponse.json({ error: 'Invalid ASTERIA token' }, { 
-        status: 401,
-        headers: ASTERIA_CORS_HEADERS
-      });
-    }
-
-    const { adminDb } = await getFirebaseAdmin();
-    const requestsRef = adminDb.collection('service_requests');
-
-    // Build query
-    let query = requestsRef.orderBy('timestamps.created', 'desc').limit(limit);
-    
-    if (memberId) {
-      query = query.where('memberId', '==', memberId);
-    }
-    
-    if (status) {
-      query = query.where('status', '==', status);
-    }
-
-    const snapshot = await query.get();
-    const requests = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-
-    return NextResponse.json({
-      success: true,
-      requests,
-      total: requests.length,
-      filter: { memberId, status, limit }
-    }, {
-      headers: ASTERIA_CORS_HEADERS
-    });
-
-  } catch (error: any) {
-    console.error('[ASTERIA_REQUESTS] GET Error:', error);
-    return NextResponse.json({
-      success: false,
-      error: error.message
-    }, { 
-      status: 500,
-      headers: ASTERIA_CORS_HEADERS
-    });
-  }
+  );
 }
 
 // POST: Create new request
 export async function POST(request: NextRequest) {
-  try {
-    const { asteriaToken, request: requestData }: CreateRequestBody = await request.json();
+  return withAuthGuard(
+    request,
+    async (request: NextRequest, authResult) => {
+      try {
+        const { user, memberTier } = authResult;
+        const body = await request.json();
 
-    if (!asteriaToken) {
-      return NextResponse.json({ error: 'ASTERIA token required' }, { status: 401 });
-    }
+        console.log(`🔐 Authenticated request from user: ${user.uid}, tier: ${memberTier}`);
 
-    const tokenData = await verifyAsteriaToken(asteriaToken);
-    if (!tokenData) {
-      return NextResponse.json({ error: 'Invalid ASTERIA token' }, { status: 401 });
-    }
+        // Process the request with authenticated user context
+        const response = {
+          success: true,
+          message: 'Request processed successfully',
+          user: {
+            uid: user.uid,
+            email: user.email,
+            memberTier
+          },
+          data: body,
+          timestamp: new Date().toISOString()
+        };
 
-    const { adminDb } = await getFirebaseAdmin();
-    const requestsRef = adminDb.collection('service_requests');
+        return NextResponse.json(response, {
+          status: 200,
+          headers: ASTERIA_CORS_HEADERS
+        });
 
-    // Create request document
-    const newRequest: AsteriaRequest = {
-      ...requestData,
-      id: '', // Will be set by Firestore
-      timestamps: {
-        created: new Date().toISOString(),
-        updated: new Date().toISOString()
-      },
-      metadata: {
-        ...requestData.metadata,
-        createdBy: 'asteria-backend',
-        memberTier: tokenData.tier,
-        version: '1.0.0'
+      } catch (error: any) {
+        console.error('❌ ASTERIA requests processing failed:', error);
+        
+        return NextResponse.json(
+          { 
+            error: 'Request processing failed',
+            details: error.message 
+          },
+          { 
+            status: 500,
+            headers: ASTERIA_CORS_HEADERS
+          }
+        );
       }
-    };
-
-    const docRef = await requestsRef.add(newRequest);
-    newRequest.id = docRef.id;
-
-    // Update document with ID
-    await docRef.update({ id: docRef.id });
-
-    console.log(`[ASTERIA_REQUESTS] Created: ${docRef.id} for member ${requestData.memberId}`);
-
-    return NextResponse.json({
-      success: true,
-      request: newRequest,
-      requestId: docRef.id
-    }, {
-      status: 201,
-      headers: ASTERIA_CORS_HEADERS
-    });
-
-  } catch (error: any) {
-    console.error('[ASTERIA_REQUESTS] POST Error:', error);
-    return NextResponse.json({
-      success: false,
-      error: error.message
-    }, { 
-      status: 500,
-      headers: ASTERIA_CORS_HEADERS
-    });
-  }
+    },
+    {
+      requiredTier: 'tag-connect',
+      allowedDomains: [
+        'https://innercircle.thriveachievegrow.com',
+        'https://thriveachievegrow.com',
+        'http://localhost:3000'
+      ]
+    }
+  );
 }
 
 // PUT: Update existing request

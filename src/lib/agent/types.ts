@@ -12,6 +12,12 @@ export interface Message {
   urgency?: 'low' | 'medium' | 'high';
   status?: 'pending' | 'in_progress' | 'completed';
   // ===============================
+  // BOOKING FLOW ENHANCEMENT
+  // Support for "Let's Book It" confirmation flow
+  // ===============================
+  showBookingButton?: boolean;
+  bookingConfirmed?: boolean;
+  // ===============================
   // PHASE 5.2: WORKFLOW UI INTEGRATION
   // Enhanced message metadata for workflow tracking
   // ===============================

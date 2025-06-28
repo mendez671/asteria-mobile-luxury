@@ -690,8 +690,9 @@ ASTERIA POSITIONING: "Your YPO membership includes global CEO network access and
           results.push({ id: chunk.id, status: 'success' });
           console.log(`✅ Populated: ${chunk.id}`);
         } catch (error) {
-          results.push({ id: chunk.id, status: 'failed', error: error.message });
-          console.log(`❌ Failed: ${chunk.id} - ${error.message}`);
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          results.push({ id: chunk.id, status: 'failed', error: errorMessage });
+          console.log(`❌ Failed: ${chunk.id} - ${errorMessage}`);
         }
       }
       

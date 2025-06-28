@@ -20,9 +20,10 @@ interface MessageListProps {
     serviceCategory?: string;
   };
   className?: string;
+  onBookingConfirmation?: (messageId: string) => void;
 }
 
-export function MessageList({ messages, isLoading, journeyPhase, agentMetrics, className = '' }: MessageListProps) {
+export function MessageList({ messages, isLoading, journeyPhase, agentMetrics, className = '', onBookingConfirmation }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Smart scroll management
@@ -33,10 +34,15 @@ export function MessageList({ messages, isLoading, journeyPhase, agentMetrics, c
   }, [messages]);
 
   return (
-    <div className={`flex-1 overflow-y-auto p-6 space-y-4 ${className}`}>
-      {messages.map((message) => (
-        <MessageBubble key={message.id} message={message} />
-      ))}
+          <div className={`flex-1 overflow-y-auto px-3 py-4 xl:px-6 xl:py-6 space-y-3 xl:space-y-4 ${className}`}>
+              {messages.map((message) => (
+          <MessageBubble 
+            key={message.id} 
+            message={message} 
+            messages={messages}
+            onBookingConfirmation={onBookingConfirmation}
+          />
+        ))}
       
       {/* Elegant Loading Indicator */}
       {isLoading && (
@@ -65,15 +71,17 @@ export function MessageList({ messages, isLoading, journeyPhase, agentMetrics, c
 
 interface MessageBubbleProps {
   message: Message;
+  messages: Message[];
+  onBookingConfirmation?: (messageId: string) => void;
 }
 
-function MessageBubble({ message }: MessageBubbleProps) {
+function MessageBubble({ message, messages, onBookingConfirmation }: MessageBubbleProps) {
   const isUser = message.sender === 'user';
   
   return (
-    <div className={`flex items-start gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
+    <div className={`flex items-start gap-2 xl:gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
       {/* Avatar */}
-      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+      <div className={`w-8 h-8 xl:w-10 xl:h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
         isUser 
           ? 'bg-gradient-to-br from-purple-500 to-purple-600' 
           : 'bg-gradient-to-br from-blue-500 to-blue-600'
@@ -84,11 +92,11 @@ function MessageBubble({ message }: MessageBubbleProps) {
       </div>
       
       {/* Message Content */}
-      <div className={`max-w-md ${isUser ? 'text-right' : 'text-left'}`}>
-        <div className={`backdrop-blur-md border rounded-2xl p-4 ${
+      <div className={`max-w-xs xl:max-w-md ${isUser ? 'text-right' : 'text-left'} relative`}>
+        <div className={`backdrop-blur-md border rounded-2xl p-3 xl:p-4 shadow-lg ${
           isUser
-            ? 'bg-purple-500/20 border-purple-400/30 text-white'
-            : 'bg-white/10 border-white/20 text-white'
+            ? 'bg-purple-500/20 border-purple-400/30 text-white shadow-purple-500/10'
+            : 'bg-white/10 border-white/20 text-white shadow-white/5'
         }`}>
           <div className="leading-relaxed">{message.content}</div>
           
@@ -236,9 +244,11 @@ function MessageBubble({ message }: MessageBubbleProps) {
             </div>
           )}
 
+
+
           {/* Enhanced Luxury Status Indicator (Elegant Alternative to Technical Metrics) */}
           {message.agentMetrics && !isUser && (
-            <div className="mt-4 p-3 rounded-lg bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500/20 backdrop-blur-sm">
+            <div className="mt-4 p-3 rounded-lg bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500/20 backdrop-blur-sm shadow-lg shadow-purple-500/10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className={`w-2 h-2 rounded-full ${
@@ -271,6 +281,88 @@ function MessageBubble({ message }: MessageBubbleProps) {
             </div>
           )}
           
+          {/* ===============================
+              PHASE 1: ENHANCED BOOKING FLOW - EXPONENTIAL PATTERN DETECTION
+              Intelligent booking intent recognition with 50+ phrase patterns
+              =============================== */}
+          {message.sender === 'user' && !message.bookingConfirmed && 
+           (() => {
+             // Import the enhanced booking detection and analytics
+             const { hasBookingIntent, detectBookingIntent } = require('@/lib/services/booking-patterns');
+             const { trackBookingDetection } = require('@/lib/services/booking-analytics');
+             
+             // Convert messages to the format expected by our detector
+             const messageHistory = messages.map(msg => ({
+               content: msg.content,
+               sender: msg.sender === 'user' ? 'user' : 'asteria'
+             }));
+             
+             // Detect booking intent
+             const detectionResult = detectBookingIntent(message.content, messageHistory);
+             
+             // Track analytics for N8N integration
+             if (detectionResult.hasIntent) {
+               trackBookingDetection(
+                 `session-${Date.now()}`, // Simple session ID for now
+                 message.content,
+                 detectionResult,
+                 messageHistory.length
+               );
+             }
+             
+             return detectionResult.hasIntent;
+           })() && (
+            <div className="mt-4 space-y-2">
+              {/* Enhanced Pattern Detection Feedback */}
+              {(() => {
+                const { detectBookingIntent } = require('@/lib/services/booking-patterns');
+                const messageHistory = messages.map(msg => ({
+                  content: msg.content,
+                  sender: msg.sender === 'user' ? 'user' : 'asteria'
+                }));
+                const detection = detectBookingIntent(message.content, messageHistory);
+                
+                return (
+                  <div className="text-center">
+                    {/* Pattern Detection Info */}
+                    <div className="text-xs text-emerald-300/80 mb-2">
+                      {detection.confidence === 'high' && '🎯 High confidence booking intent detected'}
+                      {detection.confidence === 'medium' && detection.contextAware && '🤝 Context-aware booking intent detected'}
+                      {detection.confidence === 'medium' && !detection.contextAware && '✅ Strong booking intent detected'}
+                      {detection.matchedPhrase && ` • "${detection.matchedPhrase}"`}
+                    </div>
+                    
+                    {/* Enhanced Booking Button */}
+                    <button
+                      onClick={() => onBookingConfirmation?.(message.id)}
+                      className={`px-6 py-3 text-white font-semibold rounded-xl 
+                                 hover:shadow-lg active:scale-95 transition-all duration-200
+                                 mobile-touch-target backdrop-blur-sm border
+                                 ${detection.confidence === 'high' 
+                                   ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 border-emerald-400/30 hover:shadow-emerald-500/25 hover:from-emerald-400 hover:to-emerald-500'
+                                   : 'bg-gradient-to-r from-blue-500 to-blue-600 border-blue-400/30 hover:shadow-blue-500/25 hover:from-blue-400 hover:to-blue-500'
+                                 }`}
+                    >
+                      {detection.confidence === 'high' && '🚀 Let\'s Book It!'}
+                      {detection.confidence === 'medium' && detection.contextAware && '🤝 Confirm Booking'}
+                      {detection.confidence === 'medium' && !detection.contextAware && '✨ Let\'s Book It!'}
+                    </button>
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+
+          {/* Booking Confirmed State */}
+          {message.bookingConfirmed && (
+            <div className="mt-4 p-3 rounded-lg bg-emerald-500/20 border border-emerald-400/30">
+              <div className="flex items-center gap-2 text-emerald-300">
+                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                <span className="text-sm font-medium">✅ Booking Confirmed - Processing Request</span>
+              </div>
+            </div>
+          )}
+
           {/* Legacy Service Category Badge (fallback) */}
           {message.serviceCategory && !message.agentMetrics && (
             <div className="mt-3 flex flex-wrap gap-2">

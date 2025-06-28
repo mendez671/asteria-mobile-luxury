@@ -318,7 +318,6 @@ export function convertN8NToAgentResponse(
       memberTier: n8nResponse.metadata.memberTier,
       urgencyLevel: determineUrgencyLevel(n8nResponse.metadata.complexityScore),
       firebaseStored: true, // n8n handles Firebase storage
-      agentsUsed: n8nResponse.metadata.agentsUsed,
       executionResult: {
         success: n8nResponse.success,
         serviceTicketId: n8nResponse.tracking.serviceTicketId,
@@ -404,8 +403,7 @@ export async function checkN8NHealth(): Promise<{healthy: boolean, latency: numb
   
   try {
     const response = await fetch(`${N8N_CONFIG.baseUrl}/healthz`, {
-      method: 'GET',
-      timeout: 5000
+      method: 'GET'
     });
     
     const latency = Date.now() - startTime;

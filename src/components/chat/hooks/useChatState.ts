@@ -44,6 +44,7 @@ interface ChatActions {
   clearMessages: () => void;
   setLoading: (loading: boolean) => void;
   updateJourneyPhase: (phase: JourneyPhase) => void;
+  confirmBooking: (messageId: string) => Promise<void>;
 }
 
 export function useChatState(): ChatState & ChatActions {
@@ -374,6 +375,79 @@ export function useChatState(): ChatState & ChatActions {
     setState(prev => ({ ...prev, journeyPhase: phase }));
   }, []);
 
+  // ===============================
+  // BOOKING CONFIRMATION HANDLER
+  // Handles "Let's Book It" button clicks with Slack notification
+  // ===============================
+  const confirmBooking = useCallback(async (messageId: string) => {
+    console.log(`🎯 [BOOKING] Confirming booking for message: ${messageId}`);
+    
+    // PHASE 1: Track booking confirmation analytics
+    const { trackBookingConfirmation } = require('@/lib/services/booking-analytics');
+    trackBookingConfirmation(state.sessionId || 'unknown');
+    
+    // Update message to show confirmation state
+    setState(prev => ({
+      ...prev,
+      messages: prev.messages.map(message =>
+        message.id === messageId
+          ? { ...message, bookingConfirmed: true, showBookingButton: false }
+          : message
+      )
+    }));
+
+    try {
+      // Find the message and gather context for the service request
+      const message = state.messages.find(m => m.id === messageId);
+      const conversationContext = state.messages.slice(-5).map(m => m.content).join('\n');
+      
+      // Send booking confirmation to backend (triggers Slack notification)
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-Session-ID': state.sessionId || ''
+        },
+        body: JSON.stringify({ 
+          message: `BOOKING CONFIRMED: ${message?.content || 'Service request'}`,
+          sessionId: state.sessionId,
+          bookingConfirmation: true,
+          originalMessage: message?.content,
+          conversationContext: conversationContext,
+          memberProfile: state.memberProfile,
+          // Firebase auth info
+          firebaseUid: user?.uid,
+          isAuthenticated: isAuthenticated
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to confirm booking: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(`✅ [BOOKING] Confirmation processed:`, data);
+
+      // Show confirmation message
+      addMessage("✨ Booking confirmed! Your concierge team has been notified and will handle all arrangements. You'll receive updates as we coordinate your luxury experience.", 'asteria');
+
+    } catch (error) {
+      console.error('❌ [BOOKING] Error confirming booking:', error);
+      
+      // Revert message state on error
+      setState(prev => ({
+        ...prev,
+        messages: prev.messages.map(message =>
+          message.id === messageId
+            ? { ...message, bookingConfirmed: false, showBookingButton: true }
+            : message
+        )
+      }));
+      
+      addMessage("I apologize, but there was an issue confirming your booking. Please try again or our team will reach out to you directly.", 'asteria');
+    }
+  }, [state.sessionId, state.messages, state.memberProfile, addMessage, user?.uid, isAuthenticated]);
+
   // Enhanced greeting with personalization
   if (!greetingAddedRef.current && state.messages.length === 0 && state.sessionId) {
     greetingAddedRef.current = true;
@@ -399,6 +473,7 @@ export function useChatState(): ChatState & ChatActions {
     addMessage,
     clearMessages,
     setLoading,
-    updateJourneyPhase
+    updateJourneyPhase,
+    confirmBooking
   };
 } 

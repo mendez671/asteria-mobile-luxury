@@ -89,7 +89,7 @@ export function ChatHeader({
   const [showLogin, setShowLogin] = useState(false);
   
   return (
-    <div className={`backdrop-blur-md bg-white/10 border-b border-white/20 p-4 ${className}`}>
+    <div className={`backdrop-blur-md bg-white/10 border-b border-white/20 px-3 py-3 xl:px-4 xl:py-4 ${className}`}>
       <div className="flex items-center justify-between">
         {/* Enhanced Avatar & Agent Status */}
         <div className="flex items-center space-x-3">
@@ -144,7 +144,7 @@ export function ChatHeader({
         <div className="flex items-center gap-3">
           {/* Authentication Status */}
           {isAuthenticated && user ? (
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-400/30">
+          <div className="hidden xl:flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-400/30">
               <div className="w-2 h-2 bg-teal-400 rounded-full animate-pulse"></div>
               <span className="text-teal-400 text-xs font-medium">
                 {user.memberProfile?.tier === 'elite' ? 'Elite' : 
@@ -165,7 +165,7 @@ export function ChatHeader({
           ) : (
             <button
               onClick={() => setShowLogin(true)}
-              className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-400/30 hover:bg-purple-500/20 transition-colors"
+              className="hidden xl:flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-400/30 hover:bg-purple-500/20 transition-colors"
             >
               <UserCircleIcon className="w-4 h-4 text-purple-400" />
               <span className="text-purple-400 text-xs font-medium">Sign In</span>
@@ -174,7 +174,7 @@ export function ChatHeader({
           
           {/* Performance Indicator */}
           {responseTime && (
-            <div className={`hidden md:flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
+            <div className={`hidden xl:flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
               responseTime < 1000 ? 'bg-green-500/20 text-green-300' :
               responseTime < 3000 ? 'bg-yellow-500/20 text-yellow-300' :
               'bg-red-500/20 text-red-300'

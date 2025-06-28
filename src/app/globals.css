@@ -171,11 +171,11 @@ body {
   /* CRITICAL: Prevent any auto-scroll behaviors */
   scroll-behavior: auto !important;
   
-  /* Safe area padding for mobile */
+  /* SURGICAL FIX: Safe area padding - only top/bottom for true edge-to-edge mobile */
   padding-top: var(--mobile-safe-area-top);
   padding-bottom: var(--mobile-safe-area-bottom);
-  padding-left: var(--mobile-safe-area-left);
-  padding-right: var(--mobile-safe-area-right);
+  /* REMOVED for edge-to-edge: padding-left: var(--mobile-safe-area-left); */
+  /* REMOVED for edge-to-edge: padding-right: var(--mobile-safe-area-right); */
 }
 
 /* Enhanced Mobile Scrollbars */
@@ -1574,6 +1574,28 @@ body {
   
   .mobile-safe-top {
     padding-top: max(16px, env(safe-area-inset-top));
+  }
+
+  /* Enhanced Mobile Touch Targets (44px iOS minimum) */
+  .mobile-touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .mobile-input-enhanced {
+    -webkit-appearance: none;
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-input-enhanced:focus {
+    transform: none; /* Prevent zoom on iOS */
+    -webkit-transform: none;
   }
 }
 

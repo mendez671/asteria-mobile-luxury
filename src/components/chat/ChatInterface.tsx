@@ -12,6 +12,8 @@ import { InputPanel } from './InputPanel';
 import { ServiceRequestPanel } from './ServiceRequestPanel';
 import { useChatState } from './hooks/useChatState';
 import { useVoiceInterface } from './hooks/useVoiceInterface';
+import { useMobileKeyboard } from './hooks/useMobileKeyboard';
+
 
 interface ChatInterfaceProps {
   className?: string;
@@ -32,10 +34,12 @@ export default function ChatInterface({ className = '' }: ChatInterfaceProps) {
     activeWorkflows,
     serviceRequests,
     sendMessage,
-    clearMessages
+    clearMessages,
+    confirmBooking
   } = useChatState();
 
   const voiceInterface = useVoiceInterface();
+  const { isKeyboardVisible } = useMobileKeyboard();
   
   // ===============================
   // VOICE INPUT INTEGRATION
@@ -100,58 +104,70 @@ export default function ChatInterface({ className = '' }: ChatInterfaceProps) {
   }, [agentMetrics, journeyPhase]);
 
   // ===============================
-  // ELEGANT BLUE/PURPLE DESIGN
+  // LUXURY BLUE/PURPLE DESIGN WITH GLASS MORPHISM
   // Enhanced glass morphism with agent status integration
   // ===============================
 
   return (
-    <div className={`flex flex-col h-full bg-gradient-to-b from-[#2D1B69] to-[#1E1142] ${className}`}>
-      {/* Enhanced Header with Agent Metrics */}
-      <ChatHeader
-        journeyPhase={journeyPhase}
-        voiceEnabled={voiceInterface.enabled}
-        onVoiceToggle={voiceInterface.toggle}
-        onClearChat={clearMessages}
-        isListening={voiceInterface.isListening}
-        isSpeaking={voiceInterface.isSpeaking}
-        memberProfile={memberProfile}
-        agentMetrics={agentMetrics}
-        activeWorkflows={activeWorkflows}
-        serviceRequests={serviceRequests}
-      />
+    <div className={`flex flex-col h-full bg-gradient-to-b from-[#2D1B69] to-[#1E1142] ${isKeyboardVisible ? 'mobile-keyboard-visible' : ''} ${className}`}>
+
       
-      {/* Enhanced Message List with Agent Context */}
-      <MessageList
-        messages={messages}
-        isLoading={isLoading}
-        journeyPhase={journeyPhase}
-        agentMetrics={agentMetrics}
-      />
+      {/* LUXURY ENHANCEMENT: Glass morphism container with elegant borders */}
+      <div className="glass rounded-t-2xl border-b border-white/10 relative">
+        {/* Enhanced Header with Agent Metrics */}
+        <ChatHeader
+          journeyPhase={journeyPhase}
+          voiceEnabled={voiceInterface.enabled}
+          onVoiceToggle={voiceInterface.toggle}
+          onClearChat={clearMessages}
+          isListening={voiceInterface.isListening}
+          isSpeaking={voiceInterface.isSpeaking}
+          memberProfile={memberProfile}
+          agentMetrics={agentMetrics}
+          activeWorkflows={activeWorkflows}
+          serviceRequests={serviceRequests}
+        />
+      </div>
+      
+      {/* LUXURY ENHANCEMENT: Message List with sophisticated glass background */}
+      <div className="flex-1 overflow-hidden">
+        <MessageList
+          messages={messages}
+          isLoading={isLoading}
+          journeyPhase={journeyPhase}
+          agentMetrics={agentMetrics}
+          onBookingConfirmation={confirmBooking}
+          className="h-full interactive-luxury"
+        />
+      </div>
 
       {/* ===============================
           PHASE 5.2: SERVICE REQUEST PANEL
-          Real-time workflow and service request tracking
+          Real-time workflow and service request tracking with glass styling
           =============================== */}
       <ServiceRequestPanel
         serviceRequests={serviceRequests}
         activeWorkflows={activeWorkflows}
-        className="mx-4 mb-3"
+        className="mx-3 mb-3 xl:mx-4 xl:mb-3 glass rounded-xl"
       />
 
-      {/* Enhanced Input Panel with Agent Integration */}
-      <InputPanel
-        onSendMessage={sendMessage}
-        voiceInterface={{
-          enabled: voiceInterface.enabled,
-          isListening: voiceInterface.isListening,
-          isTranscribing: voiceInterface.isTranscribing,
-          toggle: voiceInterface.toggle,
-          error: voiceInterface.error
-        }}
-        isLoading={isLoading}
-        journeyPhase={journeyPhase}
-        memberProfile={memberProfile}
-      />
+      {/* LUXURY ENHANCEMENT: Glass morphism input container */}
+      <div className="glass rounded-b-2xl border-t border-white/10 backdrop-blur-md">
+        <InputPanel
+          onSendMessage={sendMessage}
+          voiceInterface={{
+            enabled: voiceInterface.enabled,
+            isListening: voiceInterface.isListening,
+            isTranscribing: voiceInterface.isTranscribing,
+            toggle: voiceInterface.toggle,
+            error: voiceInterface.error
+          }}
+          isLoading={isLoading}
+          journeyPhase={journeyPhase}
+          memberProfile={memberProfile}
+          className="interactive-luxury"
+        />
+      </div>
     </div>
   );
 } 

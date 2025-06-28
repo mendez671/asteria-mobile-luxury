@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useReducer, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpIcon, SparklesIcon, Bars3Icon, MicrophoneIcon } from '@heroicons/react/24/solid';
-import VoiceInterface from '../VoiceInterface';
+// import VoiceInterface from '../VoiceInterface'; // Removed - VoiceInterface deleted
 
 interface Message {
   id: string;
@@ -947,12 +947,12 @@ export default function ChatInterface() {
       </div>
 
       {/* NEW: Floating Voice Interface */}
-      <VoiceInterface
+      {/* <VoiceInterface
         onVoiceInput={handleVoiceInput}
         isListening={isListening}
         onToggleListening={toggleVoiceInput}
         isProcessing={isVoiceProcessing || isTranscribing}
-      />
+      /> */}
     </div>
   );
 } 
