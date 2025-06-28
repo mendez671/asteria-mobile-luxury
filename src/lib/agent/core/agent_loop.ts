@@ -25,9 +25,17 @@ import { slaTracker, SLAMetrics, CountdownTimer } from './sla-tracker';
 // WEEK 3 DAY 19: ENHANCED WORKFLOW TRIGGERS
 // Smart workflow detection and triggering
 // ===============================
-import { workflowDetector, WorkflowTrigger, DetectionContext } from './workflow-detector';
-import { workflowStatusTracker } from '../../workflow/status-tracker';
-import { getEnhancedWorkflowTemplate } from '../../workflow/templates';
+// COMMENTED OUT FOR VERCEL DEPLOYMENT - ENHANCED FEATURE
+// import { workflowDetector, WorkflowTrigger, DetectionContext } from './workflow-detector';
+// import { workflowStatusTracker } from '../../workflow/status-tracker';
+// import { getEnhancedWorkflowTemplate } from '../../workflow/templates';
+
+// Fallback type definitions for workflow features
+interface WorkflowTrigger {
+  workflowType: string;
+  confidence: number;
+  reasoning: string;
+}
 
 export interface AgentContext {
   memberId: string;
@@ -161,10 +169,12 @@ export class AsteriaAgentLoop {
       // WEEK 3 DAY 19: ENHANCED WORKFLOW DETECTION
       // Analyze if this request should trigger an advanced workflow
       // ===============================
+      // COMMENTED OUT FOR VERCEL DEPLOYMENT - ENHANCED FEATURE
       let workflowTrigger: WorkflowTrigger | null = null;
       let workflowInitiated = false;
       let workflowId: string | undefined;
 
+      /*
       try {
         const detectionContext: DetectionContext = {
           intent: intentAnalysis.primaryBucket as any,
@@ -207,6 +217,7 @@ export class AsteriaAgentLoop {
         console.warn(`⚠️ [WORKFLOW_DETECTION] Error in workflow detection: ${workflowError}`);
         // Continue with normal processing
       }
+      */
 
       // ===============================
       // WEEK 3 DAY 17: UPDATE SLA TRACKING WITH SERVICE TYPE
