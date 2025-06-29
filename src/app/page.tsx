@@ -9,6 +9,7 @@ import TagLogo from '@/components/ui/TagLogo';
 import TestApiButton from '@/components/TestApiButton';
 import VideoIntro from '@/components/ui/VideoIntro';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
+import AuthGuardWrapper from '@/components/auth/AuthGuardWrapper';
 
 // UPGRADE 2 & 4: New sapphire components
 import { PrismStreak } from '@/components/effects/PrismStreak';
@@ -222,6 +223,7 @@ export default function Home() {
   const shouldShowMainContent = true; // FORCE: Always show main content
 
   return (
+    <AuthGuardWrapper requiredTier="tag-connect">
     <ErrorBoundary>
       {/* CRITICAL: Immediate preloader overlay to prevent background flash */}
       {viewport.isDesktop && showVideo && !isVideoComplete && (
@@ -358,5 +360,6 @@ export default function Home() {
         )}
       </main>
     </ErrorBoundary>
+    </AuthGuardWrapper>
   );
 }
