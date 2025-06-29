@@ -17,21 +17,28 @@ function AuthCallbackContent() {
         const token = searchParams.get('token');
         const tier = searchParams.get('tier');
         const origin = searchParams.get('origin');
+        const redirectTo = searchParams.get('redirect');
 
         if (!token) {
           throw new Error('No authentication token provided');
         }
 
-        console.log('🔐 Processing auth callback:', { tier, origin });
+        console.log('🔐 Processing auth callback:', { tier, origin, redirectTo });
 
         // Validate token and sign in
         await signInWithToken(token);
         
         setStatus('success');
         
-        // Redirect to dashboard after brief success display
+        // Redirect back to original URL or main ASTERIA interface after brief success display
         setTimeout(() => {
-          router.push('/dashboard');
+          if (redirectTo && redirectTo.includes('innercircle.thriveachievegrow.com')) {
+            // Redirect to original URL if it's safe (same domain)
+            window.location.href = redirectTo;
+          } else {
+            // Fallback to main ASTERIA interface
+            router.push('/');
+          }
         }, 2000);
 
       } catch (error: any) {

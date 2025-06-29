@@ -42,6 +42,13 @@ export function CrossDomainAuthHandler({
       redirectUrl.searchParams.set('token', idToken);
       redirectUrl.searchParams.set('tier', tokenResult.claims.memberTier as string);
       redirectUrl.searchParams.set('origin', window.location.origin);
+      
+      // Preserve original redirect URL if available
+      const urlParams = new URLSearchParams(window.location.search);
+      const originalRedirect = urlParams.get('redirect');
+      if (originalRedirect) {
+        redirectUrl.searchParams.set('redirect', originalRedirect);
+      }
 
       setAuthStep('redirecting');
       
