@@ -97,20 +97,91 @@ class FirebaseAuthService {
     }
   }
 
-  // Sign in with custom token (for existing TAG system integration)
-  async signInWithToken(customToken: string): Promise<AuthUser> {
+  // Sign in with token (handles both custom tokens and ID tokens)
+  async signInWithToken(token: string): Promise<AuthUser> {
     if (!auth) {
       throw new Error('Firebase not configured');
     }
     
     try {
-      const userCredential = await signInWithCustomToken(auth, customToken);
-      const memberProfile = await this.getMemberProfile(userCredential.user.uid);
+      console.log('🔍 Analyzing token type...');
       
-      return {
-        ...userCredential.user,
-        memberProfile
-      } as AuthUser;
+      // SURGICAL FIX: Detect token type and handle appropriately
+      let userCredential;
+      
+      // Check if it's an ID token (JWT format with 3 parts) vs custom token
+      const tokenParts = token.split('.');
+      if (tokenParts.length === 3) {
+        console.log('✅ Detected Firebase ID token - using direct authentication');
+        
+        // This is a Firebase ID token - we need to validate it and set auth state
+        // Use the admin SDK to verify the token and extract user info
+        try {
+          const decodedToken = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
+          console.log('📧 Token email:', decodedToken.email);
+          console.log('👤 Token UID:', decodedToken.user_id);
+          
+          // For ID tokens, we can't directly sign in the client
+          // Instead, we'll call the validation endpoint to process it
+          const response = await fetch('/api/asteria/validate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              firebaseToken: token  // Use correct field name
+            })
+          });
+          
+          if (!response.ok) {
+            const error = await response.text();
+            throw new Error(`Token validation failed: ${error}`);
+          }
+          
+          const result = await response.json();
+          console.log('✅ Token validation successful:', result);
+          
+          // Create a user object from the validated token data
+          const authUser: AuthUser = {
+            uid: decodedToken.user_id,
+            email: decodedToken.email,
+            displayName: decodedToken.name,
+            emailVerified: decodedToken.email_verified,
+            photoURL: decodedToken.picture,
+            memberProfile: result.memberData ? {
+              id: result.memberData.uid,
+              name: decodedToken.name,
+              tier: result.memberData.tier,
+              preferences: {},
+              serviceHistory: [],
+              contactMethods: []
+            } : undefined
+          } as AuthUser;
+          
+          // Update internal state
+          this.currentUser = authUser;
+          this.notifyAuthStateListeners(authUser);
+          
+          console.log('✅ Authentication successful with ID token');
+          return authUser;
+          
+                 } catch (decodeError: any) {
+           console.error('❌ ID token processing failed:', decodeError);
+           throw new Error(`ID token processing failed: ${decodeError?.message || 'Unknown error'}`);
+         }
+        
+      } else {
+        console.log('✅ Detected custom token - using signInWithCustomToken');
+        // This is a custom token - use the original logic
+        userCredential = await signInWithCustomToken(auth, token);
+        const memberProfile = await this.getMemberProfile(userCredential.user.uid);
+        
+        return {
+          ...userCredential.user,
+          memberProfile
+        } as AuthUser;
+      }
+      
     } catch (error: any) {
       console.error('Token sign in error:', error);
       throw new Error(`Token authentication failed: ${error.message}`);
@@ -278,6 +349,17 @@ class FirebaseAuthService {
         this.authStateListeners.splice(index, 1);
       }
     };
+  }
+
+  // Notify all auth state listeners (used by signInWithToken for ID tokens)
+  private notifyAuthStateListeners(user: AuthUser | null): void {
+    this.authStateListeners.forEach(callback => {
+      try {
+        callback(user);
+      } catch (error) {
+        console.error('Auth state listener error:', error);
+      }
+    });
   }
 
   // Verify member tier for service access

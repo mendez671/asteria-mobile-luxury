@@ -68,12 +68,43 @@ export async function POST(request: NextRequest): Promise<NextResponse<Validatio
     }
 
     // Get ASTERIA member data using the unified service
-    const asteriaMember = await AsteriaMemberService.getMemberByUid(decodedToken.uid);
+    let asteriaMember = await AsteriaMemberService.getMemberByUid(decodedToken.uid);
+    
+    // SURGICAL FIX: Handle users with Firebase custom claims but no member record
+    if (!asteriaMember && decodedToken.memberTier) {
+      console.log(`[ASTERIA_VALIDATE] Creating temporary member from Firebase custom claims for ${decodedToken.email}`);
+      
+      // Create temporary member object from Firebase custom claims
+      asteriaMember = {
+        uid: decodedToken.uid,
+        email: decodedToken.email || '',
+        tier: AsteriaMemberService.mapRoleToTier(decodedToken.memberTier),
+        tagRole: decodedToken.role || 'admin',
+        memberSince: new Date().toISOString(),
+        profile: {
+          fullName: decodedToken.name,
+          avatarUrl: decodedToken.picture,
+          preferences: {}
+        },
+        lastActivity: new Date().toISOString(),
+        lastAsteriaAccess: new Date().toISOString()
+      };
+      
+      // Optionally create the member record for future use
+      try {
+        const { adminDb } = await getFirebaseAdmin();
+        await adminDb.collection('asteria_members').doc(decodedToken.uid).set(asteriaMember);
+        console.log(`[ASTERIA_VALIDATE] Created member record for ${decodedToken.email}`);
+      } catch (createError) {
+        console.warn('[ASTERIA_VALIDATE] Could not create member record:', createError);
+        // Continue with temporary member object
+      }
+    }
     
     if (!asteriaMember) {
       return NextResponse.json({
         success: false,
-        error: 'Member not found in ASTERIA system'
+        error: 'Member not found in ASTERIA system and no custom claims available'
       }, { status: 404 });
     }
 
