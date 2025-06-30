@@ -32,10 +32,8 @@ export function CrossDomainAuthHandler({
       
       console.log('✅ Inbound authentication successful');
       
-      // Call success callback - wait for currentUser to be set
-      setTimeout(() => {
-        onAuthComplete(currentUser);
-      }, 100);
+      // CRITICAL FIX: Wait for auth state to update, then call success
+      // Don't call onAuthComplete immediately - let useEffect handle it when currentUser updates
       
     } catch (error: any) {
       console.error('❌ Inbound authentication failed:', error);
@@ -107,6 +105,16 @@ export function CrossDomainAuthHandler({
       handleCrossDomainAuth();
     }
   }, [currentUser, authStep, inboundToken]);
+
+  // CRITICAL FIX: Handle successful authentication after user state updates
+  useEffect(() => {
+    if (currentUser && inboundToken && authStep === 'authenticating') {
+      console.log('✅ Authentication completed, user state updated');
+      onAuthComplete(currentUser);
+      setAuthStep('idle');
+      setInboundToken(null);
+    }
+  }, [currentUser, inboundToken, authStep]);
 
   return (
     <div className="auth-handler min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
