@@ -144,10 +144,10 @@ export function AuthGuardWrapper({
           
           console.log('🔀 No existing authentication found, redirecting to main domain auth');
           
-                 } catch (error) {
-           const authError = handleAuthError(error, 'cross_domain_check');
-           console.error('❌ Cross-domain authentication failed:', authError.userMessage);
-         }
+        } catch (error) {
+          const authError = handleAuthError(error, 'cross_domain_check');
+          console.error('❌ Cross-domain authentication failed:', authError.userMessage);
+        }
         
         // Phase 3: Fallback to normal redirect (existing logic)
         const currentUrl = window.location.href;

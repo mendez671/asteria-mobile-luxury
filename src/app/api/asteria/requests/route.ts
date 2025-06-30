@@ -39,9 +39,9 @@ interface UpdateRequestBody {
   note?: string;
 }
 
-// ASTERIA CORS Headers - Unified for all endpoints
+// ASTERIA CORS Headers - Unified for all endpoints (SECURITY FIXED)
 const ASTERIA_CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://innercircle.thriveachievegrow.com', // SECURITY FIX: Removed wildcard
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Authorization, Content-Type, X-Requested-With',
   'Access-Control-Allow-Credentials': 'true',
