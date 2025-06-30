@@ -14,8 +14,35 @@ export function CrossDomainAuthHandler({
   onAuthComplete, 
   onAuthError 
 }: CrossDomainAuthProps) {
-  const { user: currentUser, loading } = useFirebaseAuth();
+  const { user: currentUser, loading, signInWithToken } = useFirebaseAuth();
   const [authStep, setAuthStep] = useState<'idle' | 'authenticating' | 'redirecting'>('idle');
+  const [inboundToken, setInboundToken] = useState<string | null>(null);
+
+  // SURGICAL FIX: Add inbound authentication handler
+  const handleInboundAuthentication = async (token: string, tier: string | null) => {
+    try {
+      console.log('🔄 Processing inbound authentication token...');
+      setAuthStep('authenticating');
+      
+      // Use signInWithToken to authenticate
+      await signInWithToken(token);
+      
+      // Clean URL parameters
+      window.history.replaceState({}, '', window.location.pathname);
+      
+      console.log('✅ Inbound authentication successful');
+      
+      // Call success callback - wait for currentUser to be set
+      setTimeout(() => {
+        onAuthComplete(currentUser);
+      }, 100);
+      
+    } catch (error: any) {
+      console.error('❌ Inbound authentication failed:', error);
+      onAuthError(error.message || 'Authentication failed');
+      setAuthStep('idle');
+    }
+  };
 
   const handleCrossDomainAuth = async () => {
     setAuthStep('authenticating');
@@ -62,12 +89,24 @@ export function CrossDomainAuthHandler({
     }
   };
 
-  // Auto-authenticate if user is already signed in
+  // SURGICAL FIX: Handle both inbound and outbound authentication flows
   useEffect(() => {
-    if (currentUser && authStep === 'idle') {
+    // Check for inbound token first
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const tier = urlParams.get('tier');
+    
+    if (token && !currentUser && !inboundToken) {
+      // Inbound flow: process token from URL
+      console.log('🔍 Detected inbound authentication token');
+      setInboundToken(token);
+      handleInboundAuthentication(token, tier);
+    } else if (currentUser && authStep === 'idle' && !inboundToken) {
+      // Outbound flow: redirect authenticated user
+      console.log('🔄 Processing outbound authentication for authenticated user');
       handleCrossDomainAuth();
     }
-  }, [currentUser, authStep]);
+  }, [currentUser, authStep, inboundToken]);
 
   return (
     <div className="auth-handler min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
@@ -96,7 +135,17 @@ export function CrossDomainAuthHandler({
             </div>
           )}
           
-          {authStep === 'authenticating' && (
+          {authStep === 'authenticating' && inboundToken && (
+            <div className="text-center space-y-4">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-400"></div>
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-2">Processing Authentication...</h3>
+                <p className="text-white/70">Signing you in with your credentials</p>
+              </div>
+            </div>
+          )}
+          
+          {authStep === 'authenticating' && !inboundToken && (
             <div className="text-center space-y-4">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-400"></div>
               <div>
