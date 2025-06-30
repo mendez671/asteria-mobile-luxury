@@ -122,23 +122,23 @@ export function AuthGuardWrapper({
         return;
       }
 
-      // ENHANCED AUTHENTICATION LOGIC - PHASE 1 & 2 IMPLEMENTATION
+      // ENHANCED AUTHENTICATION LOGIC - OPTIMIZED ORDER (PostMessage First)
       if (!user && typeof window !== 'undefined') {
         setAuthStep('cross_domain_check');
         
         try {
-          // Phase 1: Try cross-domain session check
-          const hasMainDomainAuth = await checkMainDomainAuth();
-          if (hasMainDomainAuth) {
-            // Authentication successful via main domain session
-            return;
-          }
-          
-          // Phase 2: Try postMessage token request
+          // Phase 1: Try PostMessage token request (FAST - 0.5s)
           const token = await requestTokenFromParent();
           if (token) {
             console.log('🎯 Using token from postMessage communication');
             await signInWithToken(token);
+            return;
+          }
+          
+          // Phase 2: Try cross-domain session check (SLOWER - 5s)
+          const hasMainDomainAuth = await checkMainDomainAuth();
+          if (hasMainDomainAuth) {
+            // Authentication successful via main domain session
             return;
           }
           
