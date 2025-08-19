@@ -1,0 +1,221 @@
+{
+    "name": "TAG Content - Carousel Loop Workflow",
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "webhook-trigger",
+        "name": "Webhook - Viral Intelligence",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "position": [250, 300],
+        "webhookId": "viral-intelligence-input"
+      },
+      {
+        "parameters": {
+          "model": "gpt-4",
+          "messages": {
+            "values": [
+              {
+                "role": "system",
+                "content": "{{ $node['Load System Prompt'].json.prompt }}"
+              },
+              {
+                "role": "user",
+                "content": "Create a 7-slide Instagram carousel for:\n{{ $json.output.high_impact_content[0].title }}\n\nHook: {{ $json.output.high_impact_content[0].hook_analysis.pattern_interrupt }}\nEmotional Arc: {{ $json.output.high_impact_content[0].emotional_arc }}\n\nOutput JSON with array of canvas_payloads."
+              }
+            ]
+          }
+        },
+        "id": "generate-carousel",
+        "name": "Generate Carousel Content",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1,
+        "position": [650, 300]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Parse and validate AI output\nconst rawOutput = $input.first().json.output;\nlet parsedOutput;\n\ntry {\n  parsedOutput = typeof rawOutput === 'string' ? JSON.parse(rawOutput) : rawOutput;\n} catch (error) {\n  throw new Error('Failed to parse AI output: ' + error.message);\n}\n\n// Extract slides array\nconst slides = parsedOutput.visual_assets || parsedOutput.slides || [];\n\nif (!Array.isArray(slides) || slides.length === 0) {\n  throw new Error('No slides found in AI output');\n}\n\n// Validate and clean each slide\nconst validSlides = slides.map((slide, index) => {\n  const payload = slide.canvas_payload || slide;\n  \n  // Ensure required fields\n  if (!payload.template) payload.template = 'social-3-1';\n  if (!payload.sizes) payload.sizes = [{width: 1080, height: 1350}];\n  if (!payload.elements) throw new Error(`Slide ${index + 1} missing elements`);\n  \n  return {\n    slide_number: index + 1,\n    canvas_payload: payload\n  };\n});\n\nreturn validSlides;"
+        },
+        "id": "parse-validate",
+        "name": "Parse & Validate Slides",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 1,
+        "position": [850, 300]
+      },
+      {
+        "parameters": {
+          "batchSize": 1,
+          "options": {}
+        },
+        "id": "split-slides",
+        "name": "Split Into Items",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 2,
+        "position": [1050, 300]
+      },
+      {
+        "parameters": {
+          "milliseconds": 500
+        },
+        "id": "rate-limit",
+        "name": "Wait 500ms",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1,
+        "position": [1250, 300]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.canvas.switchboard.ai/create-image",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "X-API-Key",
+                "value": "={{ $credentials.canvasApiKey }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyContentType": "json",
+          "jsonBody": "={{ JSON.stringify($json.canvas_payload) }}",
+          "options": {
+            "timeout": 30000,
+            "retry": {
+              "maxTries": 3,
+              "waitBetweenTries": 2000
+            }
+          }
+        },
+        "id": "canvas-request",
+        "name": "Canvas API Request",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 3,
+        "position": [1450, 300]
+      },
+      {
+        "parameters": {
+          "values": {
+            "string": [
+              {
+                "name": "slide_number",
+                "value": "={{ $('Split Into Items').context['currentRunIndex'] + 1 }}"
+              },
+              {
+                "name": "image_url",
+                "value": "={{ $json.url }}"
+              },
+              {
+                "name": "template_used",
+                "value": "={{ $('Split Into Items').item.json.canvas_payload.template }}"
+              }
+            ]
+          }
+        },
+        "id": "format-result",
+        "name": "Format Slide Result",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 1,
+        "position": [1650, 300]
+      },
+      {
+        "parameters": {},
+        "id": "loop-check",
+        "name": "Loop to Split",
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [1850, 300]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "carousel_images"
+        },
+        "id": "aggregate-results",
+        "name": "Aggregate All Slides",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [2050, 300]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Compile final output\nconst slides = $input.all().map(item => item.json);\n\nreturn {\n  json: {\n    status: 'success',\n    total_slides: slides.length,\n    carousel_images: slides.sort((a, b) => a.slide_number - b.slide_number),\n    created_at: new Date().toISOString(),\n    workflow_execution_id: $execution.id\n  }\n};"
+        },
+        "id": "final-output",
+        "name": "Compile Final Output",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 1,
+        "position": [2250, 300]
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "content-created",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "id": "respond-webhook",
+        "name": "Respond to Webhook",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1,
+        "position": [2450, 300]
+      },
+      {
+        "parameters": {
+          "functionCode": "// Load system prompt from file or database\nreturn {\n  json: {\n    prompt: `You are TAG Visual Virality AI. Generate Instagram carousel slides with Canvas API payloads.\n\nOutput format:\n{\n  \"visual_assets\": [\n    {\n      \"slide_number\": 1,\n      \"canvas_payload\": {\n        \"template\": \"social-3-1\",\n        \"sizes\": [{\"width\": 1080, \"height\": 1350}],\n        \"elements\": {\n          \"text1\": {\"text\": \"headline\"},\n          \"text2\": {\"text\": \"subheadline\"},\n          \"text3\": {\"text\": \"body\"},\n          \"image1\": {\"url\": \"url\"},\n          \"rectangle1\": {\"fillColor\": \"#0D0016\"},\n          \"rectangle2\": {\"fillColor\": \"#DBBB44\"}\n        }\n      }\n    }\n  ]\n}`\n  }\n};"
+        },
+        "id": "load-prompt",
+        "name": "Load System Prompt",
+        "type": "n8n-nodes-base.function",
+        "typeVersion": 1,
+        "position": [450, 300]
+      }
+    ],
+    "connections": {
+      "Webhook - Viral Intelligence": {
+        "main": [[{"node": "Load System Prompt", "type": "main", "index": 0}]]
+      },
+      "Load System Prompt": {
+        "main": [[{"node": "Generate Carousel Content", "type": "main", "index": 0}]]
+      },
+      "Generate Carousel Content": {
+        "main": [[{"node": "Parse & Validate Slides", "type": "main", "index": 0}]]
+      },
+      "Parse & Validate Slides": {
+        "main": [[{"node": "Split Into Items", "type": "main", "index": 0}]]
+      },
+      "Split Into Items": {
+        "main": [[{"node": "Wait 500ms", "type": "main", "index": 0}]]
+      },
+      "Wait 500ms": {
+        "main": [[{"node": "Canvas API Request", "type": "main", "index": 0}]]
+      },
+      "Canvas API Request": {
+        "main": [[{"node": "Format Slide Result", "type": "main", "index": 0}]]
+      },
+      "Format Slide Result": {
+        "main": [[{"node": "Loop to Split", "type": "main", "index": 0}]]
+      },
+      "Loop to Split": {
+        "main": [[
+          {"node": "Split Into Items", "type": "main", "index": 0},
+          {"node": "Aggregate All Slides", "type": "main", "index": 0}
+        ]]
+      },
+      "Aggregate All Slides": {
+        "main": [[{"node": "Compile Final Output", "type": "main", "index": 0}]]
+      },
+      "Compile Final Output": {
+        "main": [[{"node": "Respond to Webhook", "type": "main", "index": 0}]]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "saveDataSuccessExecution": "all",
+      "saveExecutionProgress": true,
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner"
+    }
+  }

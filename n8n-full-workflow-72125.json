@@ -1,0 +1,265 @@
+{
+    "name": "TAG Content - Production Complete",
+    "nodes": [
+      {
+        "parameters": {
+          "conditions": {
+            "string": [
+              {
+                "value1": "={{ $json.source }}",
+                "operation": "equals",
+                "value2": "viral_intelligence"
+              }
+            ]
+          }
+        },
+        "id": "route-source",
+        "name": "Route by Source",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 1,
+        "position": [450, 300]
+      },
+      {
+        "parameters": {
+          "errorMessage": "Canvas API Error: {{ $json.error.message }}",
+          "options": {
+            "continueOnFail": true
+          }
+        },
+        "id": "error-handler",
+        "name": "Handle Canvas Errors",
+        "type": "n8n-nodes-base.stopAndError",
+        "typeVersion": 1,
+        "position": [1650, 500]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Transform current AI output to Canvas format\nconst input = $input.first().json;\nlet slides = [];\n\n// Handle different AI output formats\nif (input.output?.instagram_carousel?.slides) {\n  // Current format\n  slides = input.output.instagram_carousel.slides;\n} else if (input.visual_assets) {\n  // New format\n  slides = input.visual_assets;\n} else {\n  throw new Error('No slides found in AI output');\n}\n\n// Transform to Canvas API format\nconst canvasPayloads = slides.map((slide, index) => {\n  const elements = slide.elements || slide.canvas_payload?.elements;\n  \n  if (!elements) {\n    throw new Error(`Slide ${index + 1} missing elements`);\n  }\n  \n  // Map semantic names to Canvas element IDs\n  const canvasElements = {\n    text1: elements.headline || elements.text1 || {text: 'Default Headline'},\n    text2: elements.subheadline || elements.text2 || {text: ''},\n    text3: elements.body || elements.text3 || {text: ''},\n    image1: elements.image || elements.image1 || {url: 'https://images.unsplash.com/photo-default'},\n    rectangle1: elements.background || elements.rectangle1 || {fillColor: '#0D0016'},\n    rectangle2: elements.accent || elements.rectangle2 || {fillColor: '#DBBB44'}\n  };\n  \n  // Clean text fields\n  Object.keys(canvasElements).forEach(key => {\n    if (key.startsWith('text') && canvasElements[key].text) {\n      // Keep only text property for text elements\n      canvasElements[key] = {text: canvasElements[key].text};\n    }\n  });\n  \n  return {\n    slide_number: slide.slide_number || index + 1,\n    canvas_payload: {\n      template: slide.canvas_payload?.template || 'social-3-1',\n      sizes: slide.canvas_payload?.sizes || [{width: 1080, height: 1350}],\n      elements: canvasElements\n    }\n  };\n});\n\nreturn canvasPayloads;"
+        },
+        "id": "transform-to-canvas",
+        "name": "Transform to Canvas Format",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 1,
+        "position": [1050, 300]
+      },
+      {
+        "parameters": {
+          "operation": "create",
+          "collection": "content_generation_logs",
+          "fields": {
+            "values": [
+              {
+                "name": "workflow_id",
+                "value": "={{ $execution.id }}"
+              },
+              {
+                "name": "status",
+                "value": "={{ $json.status }}"
+              },
+              {
+                "name": "total_slides",
+                "value": "={{ $json.total_slides }}"
+              },
+              {
+                "name": "created_at",
+                "value": "={{ $json.created_at }}"
+              },
+              {
+                "name": "image_urls",
+                "value": "={{ JSON.stringify($json.carousel_images) }}"
+              }
+            ]
+          }
+        },
+        "id": "log-to-database",
+        "name": "Log to Database",
+        "type": "n8n-nodes-base.mongoDb",
+        "typeVersion": 1,
+        "position": [2450, 300]
+      },
+      {
+        "parameters": {
+          "channel": "#content-generation",
+          "text": ":white_check_mark: New carousel created!\n\n*Slides:* {{ $json.total_slides }}\n*Workflow ID:* {{ $json.workflow_execution_id }}\n*Status:* {{ $json.status }}",
+          "attachments": [],
+          "otherOptions": {}
+        },
+        "id": "slack-notification",
+        "name": "Notify Slack",
+        "type": "n8n-nodes-base.slack",
+        "typeVersion": 2,
+        "position": [2650, 300]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "number": [
+              {
+                "value1": "={{ $json.slide_number }}",
+                "operation": "larger",
+                "value2": 7
+              }
+            ]
+          }
+        },
+        "id": "check-slide-limit",
+        "name": "Check Slide Limit",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 1,
+        "position": [1250, 400]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Ensure we only process 7 slides for carousel\nconst allSlides = $input.all().map(item => item.json);\nconst limitedSlides = allSlides.slice(0, 7);\n\nif (allSlides.length > 7) {\n  console.log(`Warning: AI generated ${allSlides.length} slides, limiting to 7`);\n}\n\nreturn limitedSlides;"
+        },
+        "id": "limit-slides",
+        "name": "Limit to 7 Slides",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 1,
+        "position": [1250, 200]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Validate Canvas response and extract URL\nconst response = $input.first().json;\n\nif (response.error) {\n  throw new Error(`Canvas API Error: ${response.error.message || 'Unknown error'}`);\n}\n\nif (!response.url) {\n  throw new Error('No URL returned from Canvas API');\n}\n\n// Add metadata\nreturn {\n  json: {\n    slide_number: $('Split Into Items').context.currentRunIndex + 1,\n    image_url: response.url,\n    canvas_job_id: response.job_id || null,\n    created_at: new Date().toISOString(),\n    template_used: $('Split Into Items').item.json.canvas_payload.template\n  }\n};"
+        },
+        "id": "validate-canvas-response",
+        "name": "Validate Canvas Response",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 1,
+        "position": [1650, 300]
+      },
+      {
+        "parameters": {
+          "content": "## Complete Production Workflow\n\nThis workflow handles:\n1. Multiple input sources\n2. AI output transformation\n3. Canvas API integration\n4. Error handling & retries\n5. Logging & notifications\n6. TikTok script generation",
+          "height": 200,
+          "width": 300
+        },
+        "id": "workflow-notes",
+        "name": "Workflow Notes",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [250, 100]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.content_type }}",
+                      "rightValue": "instagram_carousel",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ]
+                },
+                "outputKey": "instagram"
+              },
+              {
+                "conditions": {
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.content_type }}",
+                      "rightValue": "tiktok_video",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ]
+                },
+                "outputKey": "tiktok"
+              }
+            ]
+          }
+        },
+        "id": "switch-content-type",
+        "name": "Switch by Content Type",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 2,
+        "position": [850, 300]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Generate TikTok script from viral intelligence\nconst content = $json.output.high_impact_content[0];\n\nreturn {\n  json: {\n    tiktok_script: {\n      hook: content.hook_analysis.pattern_interrupt,\n      value_points: [\n        content.save_triggers.practical_utility,\n        content.share_motivation.social_currency,\n        content.audience_alignment\n      ],\n      cta: \"Follow for more luxury tech insights\",\n      duration: 30,\n      overlay_text: {\n        \"0-3s\": content.title.substring(0, 50),\n        \"4-15s\": content.content_angle,\n        \"16-25s\": \"TAG Members get exclusive access\",\n        \"26-30s\": \"Follow @TAG for daily insights\"\n      },\n      canvas_payload: {\n        template: \"social-4-1\",\n        sizes: [{width: 1080, height: 1920}],\n        elements: {\n          text1: {text: content.hook_analysis.pattern_interrupt},\n          text2: {text: content.content_angle},\n          image1: {url: \"https://placeholder.com/1080x1920\"},\n          rectangle1: {fillColor: \"#0D0016\"}\n        }\n      }\n    }\n  }\n};"
+        },
+        "id": "generate-tiktok",
+        "name": "Generate TikTok Script",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 1,
+        "position": [1050, 500]
+      },
+      {
+        "parameters": {
+          "resource": "image",
+          "operation": "generate",
+          "prompt": "={{ $json.midjourney_prompt || 'Luxury tech aesthetic, minimalist design, TAG brand colors' }}",
+          "options": {
+            "aspect": "4:5",
+            "quality": 2,
+            "stylize": 750
+          }
+        },
+        "id": "midjourney-generate",
+        "name": "Generate with Midjourney",
+        "type": "n8n-nodes-community.midjourney",
+        "typeVersion": 1,
+        "position": [1450, 100]
+      }
+    ],
+    "connections": {
+      "Webhook - Viral Intelligence": {
+        "main": [[{"node": "Route by Source", "type": "main", "index": 0}]]
+      },
+      "Route by Source": {
+        "main": [
+          [{"node": "Load System Prompt", "type": "main", "index": 0}],
+          [{"node": "Manual Override", "type": "main", "index": 0}]
+        ]
+      },
+      "Generate Carousel Content": {
+        "main": [[{"node": "Transform to Canvas Format", "type": "main", "index": 0}]]
+      },
+      "Transform to Canvas Format": {
+        "main": [[{"node": "Limit to 7 Slides", "type": "main", "index": 0}]]
+      },
+      "Limit to 7 Slides": {
+        "main": [[{"node": "Split Into Items", "type": "main", "index": 0}]]
+      },
+      "Split Into Items": {
+        "main": [[{"node": "Check Slide Limit", "type": "main", "index": 0}]]
+      },
+      "Check Slide Limit": {
+        "main": [
+          [{"node": "Wait 500ms", "type": "main", "index": 0}],
+          [{"node": "Skip Extra Slides", "type": "main", "index": 0}]
+        ]
+      },
+      "Canvas API Request": {
+        "main": [[{"node": "Validate Canvas Response", "type": "main", "index": 0}]],
+        "error": [[{"node": "Handle Canvas Errors", "type": "main", "index": 0}]]
+      },
+      "Validate Canvas Response": {
+        "main": [[{"node": "Loop to Split", "type": "main", "index": 0}]]
+      },
+      "Aggregate All Slides": {
+        "main": [[{"node": "Compile Final Output", "type": "main", "index": 0}]]
+      },
+      "Compile Final Output": {
+        "main": [[{"node": "Log to Database", "type": "main", "index": 0}]]
+      },
+      "Log to Database": {
+        "main": [[{"node": "Notify Slack", "type": "main", "index": 0}]]
+      },
+      "Switch by Content Type": {
+        "main": {
+          "instagram": [{"node": "Transform to Canvas Format", "type": "main", "index": 0}],
+          "tiktok": [{"node": "Generate TikTok Script", "type": "main", "index": 0}]
+        }
+      }
+    }
+  }
